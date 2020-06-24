@@ -4,3 +4,4 @@ obj/*
 Temp/*
 /Assets/VDK/*.so
 .vs/*
+build/*
