@@ -112,17 +112,17 @@ namespace Vault {
             if (error != vdkError.vE_Success)
                 throw new Exception("Query SetAsSphere Failed: " + error.ToString());
         }
-        [DllImport("vaultSDK")]
+        [DllImport(VaultSDKLibrary.name)]
         private static extern vdkError vdkQueryFilter_Create(ref IntPtr ppQueryFilter);
-        [DllImport("vaultSDK")]
+        [DllImport(VaultSDKLibrary.name)]
         private static extern vdkError vdkQueryFilter_Destroy(ref IntPtr ppQueryFilter);
-        [DllImport("vaultSDK")]
+        [DllImport(VaultSDKLibrary.name)]
         private static extern vdkError vdkQueryFilter_SetInverted(IntPtr pQueryFilter, bool inverted);
-        [DllImport("vaultSDK")]
+        [DllImport(VaultSDKLibrary.name)]
         private static extern vdkError vdkQueryFilter_SetAsBox(IntPtr pQueryFilter, double[] centrePoint, double[] halfSize, double[] yawPitchRoll);
-        [DllImport("vaultSDK")]
+        [DllImport(VaultSDKLibrary.name)]
         private static extern vdkError vdkQueryFilter_SetAsCylinder(IntPtr pQueryFilter, double[] centrePoint, double radius, double halfHeight, double[] yawPitchRoll);
-        [DllImport("vaultSDK")]
+        [DllImport(VaultSDKLibrary.name)]
         private static extern vdkError vdkQueryFilter_SetAsSphere(IntPtr pQueryFilter, double[] centrePoint, double radius);
     }
 }

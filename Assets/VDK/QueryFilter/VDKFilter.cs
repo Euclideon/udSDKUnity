@@ -9,17 +9,38 @@ using Vault;
 public class VDKFilter : MonoBehaviour
 {
     private vdkQueryFilter vFilter = new vdkQueryFilter();
-    public Camera cam;
+    public Camera cam = null;
+    [System.NonSerialized]
     public double[] centrePoint;
+    [System.NonSerialized]
     public double[] yawPitchRoll;
+    [System.NonSerialized]
     public double[] halfsize = new double[3] { 1, 1, 1 };
-    public GameObject targetUDS = null;
     public bool inverted = false;
     // Start is called before the first frame update
     void Start()
     {
-        cam = Camera.current;
     }
+    
+  void StopRendering()
+  {
+    if (cam != null) 
+    {
+      vdkCameraOptions opts = cam.GetComponent<vdkCameraOptions>();
+      if (opts != null) {
+        opts.optionsStruct.options.pFilter = IntPtr.Zero;
+      }
+    }
+  }
+
+  public void OnDestroy()
+  {
+    StopRendering();
+  }
+  public void OnDisable()
+  {
+    StopRendering();
+  }
 
     // Update is called once per frame
     void Update()

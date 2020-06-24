@@ -1,0 +1,6 @@
+*.dll
+Library/*
+obj/*
+Temp/*
+/Assets/VDK/*.so
+.vs/*

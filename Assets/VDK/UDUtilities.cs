@@ -88,7 +88,7 @@ namespace Vault
      *Class responsible for managing all threads related to VDK licensing
      */
     public class VDKSessionThreadManager {
-        bool logLicenseInformation = false;
+        bool logLicenseInformation = false;//this will print the license status every second to the log
         bool keepAlive = false;//Only necessary prior to vdk0.6 as this functionaity has been moved to library
         Thread keepAliveThread;
         Thread licenseLogThread;
