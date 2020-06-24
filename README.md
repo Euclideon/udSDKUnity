@@ -122,3 +122,6 @@ Vault.vdkRenderContext.Render (Vault.vdkRenderView renderView, Vault.vdkRenderIn
 
 This is expected to be fixed in future releases of Vault SDK, it can currently be avoided by using a single render view (i.e. no vdkColliders)
 
+# vaultsdkunity
+Unity/Euclideon Vault Integration for lagre scale point cloud visualization
+Unity/Euclideon Vault Integration for lagre scale point cloud visualization

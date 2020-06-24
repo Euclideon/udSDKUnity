@@ -24,13 +24,13 @@ namespace Vault
         public static string SavedPasswordKey = "VDKPassword";
         public static void Login()
         {
-            // Playerprefs set from the toolbar VDK menu
-             //vaultUsername = PlayerPrefs.GetString(SavedUsernameKey);
-             //vaultPassword = PlayerPrefs.GetString(SavedPasswordKey);
+             //For builds, set in login page
+             vaultUsername = GlobalVDKContext.SavedUsernameKey;
+             vaultPassword = GlobalVDKContext.SavedPasswordKey;
 
             // No longer using player prefs as they save to disk persistantly
 #if UNITY_EDITOR
-                        
+
             vaultUsername = EditorPrefs.GetString(SavedUsernameKey);
             vaultPassword = EditorPrefs.GetString(SavedPasswordKey);
 #endif
