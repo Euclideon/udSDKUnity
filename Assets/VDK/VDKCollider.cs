@@ -17,7 +17,7 @@ public class VDKCollider : MonoBehaviour
     [Tooltip("Distance from which to update the plane location when threshold follow is turned on")]
     public double followThreshold;
     [Tooltip("Position of the virtual watcher camera relative to the target")]
-    public Vector3 watcherPos = new Vector3(0, 25, 0);
+    public Vector3 watcherPosition = new Vector3(0, 25, 0);
     //UDS Renderer components:
     private vdkRenderContext vRenderer;
     private vdkRenderView renderView;
@@ -45,6 +45,14 @@ public class VDKCollider : MonoBehaviour
         public bool y = false;
         public bool z = false;
     };
+
+    [Tooltip("If this is true then the mesh is not updated with time: moving point clouds or moving the object will not change the shape of the collider")]
+    public bool isStaticMesh = false;
+
+    [Tooltip("This will cause the program to pause as the collider loads in point cloud information; this will prevent false collisions with incomplete LODS but may cause stuttering with slow connections or large numbers of seperated colliders")]
+    public bool blockOnStream = true;
+
+    Transform previousTransform;
 
 
     public float[] depthBuffer;
@@ -241,9 +249,8 @@ public class VDKCollider : MonoBehaviour
      */
     void SetRenderView()
     {
-        Debug.Log("creating plane render view");
         renderView = new vdkRenderView();
-        if (GlobalVDKContext.isCreated == false)
+        if (!GlobalVDKContext.isCreated)
             GlobalVDKContext.Login();
 
         renderView.Create(GlobalVDKContext.vContext, GlobalVDKContext.renderer, (uint)widthPix, (uint)heightPix);
@@ -259,32 +266,37 @@ public class VDKCollider : MonoBehaviour
         //if we are following a target, we only update the corresponding mesh whne the object has moved a requisite distance,
         //this reduces the number of updates to the mesh required.
         Vector3 offset;
-        if (followTarget != null)
-        {
-            Vector3 newRot = transform.rotation.eulerAngles;
-            if (lockRotationToBody.x)
-                newRot.x = followTarget.transform.eulerAngles.x + this.bodyLockOffset.x;
+    if (!isStaticMesh && followTarget != null)
+    {
+      //check if the target has moved
+      
+      Vector3 newRot = transform.rotation.eulerAngles;
+      if (lockRotationToBody.x)
+        newRot.x = followTarget.transform.eulerAngles.x + this.bodyLockOffset.x;
 
-            if (lockRotationToBody.y)
-                newRot.y = followTarget.transform.eulerAngles.y + this.bodyLockOffset.y;
+      if (lockRotationToBody.y)
+        newRot.y = followTarget.transform.eulerAngles.y + this.bodyLockOffset.y;
 
-            if (lockRotationToBody.z)
-                newRot.z = followTarget.transform.eulerAngles.z +this.bodyLockOffset.z;
+      if (lockRotationToBody.z)
+        newRot.z = followTarget.transform.eulerAngles.z + this.bodyLockOffset.z;
 
-            transform.eulerAngles = newRot;
-            offset = Matrix4x4.Rotate(transform.rotation) * new Vector4(watcherPos.x, watcherPos.y, watcherPos.z);
-            bool thresholdTrigger = (this.transform.position - followTarget.transform.position).magnitude > followThreshold;
-            if (!threshholdFollow || thresholdTrigger)
-            {
-                this.transform.position = followTarget.transform.position + offset;
-                UpdateView();
-            }
-        }
-        else
-        {
-            //we update the mesh every frame
-            UpdateView();
-        }
+      transform.eulerAngles = newRot;
+      offset = Matrix4x4.Rotate(transform.rotation) * new Vector4(watcherPosition.x, watcherPosition.y, watcherPosition.z);
+      bool thresholdTrigger = (this.transform.position - followTarget.transform.position).magnitude > followThreshold;
+      if (!threshholdFollow || thresholdTrigger)
+      {
+        this.transform.position = followTarget.transform.position + offset;
+        UpdateView();
+      }
+    }
+    else if (!isStaticMesh)
+    {
+      //we update the mesh every frame
+      UpdateView();
+    }
+    else { 
+      
+    }
     }
 
     private void UpdateView()
@@ -299,6 +311,10 @@ public class VDKCollider : MonoBehaviour
         Matrix4x4 projection = Matrix4x4.Ortho(-width / 2, width / 2, height / 2, -height / 2, zNear, zFar);
         renderView.SetMatrix(Vault.RenderViewMatrix.Projection, UDUtilities.GetUDMatrix(projection));
         RenderOptions options = new RenderOptions();
+      //we need the highest LOD if we are not updating the mesh every frame
+      if(blockOnStream)
+        options.options.flags = vdkRenderFlags.vdkRF_BlockingStreaming;
+
         try
         {
             GlobalVDKContext.renderer.Render(renderView, modelArray, modelArray.Length, options);

@@ -5,16 +5,16 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
-  - enabled: 0
-    path: Assets/Scenes/AdvancedSampleScene.unity
-    guid: f51d483d9d6f70e45b1e63c4c06832be
   - enabled: 1
     path: Assets/Scenes/Menu 3D.unity
     guid: 38a949524500adf4688043faf4dc670f
   - enabled: 1
+    path: Assets/Scenes/Driving Demo.unity
+    guid: f51d483d9d6f70e45b1e63c4c06832be
+  - enabled: 0
+    path: Assets/Scenes/Basic Render.unity
+    guid: 11571d8ce0d8dd5438e327ae51feab51
+  - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects: {}

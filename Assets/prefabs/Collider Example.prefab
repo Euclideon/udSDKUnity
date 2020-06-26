@@ -95,7 +95,7 @@ MonoBehaviour:
   followTarget: {fileID: 6350316134185845878}
   threshholdFollow: 0
   followThreshold: 0
-  watcherPos: {x: 0, y: 0, z: 0}
+  watcherPosition: {x: 0, y: 0, z: 0}
   width: 1
   height: 1
   zNear: -1
@@ -108,6 +108,8 @@ MonoBehaviour:
     y: 0
     z: 0
   bodyLockOffset: {x: 0, y: 0, z: 0}
+  isStaticMesh: 0
+  blockOnStream: 1
   depthBuffer: []
 --- !u!33 &6350316134065974717
 MeshFilter:

@@ -8,8 +8,11 @@ public class vdkCameraOptions : MonoBehaviour
     public Camera cam;
     public RenderOptions optionsStruct = new RenderOptions();
     public vdkRenderContextPointMode pointMode = vdkRenderContextPointMode.vdkRCPM_Rectangles;
+    public bool showPickMarker = false;
+    [System.NonSerialized]
     public bool recordDepthBuffer = false;
     public bool placeCubesOnPick = true;
+    [System.NonSerialized]
     public bool placeNext = false;
     GameObject previewCube;
 
@@ -28,7 +31,7 @@ public class vdkCameraOptions : MonoBehaviour
     {
         optionsStruct.setPick(0, 0);
         previewCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        (previewCube.GetComponent<Renderer>()).material.color = Color.clear;
+        (previewCube.GetComponent<Renderer>()).material.color = Color.black;
         previewCube.GetComponent<Collider>().enabled = false;
 
     }
@@ -40,6 +43,14 @@ public class vdkCameraOptions : MonoBehaviour
             cam = Camera.main;
 
         optionsStruct.options.pointMode = pointMode;
+        if (!showPickMarker)
+        {
+          previewCube.SetActive(false);
+        }
+        else 
+        { 
+          previewCube.SetActive(true);
+        }
 
         if (optionsStruct.pickRendered)
         {
@@ -55,6 +66,7 @@ public class vdkCameraOptions : MonoBehaviour
                     {
                         Debug.Log("Warning: pick may not represent actual point in cloud");
                     }
+                    //Here is an example of how to place an object at the position returned by pick
                     if (placeCubesOnPick)
                     {
                         var marker = GameObject.CreatePrimitive(PrimitiveType.Cube);
