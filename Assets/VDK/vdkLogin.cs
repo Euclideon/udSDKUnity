@@ -34,7 +34,7 @@ namespace Vault
             vaultUsername = EditorPrefs.GetString(SavedUsernameKey);
             vaultPassword = EditorPrefs.GetString(SavedPasswordKey);
 #endif
-            Debug.Log("Attempting to login with: " + vaultUsername + " / " + vaultPassword);
+//            Debug.Log("Attempting to login with: " + vaultUsername + " / " + vaultPassword);
             if (!GlobalVDKContext.isCreated)
             {
                 try

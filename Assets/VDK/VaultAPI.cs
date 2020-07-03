@@ -11,7 +11,7 @@ namespace Vault
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
     public const string name = "vaultSDK";
 #else
-        public const string name = "libvaultSDK";
+        public const string name = "vaultSDK";
 #endif
   }
   public enum vdkError
