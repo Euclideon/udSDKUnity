@@ -241,6 +241,18 @@ namespace Vault
 
     public class vdkContext
     {
+
+      public vdkContext()
+      {
+        if (Application.platform == RuntimePlatform.Android)
+        {
+          AndroidJavaClass jc = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+          AndroidJavaObject jo = jc.GetStatic<AndroidJavaObject>("currentActivity");
+          AndroidJavaClass jcvdk = new AndroidJavaClass("com.euclideon.VaultSDK");
+          jcvdk.CallStatic("setupJNI", jo);
+        }
+      }
+
         ~vdkContext()
         {
             if (pContext != IntPtr.Zero) {

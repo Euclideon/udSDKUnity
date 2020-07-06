@@ -29,11 +29,11 @@ namespace Vault
              vaultPassword = GlobalVDKContext.SavedPasswordKey;
 
             // No longer using player prefs as they save to disk persistantly
-#if UNITY_EDITOR
+          #if UNITY_EDITOR
 
             vaultUsername = EditorPrefs.GetString(SavedUsernameKey);
             vaultPassword = EditorPrefs.GetString(SavedPasswordKey);
-#endif
+          #endif
 //            Debug.Log("Attempting to login with: " + vaultUsername + " / " + vaultPassword);
             if (!GlobalVDKContext.isCreated)
             {
