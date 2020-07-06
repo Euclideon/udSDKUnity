@@ -263,6 +263,13 @@ namespace Vault
 
         }
 
+        public void IgnoreCertificateVerification(bool ignore) 
+        {
+          if (ignore)
+            Debug.LogWarning("WARNING: Certificate ");
+          vdkConfig_IgnoreCertificateVerification(ignore);
+        }
+
         public void Connect(string pURL, string pApplicationName, string pUsername, string pPassword)
         {
             vdkError error = vdkContext.vdkContext_TryResume(ref pContext, pURL, pApplicationName, pUsername, true);
@@ -330,6 +337,8 @@ namespace Vault
 
         public IntPtr pContext = IntPtr.Zero;
 
+        [DllImport(VaultSDKLibrary.name)]
+        private static extern vdkError vdkConfig_IgnoreCertificateVerification(bool ignore);
         [DllImport(VaultSDKLibrary.name)]
         private static extern vdkError vdkContext_RenewLicense(IntPtr pContext, LicenseType type);
         [DllImport(VaultSDKLibrary.name)]

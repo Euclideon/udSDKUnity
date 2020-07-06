@@ -37,7 +37,11 @@ namespace Vault
 //            Debug.Log("Attempting to login with: " + vaultUsername + " / " + vaultPassword);
             if (!GlobalVDKContext.isCreated)
             {
-                try
+#if UNITY_ANDROID
+        vContext.IgnoreCertificateVerification(true);
+#endif
+
+        try
                 {
                     Debug.Log("Attempting to resume Euclideon Vault session");
                     vContext.Try_Resume(vaultServer, "Unity", vaultUsername, true);
@@ -48,7 +52,13 @@ namespace Vault
                 catch (System.Exception e)
                 {
                     Debug.Log(e.ToString() + "Logging in to Euclideon Vault server");
+                  try
+                  {
                     GlobalVDKContext.vContext.Connect(vaultServer, "Unity", vaultUsername, vaultPassword);
+                  }
+                  catch(System.Exception f) {
+                    Debug.Log("Login Failed: " + f.ToString());
+                  }
                     vContext.RequestLicense(LicenseType.Render);
                     GlobalVDKContext.isCreated = true;
                     Debug.Log("Logged in!");
