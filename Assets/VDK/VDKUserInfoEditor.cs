@@ -17,7 +17,7 @@ namespace vdk
 
     public class VDKUserInfoEditor : EditorWindow
     {
-        [MenuItem("VDK/Login")]
+        [MenuItem("Euclideon/udSDK Login")]
 
         public static void ShowWindow()
         {
@@ -64,7 +64,6 @@ namespace vdk
         {
             // Current input related event 
             Event e = Event.current;
-
             // Centered layer style for headers
             var CenteredBold = GUI.skin.GetStyle("Label");
             CenteredBold.alignment = TextAnchor.MiddleCenter;
@@ -75,7 +74,7 @@ namespace vdk
             BottomButton.alignment = TextAnchor.LowerCenter;
 
             // Drawing the GUI elements
-            EditorGUILayout.LabelField("VDK Login", CenteredBold);
+            EditorGUILayout.LabelField("udSDK Login", CenteredBold);
 
             // Username and password
             EditorGUILayout.LabelField("Username:");
