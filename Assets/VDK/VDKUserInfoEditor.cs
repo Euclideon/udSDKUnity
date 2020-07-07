@@ -97,6 +97,7 @@ namespace vdk
             {
                 // Save user info
                 CommitUserInfo();
+                this.Close();
             }
 
             // wipe the users info
