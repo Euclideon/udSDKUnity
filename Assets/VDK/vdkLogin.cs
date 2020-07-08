@@ -45,7 +45,7 @@ namespace Vault
                 {
                     Debug.Log("Attempting to resume Euclideon Vault session");
                     vContext.Try_Resume(vaultServer, "Unity", vaultUsername, true);
-                    vContext.RequestLicense(LicenseType.Render);
+                    //vContext.RequestLicense(LicenseType.Render);
                     isCreated = true;
                     Debug.Log("Resume Succeeded");
                 }
