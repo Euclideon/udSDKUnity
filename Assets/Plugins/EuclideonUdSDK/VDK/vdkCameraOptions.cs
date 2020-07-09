@@ -1,14 +1,23 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Vault;
+
+static class constants
+{
+  public const float MAX_RESOLUTION_SCALE = 3;
+}
 public class vdkCameraOptions : MonoBehaviour
 {
     public Camera cam;
     public RenderOptions optionsStruct = new RenderOptions();
     public vdkRenderContextPointMode pointMode = vdkRenderContextPointMode.vdkRCPM_Rectangles;
     public bool showPickMarker = false;
+    [Tooltip("Factor by which to scale VDK resolution relative to camera resolution: lower numbers will increase frame rate at the cost of resolution")]
+    public float resolutionScaling = 1;
+
     [System.NonSerialized]
     public bool recordDepthBuffer = false;
     public bool placeCubesOnPick = true;
@@ -38,6 +47,12 @@ public class vdkCameraOptions : MonoBehaviour
 
     void Update()
     {
+    if (resolutionScaling > constants.MAX_RESOLUTION_SCALE)
+      resolutionScaling = constants.MAX_RESOLUTION_SCALE;
+
+    if (resolutionScaling <= 0)
+      resolutionScaling = 1;
+        
         cam = GetComponent<Camera>();
         if (cam == null)
             cam = Camera.main;
@@ -80,7 +95,7 @@ public class vdkCameraOptions : MonoBehaviour
         }
 
         Vector3 mp = Input.mousePosition;
-        optionsStruct.setPick((uint)mp.x, (uint)(cam.pixelHeight - mp.y));
+        optionsStruct.setPick((uint)(mp.x * resolutionScaling), (uint)((cam.pixelHeight - mp.y)*resolutionScaling));
         
         if (Input.GetMouseButtonDown(0))
         {

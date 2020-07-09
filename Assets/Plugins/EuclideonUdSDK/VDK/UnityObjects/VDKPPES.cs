@@ -72,8 +72,23 @@ public sealed class VDKPPER : PostProcessEffectRenderer<VDKPPES>
         if (!GlobalVDKContext.isCreated)
             return;
 
-        if (context.width != width || context.height != height)
-            RebuildBuffers(context.width, context.height);
+        vdkCameraOptions optionsContainer = cam.GetComponent<vdkCameraOptions>();
+        RenderOptions options;
+        float resolutionScaling;
+        if (optionsContainer != null)
+        {
+            options = optionsContainer.optionsStruct;
+            resolutionScaling = optionsContainer.resolutionScaling;
+        }
+        else
+        {
+            optionsContainer = null;
+            options = new RenderOptions();
+            resolutionScaling = 1;
+        }
+
+        if ( (int)context.width*resolutionScaling != width ||  (int)context.height*resolutionScaling != height)
+            RebuildBuffers( (int)(context.width*resolutionScaling),  (int)(context.height*resolutionScaling));
 
         GameObject[] objects = GameObject.FindGameObjectsWithTag("UDSModel");
         vdkRenderInstance[] modelArray = UDUtilities.getUDSInstances();
@@ -83,20 +98,6 @@ public sealed class VDKPPER : PostProcessEffectRenderer<VDKPPES>
             vRenderView.SetMatrix(Vault.RenderViewMatrix.Projection, UDUtilities.GetUDMatrix(cam.projectionMatrix));
 
             //interface to input render options: this allows setting of render flags, picking and filtering from unity objects attached to the camera
-            vdkCameraOptions optionsContainer = cam.GetComponent<vdkCameraOptions>();
-            RenderOptions options;
-            if (optionsContainer != null)
-            {
-                options = optionsContainer.optionsStruct;
-            }
-            else
-            {
-                options = new RenderOptions();
-
-                // The above comment block has been left for safety, and without user defined tags will always execute the following 2 lines
-                optionsContainer = null;
-                options = new RenderOptions();
-            }
 
             GlobalVDKContext.renderer.Render(vRenderView, modelArray, modelArray.Length, options);
 
