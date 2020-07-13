@@ -14,14 +14,14 @@ Toolsets:              Requires Unity >= 2019.3.4f1
 
 ## Quickstart guide 
 
-**The UnityVDK requires a valid license for Euclideon Vault SDK, trial licenses can be obtained [here](https://zfrmz.com/gwVUru84d60yUedxmLx9/?ref=Unity%20Sample%20Code)** 
-The VDK is tested with Unity 2019.3.4f1 - it may work in other versions of Unity, but we can't guarentee that it does. Please sneure you have Unity 2019.3.4f1 installed.
+**The UnityVDK requires a free valid license for Euclideon Vault SDK which can be obtained [here](https://zfrmz.com/gwVUru84d60yUedxmLx9/?ref=Unity%20Sample%20Code)** 
+The VDK is tested with Unity 2019.3.4f1 - it may work in other versions of Unity, but we can't guarentee that it does. Please ensure you have Unity >2019.3.4f1 installed.
 
 ### Installation - New or Existing Project
 The fastest way to install VDK for Unity is to go [here](https://Euclideon.com/unity) and follow the onscreen instructions.
 
 ### Installation - Github Samples
-1. Download and extract Vault SDK 0.5.0 package from [here](https://earth.vault.euclideon.com) using your license credentials (if you do not have one, free trials are available from [here](https://zfrmz.com/gwVUru84d60yUedxmLx9/?ref=Unity%20Sample%20Code) )
+1. Download and extract Vault SDK 0.6.0 package from [here](https://earth.vault.euclideon.com) using your license credentials (if you do not have one, free trials are available from [here](https://zfrmz.com/gwVUru84d60yUedxmLx9/?ref=Unity%20Sample%20Code) )
 2. Clone or Download the Unity Vault SDK examples from [here](https://github.com/Euclideon/vaultsdksamples)
 3. Copy the files from _Euclideon_vdk0.6.0/lib/(_your operating system here_)/_ to _vaultsdksamples/integrations/unity-csharp/Assets/VDK 
 3. Open the Vault SDK Unity example project by navigating to _vaultsdksamples/integrations/unity-csharp/Assets/Scenes and opening SampleScene
@@ -36,15 +36,14 @@ The UDS can be changed by modifying the path attribute of the Model object in th
 There is a UDS model included with this example for demonstration purposes, paths to your own model can be pasted into the _path_ field of the US model object
 UDS file format developed by Euclideon allowing streamable, unlimited sized 3D datasets requiring only low spec hardware. 
 
-Models can be created from most common photogrammetry and LiDAR point clouds file formats using Euclideon [Vault Client](https://www.euclideon.com/vault/) available [Here](https://earth.vault.euclideon.com) your vault SDK trial license also gives you access to vault client during your trial period.
+Models can be created from most common photogrammetry and LiDAR point clouds file formats using Euclideon [udStream](https://www.euclideon.com/udstream/) available [Here](https://udstream.euclideon.com/) with your credentials from your free udStream license.
 You can read about the conversion process [here](https://www.euclideon.com/wp-content/uploads/2019/10/2019_10_31-Vault-Conversion-Guide-v1.2.pdf) if you have any questions check the [support knowledge base](https://www.euclideon.com/customerresourcepage/) or email support@euclideon.com
 
 Photogrammetry model of the Gold Coast courtesy of [Aerometrex](https://aerometrex.com.au/)
 
-## Basic Example
+## Example Scenes
 
-This is an example demonstrating how to use Vault SDK with Unity, it includes a minimalist example of a flight camera and an attached collider.
-Unlimited detail rendering is implemented as a postprocessing effect that can be applied to cameras in order to display UDS objects.
+Examples of use of the  API features are located under Assets/Plugins/EuclideonUdSDK/Scenes 
 
 
 ### Sample Scene Structure
@@ -56,6 +55,8 @@ The main view used in the example. It has a flight camera script attached to it 
 the implemented post process layer and volume properties which must be included for the camera to view UDS files. 
 
 ![Sample UDS camera Settings](./docs/sampleCameraSettings.png "Sample UDS Camera Settings")
+
+Various settings can be passed to the renderer including the point rendering mode (rectangle, cube or point), the desired resolution scaling and example interfaces for picking of voxels
 
 ### UDS Model
 
@@ -122,6 +123,12 @@ Vault.vdkRenderContext.Render (Vault.vdkRenderView renderView, Vault.vdkRenderIn
 
 This is expected to be fixed in future releases of Vault SDK, it can currently be avoided by using a single render view (i.e. no vdkColliders)
 
-# vaultsdkunity
-Unity/Euclideon Vault Integration for lagre scale point cloud visualization
-Unity/Euclideon Vault Integration for lagre scale point cloud visualization
+## Android Support
+
+The provided scenes have been tested on Android:
+Compiling to Android involves the following:
+- Copy libvaultSDK.so from "[udSDK Location]\lib\android_arm64\libvaultSDK.so" (or android X64 depending on your target platform) to Assets/Plugins/EuclideonUdSDK
+- Select the newly added file from the Unity project pane and in the inspector under platform settings select your target platform and check the box "load on startup"
+- In File -> Build Settings ensure that the Menu 3d Scene is loaded first, then the forst scene in your application
+- In the bottom left of this window click player settings -> Sndroid settings, set the scripting backend to IL2CPP and the target architecture to ARM64 (or X64 if you are using that platform)
+
