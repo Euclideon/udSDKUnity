@@ -21,7 +21,7 @@ public sealed class VDKPPER : PostProcessEffectRenderer<VDKPPES>
     private float[] depthBuffer;
     private Texture2D depthTexture;
 
-    private vdkRenderView vRenderView;
+    private udRenderTarget vRenderView;
     public override void Init()
     {
         try
@@ -29,7 +29,7 @@ public sealed class VDKPPER : PostProcessEffectRenderer<VDKPPES>
             GlobalVDKContext.Login();
             InitialiseBuffers(width, height);
             InitialiseTextures();
-            vRenderView = new vdkRenderView();
+            vRenderView = new udRenderTarget();
             vRenderView.Create(GlobalVDKContext.vContext, GlobalVDKContext.renderer, (uint)width, (uint)height);
             vRenderView.SetTargets(ref colourBuffer, 0, ref depthBuffer);
         }
@@ -91,11 +91,11 @@ public sealed class VDKPPER : PostProcessEffectRenderer<VDKPPES>
             RebuildBuffers( (int)(context.width*resolutionScaling),  (int)(context.height*resolutionScaling));
 
         GameObject[] objects = GameObject.FindGameObjectsWithTag("UDSModel");
-        vdkRenderInstance[] modelArray = UDUtilities.getUDSInstances();
+        udRenderInstance[] modelArray = UDUtilities.getUDSInstances();
         if (modelArray.Length > 0)
         {
-            vRenderView.SetMatrix(Vault.RenderViewMatrix.View, UDUtilities.GetUDMatrix(cam.worldToCameraMatrix));
-            vRenderView.SetMatrix(Vault.RenderViewMatrix.Projection, UDUtilities.GetUDMatrix(cam.projectionMatrix));
+            vRenderView.SetMatrix(Vault.udRenderTargetMatrix.View, UDUtilities.GetUDMatrix(cam.worldToCameraMatrix));
+            vRenderView.SetMatrix(Vault.udRenderTargetMatrix.Projection, UDUtilities.GetUDMatrix(cam.projectionMatrix));
 
             //interface to input render options: this allows setting of render flags, picking and filtering from unity objects attached to the camera
 

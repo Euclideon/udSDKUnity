@@ -9,11 +9,12 @@ namespace Vault
     public static class GlobalVDKContext
     {
         public static bool isCreated = false;
-        public static vdkContext vContext = new vdkContext();
-        public static vdkRenderContext renderer = new vdkRenderContext();
-        public static Dictionary<Camera, vdkRenderOptions> optionList = new Dictionary<Camera, vdkRenderOptions>();
+        public static udContext vContext = new udContext();
+        public static udRenderContext renderer = new udRenderContext();
+        public static Dictionary<Camera, udRenderOptions> optionList = new Dictionary<Camera, udRenderOptions>();
         public static VDKSessionThreadManager sessionKeeper = new VDKSessionThreadManager();
-        public static string vaultServer = "https://earth.vault.euclideon.com";
+        public static string vaultServer = "https://udstream.euclideon.com";
+
         public static string vaultUsername = ""; // Add credentials here for build
         
         public static string vaultPassword = ""; // Add credentials here for build
@@ -24,12 +25,12 @@ namespace Vault
         public static string SavedPasswordKey = "VDKPassword";
         public static void Login()
         {
-             //For builds, set in login page
-             vaultUsername = GlobalVDKContext.SavedUsernameKey;
-             vaultPassword = GlobalVDKContext.SavedPasswordKey;
+            //For builds, set in login page
+            vaultUsername = GlobalVDKContext.SavedUsernameKey;
+            vaultPassword = GlobalVDKContext.SavedPasswordKey;
 
             // No longer using player prefs as they save to disk persistantly
-          #if UNITY_EDITOR
+#if UNITY_EDITOR
 
             vaultUsername = EditorPrefs.GetString(SavedUsernameKey);
             vaultPassword = EditorPrefs.GetString(SavedPasswordKey);
@@ -37,11 +38,9 @@ namespace Vault
 //            Debug.Log("Attempting to login with: " + vaultUsername + " / " + vaultPassword);
             if (!GlobalVDKContext.isCreated)
             {
-#if UNITY_ANDROID
-        vContext.IgnoreCertificateVerification(true);
-#endif
-
-        try
+                if (Application.platform == RuntimePlatform.Android)
+                    vContext.IgnoreCertificateVerification(true);
+                try
                 {
                     Debug.Log("Attempting to resume Euclideon Vault session");
                     vContext.Try_Resume(vaultServer, "Unity", vaultUsername, true);
@@ -58,10 +57,10 @@ namespace Vault
                   }
                   catch(System.Exception f) {
                     Debug.Log("Login Failed: " + f.ToString());
-                  }
-                    vContext.RequestLicense(LicenseType.Render);
                     GlobalVDKContext.isCreated = true;
                     Debug.Log("Logged in!");
+                  }
+                    //vContext.RequestLicense(LicenseType.Render);
                 }
             }
             renderer.Create(vContext); // Maybe not call here? Throws errors in editor

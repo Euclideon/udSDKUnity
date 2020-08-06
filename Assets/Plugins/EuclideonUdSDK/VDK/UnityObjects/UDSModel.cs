@@ -7,7 +7,7 @@ using Vault;
 public class UDSModel : MonoBehaviour
 {
     [System.NonSerialized]
-    public vdkPointCloud udModel = new vdkPointCloud();
+    public udPointCloud udModel = new udPointCloud();
     [System.NonSerialized]
     public bool isLoaded = false;
     [System.NonSerialized]
@@ -15,7 +15,7 @@ public class UDSModel : MonoBehaviour
 
     [System.NonSerialized]
     public Matrix4x4 modelToPivot; //This represents the transformation between the file representation and the coordinate system centred at pivot
-    public vdkPointCloudHeader header = new vdkPointCloudHeader();
+    public udPointCloudHeader header = new udPointCloudHeader();
 
 
     [System.NonSerialized]

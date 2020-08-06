@@ -56,11 +56,11 @@ namespace Vault
         /*
          * attempts to load and returns all loaded UDS models in the scene
          */
-        public static vdkRenderInstance[] getUDSInstances()
+        public static udRenderInstance[] getUDSInstances()
         {
             GameObject[] objects = GameObject.FindGameObjectsWithTag("UDSModel");
             int count = 0;
-            vdkRenderInstance[] modelArray = new vdkRenderInstance[objects.Length];
+            udRenderInstance[] modelArray = new udRenderInstance[objects.Length];
             for (int i = 0; i < objects.Length; ++i)
             {
                 UDSModel model = (UDSModel) objects[i].GetComponent("UDSModel");
@@ -89,17 +89,9 @@ namespace Vault
      */
     public class VDKSessionThreadManager {
         bool logLicenseInformation = false;//this will print the license status every second to the log
-        bool keepAlive = false;//Only necessary prior to vdk0.6 as this functionaity has been moved to library
-        Thread keepAliveThread;
         Thread licenseLogThread;
         List<Thread> activeThreads = new List<Thread>();
         public VDKSessionThreadManager() {
-            if(keepAlive)
-            {
-              keepAliveThread = new Thread(new ThreadStart(KeepAlive));
-              keepAliveThread.Start();
-              activeThreads.Add(keepAliveThread);
-            }
             if (logLicenseInformation)
             {
                 licenseLogThread = new Thread(new ThreadStart(LogLicenseStatus));
@@ -109,36 +101,20 @@ namespace Vault
         }
 
         /*
-         * Polls the license server once every 30 seconds to keep the session alive
-         */
-        public void KeepAlive() {
-            while (true)
-            {
-                try
-                {
-                    GlobalVDKContext.vContext.KeepAlive();
-                }
-                catch(System.Exception e)
-                {
-                    Debug.Log("keepalive failed: " + e.ToString());
-                }
-                Thread.Sleep(30000);
-            }
-        }
-
-        /*
-         *Logs the time until the render licens expires to the console every second
+         *Logs the time until the license expires to the console every second
          */
         public void LogLicenseStatus() {
             while (true)
             {
                 try
                 {
-                    vdkLicenseInfo info = new vdkLicenseInfo();
-                    GlobalVDKContext.vContext.GetLicenseInfo(LicenseType.Render, ref info);
+                    udSessionInfo info = new udSessionInfo();
+                    GlobalVDKContext.vContext.GetSessionInfo(ref info);
                     System.DateTime epochStart = new System.DateTime(1970, 1, 1, 0, 0, 0, 0);
                     ulong cur_time = (ulong)(System.DateTime.UtcNow - epochStart).TotalSeconds;
-                    UnityEngine.Debug.Log("Render License Expiry: " + (info.expiresTimestamp - cur_time).ToString());
+                    string name = new string(info.displayName);
+                    name = name.Trim('\0');
+                    UnityEngine.Debug.Log((info.isOffline==1?" Offline":" Online")+ " License Expiry: " + (info.expiresTimestamp - cur_time).ToString());
                     Thread.Sleep(1000);
                 }
                 catch {

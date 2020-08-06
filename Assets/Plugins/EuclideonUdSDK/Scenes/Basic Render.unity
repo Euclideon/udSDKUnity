@@ -193,6 +193,11 @@ PrefabInstance:
       propertyPath: geolocate
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1001013997915314187, guid: e79d6a7ad7cab2b4ba35ed74586486e0,
+        type: 3}
+      propertyPath: path
+      value: https://sampleeuclideon.blob.core.windows.net/sample/Doncaster_East.uds
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e79d6a7ad7cab2b4ba35ed74586486e0, type: 3}
 --- !u!1001 &1663245941
@@ -206,6 +211,16 @@ PrefabInstance:
         type: 3}
       propertyPath: placeCubesOnPick
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862531765257222245, guid: 67a68208f19790145b478a09a089cb92,
+        type: 3}
+      propertyPath: showPickMarker
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862531765257222245, guid: 67a68208f19790145b478a09a089cb92,
+        type: 3}
+      propertyPath: resolutionScaling
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1862531765257222248, guid: 67a68208f19790145b478a09a089cb92,
         type: 3}

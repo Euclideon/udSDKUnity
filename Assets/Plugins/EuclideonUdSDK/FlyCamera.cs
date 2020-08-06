@@ -21,12 +21,6 @@ public class FlyCamera : MonoBehaviour
     public bool movementStaysFlat = true;
     private Vector3 lastMouse = new Vector3(255, 255, 255); //kind of in the middle of the screen, rather than at the top (play)
     private float totalRun = 1.0f;
-    void Awake()
-    {
-        Debug.Log("FlyCamera Awake() - RESETTING CAMERA POSITION");
-        transform.position = new Vector3(0, 8, -32);
-        transform.rotation = Quaternion.Euler(25, 0, 0);
-    }
     void Update()
     {
         if (Input.GetMouseButtonDown(1))
@@ -46,6 +40,18 @@ public class FlyCamera : MonoBehaviour
 
         //Keyboard commands
         Vector3 p = GetBaseInput();
+        foreach (Touch touch in Input.touches)
+        {
+          if (touch.position.x < Screen.width / 2)
+          {
+            Touch moveTouch = touch;
+            p = moveTouch.deltaPosition.normalized;
+          }
+          else 
+          {
+            transform.eulerAngles = new Vector3(transform.eulerAngles.y+camSens*touch.deltaPosition.normalized.y,transform.eulerAngles.x + camSens*touch.deltaPosition.normalized.x,  0);
+          }
+        }
         if (Input.GetKey(KeyCode.LeftShift))
         {
             totalRun += Time.deltaTime;
@@ -79,7 +85,8 @@ public class FlyCamera : MonoBehaviour
 
     private Vector3 GetBaseInput()
     {
-        //returns the basic values, if it's 0 than it's not active.
+    //returns the basic values, if it's 0 than it's not active.
+        
         Vector3 p_Velocity = new Vector3();
         if (Input.GetKey(KeyCode.W))
         {
@@ -99,4 +106,40 @@ public class FlyCamera : MonoBehaviour
         }
         return p_Velocity;
     }
+
 }
+/*
+public class FingerTouch : MonoBehaviour{
+  Vector2 touchStart;
+  bool active;
+  Vector2 direction;
+  public int fingerId;
+
+  private void Awake()
+  {
+    
+  }
+  public void Update()
+  {
+    foreach (Touch touch in Input.touches) 
+    {
+      if (touch.phase == TouchPhase.Began)
+      {
+        active = true;
+        touchStart = touch.position;
+      }
+      else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+      {
+        //we stop the movement
+        direction = Vector2.zero;
+        active = false;
+
+      }
+      else if(touch.phase == TouchPhase.Moved) 
+      {
+        direction = touch.position - touchStart;
+      }
+    }
+  }
+}
+*/

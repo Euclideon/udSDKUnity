@@ -19,8 +19,8 @@ public class VDKCollider : MonoBehaviour
     [Tooltip("Position of the virtual watcher camera relative to the target")]
     public Vector3 watcherPosition = new Vector3(0, 25, 0);
     //UDS Renderer components:
-    private vdkRenderContext vRenderer;
-    private vdkRenderView renderView;
+    private udRenderContext vRenderer;
+    private udRenderTarget renderView;
     //Properties of the plane:
     [Tooltip("Width of the collision plane in metres")]
     public float width = 10; //width of the plane in metres
@@ -249,7 +249,7 @@ public class VDKCollider : MonoBehaviour
      */
     void SetRenderView()
     {
-        renderView = new vdkRenderView();
+        renderView = new udRenderTarget();
         if (!GlobalVDKContext.isCreated)
             GlobalVDKContext.Login();
 
@@ -304,16 +304,16 @@ public class VDKCollider : MonoBehaviour
         if (renderView == null || renderView.pRenderView == IntPtr.Zero)
             SetRenderView();
 
-        vdkRenderInstance[] modelArray = UDUtilities.getUDSInstances();
+        udRenderInstance[] modelArray = UDUtilities.getUDSInstances();
         Matrix4x4 watcherTrans = transform.localToWorldMatrix;
         double[] frontPlaneView = UDUtilities.GetUDMatrix(watcherTrans);
-        renderView.SetMatrix(Vault.RenderViewMatrix.Camera, frontPlaneView);
+        renderView.SetMatrix(Vault.udRenderTargetMatrix.Camera, frontPlaneView);
         Matrix4x4 projection = Matrix4x4.Ortho(-width / 2, width / 2, height / 2, -height / 2, zNear, zFar);
-        renderView.SetMatrix(Vault.RenderViewMatrix.Projection, UDUtilities.GetUDMatrix(projection));
+        renderView.SetMatrix(Vault.udRenderTargetMatrix.Projection, UDUtilities.GetUDMatrix(projection));
         RenderOptions options = new RenderOptions();
       //we need the highest LOD if we are not updating the mesh every frame
       if(blockOnStream)
-        options.options.flags = vdkRenderFlags.vdkRF_BlockingStreaming;
+        options.options.flags = udRenderContextFlags.udRF_BlockingStreaming;
 
         try
         {

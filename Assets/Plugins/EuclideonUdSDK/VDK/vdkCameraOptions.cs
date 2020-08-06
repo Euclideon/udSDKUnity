@@ -13,7 +13,7 @@ public class vdkCameraOptions : MonoBehaviour
 {
     public Camera cam;
     public RenderOptions optionsStruct = new RenderOptions();
-    public vdkRenderContextPointMode pointMode = vdkRenderContextPointMode.vdkRCPM_Rectangles;
+    public udRenderContextPointMode pointMode = udRenderContextPointMode.udRCPM_Rectangles;
     public bool showPickMarker = false;
     [Tooltip("Factor by which to scale VDK resolution relative to camera resolution: lower numbers will increase frame rate at the cost of resolution")]
     public float resolutionScaling = 1;

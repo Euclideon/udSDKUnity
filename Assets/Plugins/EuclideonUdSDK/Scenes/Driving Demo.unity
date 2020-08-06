@@ -348,12 +348,12 @@ PrefabInstance:
     - target: {fileID: 146000012053955854, guid: 53c496fec7e88b444858ad01c2739816,
         type: 3}
       propertyPath: m_SuspensionSpring.spring
-      value: 36890.633
+      value: 36890.625
       objectReference: {fileID: 0}
     - target: {fileID: 146000012053955854, guid: 53c496fec7e88b444858ad01c2739816,
         type: 3}
       propertyPath: m_SuspensionSpring.damper
-      value: 5902.501
+      value: 5902.5
       objectReference: {fileID: 0}
     - target: {fileID: 146000012053955854, guid: 53c496fec7e88b444858ad01c2739816,
         type: 3}
@@ -438,9 +438,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 0
+  m_CookingOptions: 16
   m_Mesh: {fileID: 0}
 --- !u!4 &589569640
 Transform:
@@ -630,7 +630,7 @@ MonoBehaviour:
   m_ShowCustomSorter: 0
   breakBeforeColorGrading: 0
   m_BeforeTransparentBundles:
-  - assemblyQualifiedName: VDKPPES, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+  - assemblyQualifiedName: VDKPPES, Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
@@ -1144,7 +1144,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   geolocationOffset: {x: 0, y: 0, z: 0}
-  path: https://az.vault.euclideon.com/GoldCoast_20mm.uds
+  path: Z:\Aerometrex\Bendigo\Bendigo Non Primitive\Bendigo_nonPrimitive_HR.uds
   geolocate: 0
 --- !u!1 &1333410502
 GameObject:
@@ -1268,9 +1268,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 0
+  m_CookingOptions: 16
   m_Mesh: {fileID: 0}
 --- !u!1 &1697514278
 GameObject:
@@ -1394,9 +1394,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 0
+  m_CookingOptions: 16
   m_Mesh: {fileID: 0}
 --- !u!1 &1700708498
 GameObject:
@@ -1520,9 +1520,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 0
+  m_CookingOptions: 16
   m_Mesh: {fileID: 0}
 --- !u!1 &1884964164
 GameObject:
@@ -1679,7 +1679,7 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 0
+  m_CookingOptions: 16
   m_Mesh: {fileID: 0}

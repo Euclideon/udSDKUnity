@@ -7,15 +7,15 @@ namespace Vault {
         public IntPtr pQueryFilter = IntPtr.Zero;
         public vdkQueryFilter()
         {
-            vdkError error = vdkQueryFilter_Create(ref pQueryFilter);
-            if (error != vdkError.vE_Success)
+            udError error = vdkQueryFilter_Create(ref pQueryFilter);
+            if (error != udError.udE_Success)
                 throw new Exception("Query Creation Failed: " + error.ToString());
         }
 
         ~vdkQueryFilter()
         {
-            vdkError error = vdkQueryFilter_Destroy(ref pQueryFilter);
-            if (error != vdkError.vE_Success)
+            udError error = vdkQueryFilter_Destroy(ref pQueryFilter);
+            if (error != udError.udE_Success)
                 throw new Exception("Query Destruction Failed: " + error.ToString());
         }
 
@@ -30,8 +30,8 @@ namespace Vault {
         public void SetInverted(bool inverted)
         {
             
-            vdkError error = vdkQueryFilter_SetInverted(pQueryFilter, inverted);
-            if (error != vdkError.vE_Success)
+            udError error = vdkQueryFilter_SetInverted(pQueryFilter, inverted);
+            if (error != udError.udE_Success)
                 throw new Exception("Query Inversion Failed: " + error.ToString());
         }
 
@@ -56,8 +56,8 @@ namespace Vault {
         public void SetAsBox(double[] centrePoint, double[] halfSize, double[] yawPitchRoll)
         {
             
-            vdkError error = vdkQueryFilter_SetAsBox(pQueryFilter, centrePoint, halfSize, yawPitchRoll);
-            if (error != vdkError.vE_Success)
+            udError error = vdkQueryFilter_SetAsBox(pQueryFilter, centrePoint, halfSize, yawPitchRoll);
+            if (error != udError.udE_Success)
                 throw new Exception("Query SetAsBox Failed: " + error.ToString());
         }
 
@@ -83,8 +83,8 @@ namespace Vault {
         public void SetAsCylinder(double[] centrePoint, double radius, double halfHeight, double[] yawPitchRoll)
         {
             
-            vdkError error = vdkQueryFilter_SetAsCylinder(pQueryFilter, centrePoint, radius, halfHeight, yawPitchRoll);
-            if (error != vdkError.vE_Success)
+            udError error = vdkQueryFilter_SetAsCylinder(pQueryFilter, centrePoint, radius, halfHeight, yawPitchRoll);
+            if (error != udError.udE_Success)
                 throw new Exception("Query SetAsCylinder Failed: " + error.ToString());
         }
 
@@ -108,21 +108,21 @@ namespace Vault {
         public void SetAsSphere(double[] centrePoint, double radius)
         {
             
-            vdkError error = vdkQueryFilter_SetAsSphere(pQueryFilter, centrePoint, radius);
-            if (error != vdkError.vE_Success)
+            udError error = vdkQueryFilter_SetAsSphere(pQueryFilter, centrePoint, radius);
+            if (error != udError.udE_Success)
                 throw new Exception("Query SetAsSphere Failed: " + error.ToString());
         }
         [DllImport(VaultSDKLibrary.name)]
-        private static extern vdkError vdkQueryFilter_Create(ref IntPtr ppQueryFilter);
+        private static extern udError vdkQueryFilter_Create(ref IntPtr ppQueryFilter);
         [DllImport(VaultSDKLibrary.name)]
-        private static extern vdkError vdkQueryFilter_Destroy(ref IntPtr ppQueryFilter);
+        private static extern udError vdkQueryFilter_Destroy(ref IntPtr ppQueryFilter);
         [DllImport(VaultSDKLibrary.name)]
-        private static extern vdkError vdkQueryFilter_SetInverted(IntPtr pQueryFilter, bool inverted);
+        private static extern udError vdkQueryFilter_SetInverted(IntPtr pQueryFilter, bool inverted);
         [DllImport(VaultSDKLibrary.name)]
-        private static extern vdkError vdkQueryFilter_SetAsBox(IntPtr pQueryFilter, double[] centrePoint, double[] halfSize, double[] yawPitchRoll);
+        private static extern udError vdkQueryFilter_SetAsBox(IntPtr pQueryFilter, double[] centrePoint, double[] halfSize, double[] yawPitchRoll);
         [DllImport(VaultSDKLibrary.name)]
-        private static extern vdkError vdkQueryFilter_SetAsCylinder(IntPtr pQueryFilter, double[] centrePoint, double radius, double halfHeight, double[] yawPitchRoll);
+        private static extern udError vdkQueryFilter_SetAsCylinder(IntPtr pQueryFilter, double[] centrePoint, double radius, double halfHeight, double[] yawPitchRoll);
         [DllImport(VaultSDKLibrary.name)]
-        private static extern vdkError vdkQueryFilter_SetAsSphere(IntPtr pQueryFilter, double[] centrePoint, double radius);
+        private static extern udError vdkQueryFilter_SetAsSphere(IntPtr pQueryFilter, double[] centrePoint, double radius);
     }
 }
