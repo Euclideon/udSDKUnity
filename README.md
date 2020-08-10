@@ -7,24 +7,24 @@ Language:              C#
 Type:                  Integration
 Contributor:           Euclideon Vault Development Team <support@euclideon.com>
 Organization:          Euclideon, https://euclideon.com/vault
-Date:                  2020-02-03
-Vault SDK Version:     0.6.0
+Date:                  2020-08-10
+udSDK Version:         1.0.0
 Toolsets:              Requires Unity >= 2019.3.4f1
 ```
 
 ## Quickstart guide 
 
-**The UnityVDK requires a free valid license for Euclideon Vault SDK which can be obtained [here](https://zfrmz.com/gwVUru84d60yUedxmLx9/?ref=Unity%20Sample%20Code)** 
-The VDK is tested with Unity 2019.3.4f1 - it may work in other versions of Unity, but we can't guarentee that it does. Please ensure you have Unity >2019.3.4f1 installed.
+**The UnityudSDK sample requires a valid license for Euclideon Vault SDK, trial licenses can be obtained [here](https://zfrmz.com/gwVUru84d60yUedxmLx9/?ref=Unity%20Sample%20Code)** 
+The VDK is tested with Unity 2019.3.4f1 - it may work in other versions of Unity, but we can't guarentee that it does. Please sneure you have Unity 2019.3.4f1 installed.
 
 ### Installation - New or Existing Project
 The fastest way to install VDK for Unity is to go [here](https://Euclideon.com/unity) and follow the onscreen instructions.
 
 ### Installation - Github Samples
-1. Download and extract Vault SDK 0.6.0 package from [here](https://earth.vault.euclideon.com) using your license credentials (if you do not have one, free trials are available from [here](https://zfrmz.com/gwVUru84d60yUedxmLx9/?ref=Unity%20Sample%20Code) )
-2. Clone or Download the Unity Vault SDK examples from [here](https://github.com/Euclideon/vaultsdksamples)
-3. Copy the files from _Euclideon_vdk0.6.0/lib/(_your operating system here_)/_ to _vaultsdksamples/integrations/unity-csharp/Assets/VDK 
-3. Open the Vault SDK Unity example project by navigating to _vaultsdksamples/integrations/unity-csharp/Assets/Scenes and opening SampleScene
+1. Download and extract the latest udSDK package from [here](https://udstream.euclideon.com) using your license credentials (if you do not have one, free trials are available from [here](https://zfrmz.com/gwVUru84d60yUedxmLx9/?ref=Unity%20Sample%20Code) )
+2. Clone or Download the Unity udSDK examples from [here](https://github.com/Euclideon/vaultsdkunity)
+3. Copy the files from _Euclideon_udsdkXX/lib/(_your operating system here_)/_ to your Unity project working directory
+3. Open the udSDK Unity example project by navigating to _vaultsdksamples/integrations/unity-csharp/Assets/Scenes and opening Basic Render
 4. From the Toolbar, Navigate to VDK > Set User Info - and enter your VaultSDK username/password, then press Save User Info.
 
 VaultSDK with Unity is now ready to go! Press play!
@@ -36,14 +36,24 @@ The UDS can be changed by modifying the path attribute of the Model object in th
 There is a UDS model included with this example for demonstration purposes, paths to your own model can be pasted into the _path_ field of the US model object
 UDS file format developed by Euclideon allowing streamable, unlimited sized 3D datasets requiring only low spec hardware. 
 
-Models can be created from most common photogrammetry and LiDAR point clouds file formats using Euclideon [udStream](https://www.euclideon.com/udstream/) available [Here](https://udstream.euclideon.com/) with your credentials from your free udStream license.
-You can read about the conversion process [here](https://www.euclideon.com/wp-content/uploads/2019/10/2019_10_31-Vault-Conversion-Guide-v1.2.pdf) if you have any questions check the [support knowledge base](https://www.euclideon.com/customerresourcepage/) or email support@euclideon.com
+Models can be created from most common photogrammetry and LiDAR point clouds file formats using Euclideon [udStream](https://www.euclideon.com/vault/) available [Here](https://www.euclideon.com/udstream-free/) your vault SDK trial license also gives you access to vault client during your trial period.
+You can read about the conversion process [here](https://www.euclideon.com/wp-content/uploads/2019/10/2019_10_31-Vault-Conversion-Guide-v1.2.pdf) if you have any questions check the [support knowledge base](https://desk.euclideon.com) or on the 
 
 Photogrammetry model of the Gold Coast courtesy of [Aerometrex](https://aerometrex.com.au/)
 
-## Example Scenes
+# Sample Scenes
+Each included example is accompanied by a scene demonstrating the use of the objects. The best way to become farmiliar with these unity objects is to explore their usage in those scenes.
+Currently there are four sample scenes
+- Basic Render - showing importing a UDS and usage of the picking system (extraction of voxel data from the point cloud given a coordinate in screen space)
+- Driving demo -Showing the usage of the VDK collider object to make local mesh colliders for physics simulation
+- Filter Demo -  demonstrating the use of a query filter to selectively render volumes of the point cloud
+- Raycasting Example - Showing usage of the VDK Collider to estimate surfaces in front of the camera for raycasting.
 
 Examples of use of the  API features are located under Assets/Plugins/EuclideonUdSDK/Scenes 
+## Basic Example
+
+This is an example demonstrating how to use udSDK with Unity, it includes a minimalist example of a flight camera and an attached collider.
+Unlimited detail rendering is implemented as a postprocessing effect that can be applied to cameras in order to display UDS objects.
 
 
 ### Sample Scene Structure
@@ -69,7 +79,7 @@ and login information between objects, and a ```vdkRenderContext```, enabling th
 
 ### VDKPPER 
 
-_VDKPPES.cs_ contains the implemention of Vault SDK in Unity as a post processing effect. The associated shader is ```vdkShader.shader```
+_VDKPPES.cs_ contains the implemention of udSDK in Unity as a post processing effect. The associated shader is ```vdkShader.shader```
 
 ### VDK Collider
 
@@ -111,17 +121,7 @@ Smoothing on (note that tree branches are no longer captured by the collision mo
 
 As the attached mesh is modified often by this script, baking options for the mesh collider should be turned off for performance reasons
 
-## Known Issues
 
-### License Expired
-As of Vault SDK 0.5.0 the licensing system may malfunction intermittently with multiple views active. This includes the views generated by vdkCollider instances. As a consequence rendering of may be interrupted during play for a short period after 5 minutes with the following exception:
-
-```C#
-Exception: vdkRenderContext.Render failed: vE_InvalidLicense
-Vault.vdkRenderContext.Render (Vault.vdkRenderView renderView, Vault.vdkRenderInstance[] pModels, System.Int32 modelCount) (at Assets/VDK/VaultAPI.cs:348)
-```
-
-This is expected to be fixed in future releases of Vault SDK, it can currently be avoided by using a single render view (i.e. no vdkColliders)
 
 ## Android Support
 
