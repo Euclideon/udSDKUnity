@@ -136,17 +136,17 @@ PrefabInstance:
     - target: {fileID: 1001013997915314186, guid: e79d6a7ad7cab2b4ba35ed74586486e0,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 20.060146
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1001013997915314186, guid: e79d6a7ad7cab2b4ba35ed74586486e0,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -114.80873
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1001013997915314186, guid: e79d6a7ad7cab2b4ba35ed74586486e0,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -11.852115
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1001013997915314186, guid: e79d6a7ad7cab2b4ba35ed74586486e0,
         type: 3}
@@ -196,7 +196,7 @@ PrefabInstance:
     - target: {fileID: 1001013997915314187, guid: e79d6a7ad7cab2b4ba35ed74586486e0,
         type: 3}
       propertyPath: path
-      value: https://sampleeuclideon.blob.core.windows.net/sample/Doncaster_East.uds
+      value: https://sampleeuclideon.blob.core.windows.net/sample/bendigo/Bendigo_nonPrimitive_HR.uds
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e79d6a7ad7cab2b4ba35ed74586486e0, type: 3}
@@ -220,22 +220,22 @@ PrefabInstance:
     - target: {fileID: 1862531765257222245, guid: 67a68208f19790145b478a09a089cb92,
         type: 3}
       propertyPath: resolutionScaling
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1862531765257222248, guid: 67a68208f19790145b478a09a089cb92,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 22.107887
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1862531765257222248, guid: 67a68208f19790145b478a09a089cb92,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -113.95867
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1862531765257222248, guid: 67a68208f19790145b478a09a089cb92,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -12.934715
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1862531765257222248, guid: 67a68208f19790145b478a09a089cb92,
         type: 3}
