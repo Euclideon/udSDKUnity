@@ -1,12 +1,12 @@
-# VDK Unity
+#UDSDK- Unity Plugin
 
-This project demonstrates the use of Euclideon Vault developer Kit (Vault SDK) with the Unity Real Time Development Platform. 
+This project demonstrates the use of Euclideon udSDK developer Kit (udSDK SDK) with the Unity Real Time Development Platform. 
 
 ```
 Language:              C#
 Type:                  Integration
-Contributor:           Euclideon Vault Development Team <support@euclideon.com>
-Organization:          Euclideon, https://euclideon.com/vault
+Contributor:           Euclideon udSDK Development Team <support@euclideon.com>
+Organization:          Euclideon, https://euclideon.com/
 Date:                  2020-08-10
 udSDK Version:         1.0.0
 Toolsets:              Requires Unity >= 2019.3.4f1
@@ -14,20 +14,20 @@ Toolsets:              Requires Unity >= 2019.3.4f1
 
 ## Quickstart guide 
 
-**The UnityudSDK sample requires a valid license for Euclideon Vault SDK, trial licenses can be obtained [here](https://zfrmz.com/gwVUru84d60yUedxmLx9/?ref=Unity%20Sample%20Code)** 
-The VDK is tested with Unity 2019.3.4f1 - it may work in other versions of Unity, but we can't guarentee that it does. Please sneure you have Unity 2019.3.4f1 installed.
+**The Unity-udSDK sample requires a free Euclideon Account to use, licenses can be obtained [here](https://www.euclideon.com/udsdk/)** 
+The udSDK is tested with Unity 2019.3.4f1 - it may work in other versions of Unity, but we can't guarantee that it does. Please sneure you have Unity 2019.3.4f1 installed.
 
 ### Installation - New or Existing Project
-The fastest way to install VDK for Unity is to go [here](https://Euclideon.com/unity) and follow the onscreen instructions.
+The fastest way to install udSDK for Unity is to go [here](https://Euclideon.com/unity) and follow the onscreen instructions.
 
 ### Installation - Github Samples
 1. Download and extract the latest udSDK package from [here](https://udstream.euclideon.com) using your license credentials (if you do not have one, free trials are available from [here](https://zfrmz.com/gwVUru84d60yUedxmLx9/?ref=Unity%20Sample%20Code) )
-2. Clone or Download the Unity udSDK examples from [here](https://github.com/Euclideon/vaultsdkunity)
+2. Clone or Download the Unity udSDK examples from [here](https://github.com/Euclideon/udSDKUnity)
 3. Copy the files from _Euclideon_udsdkXX/lib/(_your operating system here_)/_ to your Unity project working directory
 3. Open the udSDK Unity example project by navigating to _vaultsdksamples/integrations/unity-csharp/Assets/Scenes and opening Basic Render
-4. From the Toolbar, Navigate to VDK > Set User Info - and enter your VaultSDK username/password, then press Save User Info.
+4. From the Toolbar, Navigate to UD > Set User Info - and enter your udgc username/password, then press Save User Info.
 
-VaultSDK with Unity is now ready to go! Press play!
+udgc with Unity is now ready to go! Press play!
 
 ### Changing UDS model
 
@@ -37,7 +37,7 @@ There is a UDS model included with this example for demonstration purposes, path
 UDS file format developed by Euclideon allowing streamable, unlimited sized 3D datasets requiring only low spec hardware. 
 
 Models can be created from most common photogrammetry and LiDAR point clouds file formats using Euclideon [udStream](https://www.euclideon.com/vault/) available [Here](https://www.euclideon.com/udstream-free/) your vault SDK trial license also gives you access to vault client during your trial period.
-You can read about the conversion process [here](https://www.euclideon.com/wp-content/uploads/2019/10/2019_10_31-Vault-Conversion-Guide-v1.2.pdf) if you have any questions check the [support knowledge base](https://desk.euclideon.com) or on the 
+You can read about the conversion process [here](https://www.euclideon.com/wp-content/uploads/2019/10/2019_10_31-udSDK-Conversion-Guide-v1.2.pdf) if you have any questions check the [support knowledge base](https://desk.euclideon.com) or on the 
 
 Photogrammetry model of the Gold Coast courtesy of [Aerometrex](https://aerometrex.com.au/)
 
@@ -45,9 +45,10 @@ Photogrammetry model of the Gold Coast courtesy of [Aerometrex](https://aerometr
 Each included example is accompanied by a scene demonstrating the use of the objects. The best way to become farmiliar with these unity objects is to explore their usage in those scenes.
 Currently there are four sample scenes
 - Basic Render - showing importing a UDS and usage of the picking system (extraction of voxel data from the point cloud given a coordinate in screen space)
-- Driving demo -Showing the usage of the VDK collider object to make local mesh colliders for physics simulation
+- Driving demo -Showing the usage of the udSDK collider object to make local mesh colliders for physics simulation
 - Filter Demo -  demonstrating the use of a query filter to selectively render volumes of the point cloud
-- Raycasting Example - Showing usage of the VDK Collider to estimate surfaces in front of the camera for raycasting.
+- Raycasting Example - Showing usage of the udSDK Collider to estimate surfaces in front of the camera for raycasting.
+- Projects demo - Example of importing udStream Projects including a uds and POIs into Unity
 
 Examples of use of the  API features are located under Assets/Plugins/EuclideonUdSDK/Scenes 
 ## Basic Example
@@ -74,28 +75,28 @@ Each of UDS to be loaded in unity is represented as a one of these models.
 
 ### vdkLogin
 
-This file contains the login logic for the unity example, including login credentials. GlobalVDKContext contains a ``` vdkContext``` for managing licensing 
+This file contains the login logic for the unity example, including login credentials. GlobaludSDKContext contains a ``` vdkContext``` for managing licensing 
 and login information between objects, and a ```vdkRenderContext```, enabling the rendering of and caching the UDS model information
 
-### VDKPPER 
+### UDPPER 
 
-_VDKPPES.cs_ contains the implemention of udSDK in Unity as a post processing effect. The associated shader is ```vdkShader.shader```
+_UDPPES.cs_ contains the implemention of udSDK in Unity as a post processing effect. The associated shader is ```vdkShader.shader```
 
-### VDK Collider
+### UD Collider
 
 This object demonstrates how to achieve physical collisions between Euclideon UDS models and native Unity colliders. Because of the potential scale of UDS objects it is not practical to construct mesh colliders of UDS objects (espeially if these objects are being streamed externally)
 The approach taken is to construct a mesh of the UDS object local to a point of interest (for example a player or the potential colliding object using information available from an instance of ```vdkRenderView```. 
 
 Because the information contained in UDS files (especially unfiltered point clouds) can be noisy, we have included functionality to smooth the generated surfaces.
 
-_VDKCollider.cs_ contains the majority of the logic associated with the example collider system.
+_UDCollider.cs_ contains the majority of the logic associated with the example collider system.
  
 ![Collider Object Structure](./docs/colliderStructure.png "Collider Object Structure")
 
 _Because Unity does not allow collisions between a parent and child object, the collider cannot be a direct decendent of an object it is intended to collide with. 
 Instead use the follow target parameter to keep the collider within an objects reference frame_
 
-The VDK Colider Script takes the following parameters:
+The UD Colider Script takes the following parameters:
 
 _Follow Target:_ If not none will set the transformation of the collider to match that of the target, useful for meshing locally around 
 particular objects. 
