@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Vault
+namespace udSDK
 {
   public class Class1
   {

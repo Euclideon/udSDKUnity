@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-namespace Vault
+namespace udSDK
 {
   public enum udProjectGeometryType { 
     //These are the geometry types for nodes 
@@ -28,7 +28,7 @@ namespace Vault
     udPNT_PointCloud, //!<A Euclideon Unlimited Detail Point Cloud file (“UDS”)
     udPNT_PointOfInterest, //!<A point, line or region describing a location of interest (“POI”)
     udPNT_Folder, //!<A folder of other nodes (“Folder”)
-    udPNT_LiveFeed, //!<A Euclideon Vault live feed container (“IOT”)
+    udPNT_LiveFeed, //!<A Euclideon udSDK live feed container (“IOT”)
     udPNT_Media, //!<An Image, Movie, Audio file or other media object (“Media”)
     udPNT_Viewpoint, //!<An Camera Location & Orientation (“Camera”)
     udPNT_VisualisationSettings, //!<Visualisation settings (itensity, map height etc) (“VizSet”)
@@ -103,24 +103,24 @@ namespace Vault
 
 
     //Create an empty, local only, instance of udProject.
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udProject_CreateLocal(ref IntPtr ppProject, string pName);
     //Create a local only instance of udProject filled in with the contents of a GeoJSON string.
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udProject_LoadFromMemory(ref IntPtr ppProject, string pGeoJSON);
     //Destroy the instance of the project.
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udProject_Release(ref IntPtr ppProject);
     //Export a project to a GeoJSON string in memory.
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udProject_WriteToMemory(IntPtr pProject, ref IntPtr ppMemory);
     //Get the project root node.
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udProject_GetProjectRoot(IntPtr pProject, ref IntPtr ppRootNode);
     //Get the state of unsaved local changes
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udProject_HasUnsavedChanges(IntPtr pProject);
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern string udProject_GetTypeName(udProjectNodeType itemtype);
 
 
@@ -138,58 +138,58 @@ namespace Vault
 
 
     //Create a node in a project
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udProjectNode_Create(IntPtr pProject, IntPtr ppNode, ref udProjectNode pParent, string pType, string pName, string pURI, IntPtr pUserData);
     //Move a node to reorder within the current parent or move to a different parent.
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udProjectNode_MoveChild(IntPtr pProject, ref udProjectNode pCurrentParent, ref udProjectNode pNewParent, ref udProjectNode pNode, ref udProjectNode pInsertBeforeChild);
     //Remove a node from the project.
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udProjectNode_RemoveChild(IntPtr pProject, ref udProjectNode pParentNode, ref udProjectNode pNode);
     //Set the human readable name of a node.
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udProjectNode_SetName(IntPtr pProject, ref udProjectNode pNode, string pNodeName);
     //Set the URI of a node.
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udProjectNode_SetURI(IntPtr pProject, ref udProjectNode pNode, string pNodeURI);
     //Set the new geometry of a node.
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udProjectNode_SetGeometry(IntPtr pProject, ref udProjectNode pNode, udProjectGeometryType nodeType, int geometryCount, ref double pCoordinates);
     //Get a metadata item of a node as an integer.
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udProjectNode_GetMetadataInt(ref udProjectNode pNode, string pMetadataKey, ref Int32 pInt, Int32 defaultValue);
     //Set a metadata item of a node from an integer.
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udProjectNode_SetMetadataInt(ref udProjectNode pNode, string pMetadataKey, Int32 iValue);
     //Get a metadata item of a node as an unsigned integer.
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udProjectNode_GetMetadataUint(ref udProjectNode pNode, string pMetadataKey, ref UInt32 pInt, UInt32 defaultValue);
     //Set a metadata item of a node from an unsigned integer.
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udProjectNode_SetMetadataUint(ref udProjectNode pNode, string pMetadataKey, UInt32 iValue);
     //Get a metadata item of a node as a 64 bit integer.
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udProjectNode_GetMetadataInt64(ref udProjectNode pNode, string pMetadataKey, ref Int64 pInt64, Int64 defaultValue);
     //Set a metadata item of a node from a 64 bit integer.
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udProjectNode_SetMetadataInt64(ref udProjectNode pNode, string pMetadataKey, Int64 i64Value);
     //Get a metadata item of a node as a double.
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udProjectNode_GetMetadataDouble(ref udProjectNode pNode, string pMetadataKey, ref double pDouble, double defaultValue);
     //Set a metadata item of a node from a double.
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udProjectNode_SetMetadataDouble(ref udProjectNode pNode, string pMetadataKey, double doubleValue);
     //Get a metadata item of a node as an boolean.
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udProjectNode_GetMetadataBool(ref udProjectNode pNode, string pMetadataKey, ref bool pBool, bool defaultValue);
     //Set a metadata item of a node from an boolean.
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udProjectNode_SetMetadataBool(ref udProjectNode pNode, string pMetadataKey, bool boolValue);
     //Get a metadata item of a node as a string.
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udProjectNode_GetMetadataString(ref udProjectNode pNode, string pMetadataKey, ref string ppString, string pDefaultValue);
     //Set a metadata item of a node from a string.
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udProjectNode_SetMetadataString(ref udProjectNode pNode, string pMetadataKey, string pString);
     //Get the standard type string name for an itemtype
   }

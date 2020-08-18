@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using Vault;
+using udSDK;
 
 public class UDSModel : MonoBehaviour
 {
@@ -65,12 +65,12 @@ public class UDSModel : MonoBehaviour
     // This gets called by getUDSInstances if it isn't loaded already
     public void LoadModel()
     {
-        if (!GlobalVDKContext.isCreated || isLoaded || Path == "" || Path == null)
+        if (!GlobalUDContext.isCreated || isLoaded || Path == "" || Path == null)
             return;
 
         try
         {
-            udModel.Load(GlobalVDKContext.vContext, Path, ref header);
+            udModel.Load(GlobalUDContext.uContext, Path, ref header);
             storedMatrix = getStoredMatrix();
             double maxDim = 0;
             for (int i = 0; i < 3; i++) {

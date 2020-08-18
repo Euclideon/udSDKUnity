@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System.Threading;
-namespace Vault
+namespace udSDK
 {
     public static class UDUtilities
     {
@@ -87,11 +87,11 @@ namespace Vault
     /*
      *Class responsible for managing all threads related to VDK licensing
      */
-    public class VDKSessionThreadManager {
+    public class UDSessionThreadManager {
         bool logLicenseInformation = false;//this will print the license status every second to the log
         Thread licenseLogThread;
         List<Thread> activeThreads = new List<Thread>();
-        public VDKSessionThreadManager() {
+        public UDSessionThreadManager() {
             if (logLicenseInformation)
             {
                 licenseLogThread = new Thread(new ThreadStart(LogLicenseStatus));
@@ -109,7 +109,7 @@ namespace Vault
                 try
                 {
                     udSessionInfo info = new udSessionInfo();
-                    GlobalVDKContext.vContext.GetSessionInfo(ref info);
+                    GlobalUDContext.uContext.GetSessionInfo(ref info);
                     System.DateTime epochStart = new System.DateTime(1970, 1, 1, 0, 0, 0, 0);
                     ulong cur_time = (ulong)(System.DateTime.UtcNow - epochStart).TotalSeconds;
                     string name = new string(info.displayName);
@@ -122,7 +122,7 @@ namespace Vault
                 }
             }
         }
-        ~VDKSessionThreadManager() {
+        ~UDSessionThreadManager() {
             foreach (Thread thread in activeThreads)
                 thread.Abort();
         }

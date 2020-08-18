@@ -2,17 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using Vault;
-namespace Vault
+using udSDK;
+namespace udSDK
 {
 
-    public static class GlobalVDKContext
+    public static class GlobalUDContext
     {
         public static bool isCreated = false;
-        public static udContext vContext = new udContext();
+        public static udContext uContext = new udContext();
         public static udRenderContext renderer = new udRenderContext();
         public static Dictionary<Camera, udRenderOptions> optionList = new Dictionary<Camera, udRenderOptions>();
-        public static VDKSessionThreadManager sessionKeeper = new VDKSessionThreadManager();
+        public static UDSessionThreadManager sessionKeeper = new UDSessionThreadManager();
         public static string vaultServer = "https://udstream.euclideon.com";
 
         public static string vaultUsername = ""; // Add credentials here for build
@@ -26,8 +26,8 @@ namespace Vault
         public static void Login()
         {
             //For builds, set in login page
-            vaultUsername = GlobalVDKContext.SavedUsernameKey;
-            vaultPassword = GlobalVDKContext.SavedPasswordKey;
+            vaultUsername = GlobalUDContext.SavedUsernameKey;
+            vaultPassword = GlobalUDContext.SavedPasswordKey;
 
             // No longer using player prefs as they save to disk persistantly
 #if UNITY_EDITOR
@@ -36,34 +36,34 @@ namespace Vault
             vaultPassword = EditorPrefs.GetString(SavedPasswordKey);
           #endif
 //            Debug.Log("Attempting to login with: " + vaultUsername + " / " + vaultPassword);
-            if (!GlobalVDKContext.isCreated)
+            if (!GlobalUDContext.isCreated)
             {
                 if (Application.platform == RuntimePlatform.Android)
-                    vContext.IgnoreCertificateVerification(true);
+                    uContext.IgnoreCertificateVerification(true);
                 try
                 {
-                    Debug.Log("Attempting to resume Euclideon Vault session");
-                    vContext.Try_Resume(vaultServer, "Unity", vaultUsername, true);
-                    //vContext.RequestLicense(LicenseType.Render);
+                    Debug.Log("Attempting to resume Euclideon udSDK session");
+                    uContext.Try_Resume(vaultServer, "Unity", vaultUsername, true);
+                    //uContext.RequestLicense(LicenseType.Render);
                     isCreated = true;
                     Debug.Log("Resume Succeeded");
                 }
                 catch (System.Exception e)
                 {
-                    Debug.Log(e.ToString() + "Logging in to Euclideon Vault server");
+                    Debug.Log(e.ToString() + "Logging in to Euclideon udSDK server");
                   try
                   {
-                    GlobalVDKContext.vContext.Connect(vaultServer, "Unity", vaultUsername, vaultPassword);
+                    GlobalUDContext.uContext.Connect(vaultServer, "Unity", vaultUsername, vaultPassword);
                   }
                   catch(System.Exception f) {
                     Debug.Log("Login Failed: " + f.ToString());
-                    GlobalVDKContext.isCreated = true;
+                    GlobalUDContext.isCreated = true;
                     Debug.Log("Logged in!");
                   }
-                    //vContext.RequestLicense(LicenseType.Render);
+                    //uContext.RequestLicense(LicenseType.Render);
                 }
             }
-            renderer.Create(vContext); // Maybe not call here? Throws errors in editor
+            renderer.Create(uContext); 
         }
     }
 }

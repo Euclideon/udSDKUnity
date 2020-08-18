@@ -2,13 +2,13 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Vault;
+using udSDK;
 
 /*
  * 
  */
 [System.Serializable]
-public class VDKCollider : MonoBehaviour
+public class UDMeshCollider : MonoBehaviour
 {
     [Tooltip("target object to follow")]
     public GameObject followTarget = null;
@@ -250,10 +250,10 @@ public class VDKCollider : MonoBehaviour
     void SetRenderView()
     {
         renderView = new udRenderTarget();
-        if (!GlobalVDKContext.isCreated)
-            GlobalVDKContext.Login();
+        if (!GlobalUDContext.isCreated)
+            GlobalUDContext.Login();
 
-        renderView.Create(GlobalVDKContext.vContext, GlobalVDKContext.renderer, (uint)widthPix, (uint)heightPix);
+        renderView.Create(GlobalUDContext.uContext, GlobalUDContext.renderer, (uint)widthPix, (uint)heightPix);
         depthBuffer = new float[widthPix * heightPix];
         colourBuffer = null; 
         renderView.SetTargets(ref colourBuffer, 0, ref depthBuffer);
@@ -307,9 +307,9 @@ public class VDKCollider : MonoBehaviour
         udRenderInstance[] modelArray = UDUtilities.getUDSInstances();
         Matrix4x4 watcherTrans = transform.localToWorldMatrix;
         double[] frontPlaneView = UDUtilities.GetUDMatrix(watcherTrans);
-        renderView.SetMatrix(Vault.udRenderTargetMatrix.Camera, frontPlaneView);
+        renderView.SetMatrix(udSDK.udRenderTargetMatrix.Camera, frontPlaneView);
         Matrix4x4 projection = Matrix4x4.Ortho(-width / 2, width / 2, height / 2, -height / 2, zNear, zFar);
-        renderView.SetMatrix(Vault.udRenderTargetMatrix.Projection, UDUtilities.GetUDMatrix(projection));
+        renderView.SetMatrix(udSDK.udRenderTargetMatrix.Projection, UDUtilities.GetUDMatrix(projection));
         RenderOptions options = new RenderOptions();
       //we need the highest LOD if we are not updating the mesh every frame
       if(blockOnStream)
@@ -317,7 +317,7 @@ public class VDKCollider : MonoBehaviour
 
         try
         {
-            GlobalVDKContext.renderer.Render(renderView, modelArray, modelArray.Length, options);
+            GlobalUDContext.renderer.Render(renderView, modelArray, modelArray.Length, options);
         }
         catch (Exception e){
             Debug.Log("VDK dropped frame: " + e.ToString());

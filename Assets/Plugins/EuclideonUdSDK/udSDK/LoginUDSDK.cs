@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-using Vault;
+using udSDK;
 
-public class LoginSDK : MonoBehaviour
+public class LoginUDSDK : MonoBehaviour
 {
     public GameObject username;
     public GameObject password;
@@ -14,9 +14,9 @@ public class LoginSDK : MonoBehaviour
     private string Password;
     public void Login()
     {
-        GlobalVDKContext.SavedUsernameKey = username.GetComponent<InputField>().text;
-        GlobalVDKContext.SavedPasswordKey = password.GetComponent<InputField>().text;
-        GlobalVDKContext.Login();
+        GlobalUDContext.SavedUsernameKey = username.GetComponent<InputField>().text;
+        GlobalUDContext.SavedPasswordKey = password.GetComponent<InputField>().text;
+        GlobalUDContext.Login();
     }
 
     public void LoadByIndex(int sceneIndex)

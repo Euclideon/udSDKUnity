@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Vault;
+using udSDK;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 using System;
@@ -35,7 +35,7 @@ public class udProjectNodeUnity : MonoBehaviour
         itemTypeString = new string(projectNode.nodeData.itemtypeStr);
         switch (itemTypeString) 
         {
-          //these are the custom types currently supported by Vault Client:
+          //these are the custom types currently supported by udSDK Client:
           case "I3S":
             break;
           case ("Water"):
@@ -64,7 +64,7 @@ public class udProjectNodeUnity : MonoBehaviour
         break;
       case udProjectNodeType.udPNT_Folder: //!<A folder of other nodes (“Folder”)
         break;
-      case udProjectNodeType.udPNT_LiveFeed: //!<A Euclideon Vault live feed container (“IOT”)
+      case udProjectNodeType.udPNT_LiveFeed: //!<A Euclideon udSDK live feed container (“IOT”)
         break;
       case udProjectNodeType.udPNT_Media: //!<An Image, Movie, Audio file or other media object (“Media”)
         break;

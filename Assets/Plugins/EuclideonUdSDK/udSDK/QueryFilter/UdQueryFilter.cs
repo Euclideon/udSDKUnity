@@ -2,13 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Vault;
+using udSDK;
 /*
  *Passes filter to 
  */
-public class VDKFilter : MonoBehaviour
+public class UdQueryFilter : MonoBehaviour
 {
-    private vdkQueryFilter vFilter = new vdkQueryFilter();
+    private udQueryFilter vFilter = new udQueryFilter();
     public Camera cam = null;
     [System.NonSerialized]
     public double[] centrePoint;
@@ -26,7 +26,7 @@ public class VDKFilter : MonoBehaviour
   {
     if (cam != null) 
     {
-      vdkCameraOptions opts = cam.GetComponent<vdkCameraOptions>();
+      UDCameraOptions opts = cam.GetComponent<UDCameraOptions>();
       if (opts != null) {
         opts.optionsStruct.options.pFilter = IntPtr.Zero;
       }
@@ -46,20 +46,25 @@ public class VDKFilter : MonoBehaviour
     void Update()
     {
         centrePoint  = new double[3] {(double)this.transform.position.x,(double)this.transform.position.y,(double)this.transform.position.z};
-        yawPitchRoll = new double[3]
-        {
-            (double)this.transform.eulerAngles.z/180*(double)Mathf.PI,
-            (double)this.transform.eulerAngles.x/180*(double)Mathf.PI,
-            (double)this.transform.eulerAngles.y/180*(double)Mathf.PI
+    yawPitchRoll = new double[3]
+    {
+            -(double)this.transform.eulerAngles.y/180*(double)Mathf.PI,
+            -(double)this.transform.eulerAngles.x/180*(double)Mathf.PI,
+            -(double)this.transform.eulerAngles.z/180*(double)Mathf.PI,
         };
-        halfsize = new double[3] { (double)this.transform.localScale.x/2, (double)this.transform.localScale.y/2, (double)this.transform.localScale.z/2 };
+    halfsize = new double[3]
+    {
+          (double)this.transform.localScale.x/2,
+          (double)this.transform.localScale.z /2,
+          (double)this.transform.localScale.y/2,
+        };
         vFilter.SetAsBox(centrePoint, halfsize, yawPitchRoll);
         vFilter.SetInverted(inverted);
         cam = Camera.main;
         if (cam == null)
             return;
-        vdkCameraOptions optionsContainer = null;
-        optionsContainer = cam.GetComponent<vdkCameraOptions>();
+        UDCameraOptions optionsContainer = null;
+        optionsContainer = cam.GetComponent<UDCameraOptions>();
         if (optionsContainer != null)
         {
           optionsContainer.optionsStruct.options.pFilter = this.vFilter.pQueryFilter;

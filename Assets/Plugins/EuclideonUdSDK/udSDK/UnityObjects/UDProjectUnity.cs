@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
-using Vault;
+using udSDK;
 
-public class VDKProjectUnity : MonoBehaviour
+public class UDProjectUnity : MonoBehaviour
 {
  
   public string path = @"C:/git/vaultsdkunity/Assets/VDK/project_cloud_located.json";

@@ -1,4 +1,4 @@
-﻿Shader "Hidden/VDK/VDKShader"
+﻿Shader "Hidden/UDSDK/UDSDKShader"
 {
   HLSLINCLUDE
 

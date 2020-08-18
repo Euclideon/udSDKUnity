@@ -2,15 +2,15 @@ using System;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 
-using Vault;
+using udSDK;
 using System.Runtime.InteropServices;
 
 [Serializable]
-[PostProcess(typeof(VDKPPER), PostProcessEvent.BeforeTransparent, "VDK/VDKPPES")]
-public sealed class VDKPPES : PostProcessEffectSettings
+[PostProcess(typeof(UDPPER), PostProcessEvent.BeforeTransparent, "VDK/UDPPES")]
+public sealed class UDPPES : PostProcessEffectSettings
 {
 }
-public sealed class VDKPPER : PostProcessEffectRenderer<VDKPPES>
+public sealed class UDPPER : PostProcessEffectRenderer<UDPPES>
 {
     private int width = 1280;
     private int height = 1280;
@@ -26,11 +26,11 @@ public sealed class VDKPPER : PostProcessEffectRenderer<VDKPPES>
     {
         try
         {
-            GlobalVDKContext.Login();
+            GlobalUDContext.Login();
             InitialiseBuffers(width, height);
             InitialiseTextures();
             vRenderView = new udRenderTarget();
-            vRenderView.Create(GlobalVDKContext.vContext, GlobalVDKContext.renderer, (uint)width, (uint)height);
+            vRenderView.Create(GlobalUDContext.uContext, GlobalUDContext.renderer, (uint)width, (uint)height);
             vRenderView.SetTargets(ref colourBuffer, 0, ref depthBuffer);
         }
         catch
@@ -61,7 +61,7 @@ public sealed class VDKPPER : PostProcessEffectRenderer<VDKPPES>
         colourTexture.Resize(width, height, TextureFormat.BGRA32, false);
         depthTexture.Resize(width, height, TextureFormat.RFloat, false);
         vRenderView.Destroy();
-        vRenderView.Create(GlobalVDKContext.vContext, GlobalVDKContext.renderer, (uint)width, (uint)height);
+        vRenderView.Create(GlobalUDContext.uContext, GlobalUDContext.renderer, (uint)width, (uint)height);
         vRenderView.SetTargets(ref colourBuffer, 0, ref depthBuffer);
     }
 
@@ -69,10 +69,10 @@ public sealed class VDKPPER : PostProcessEffectRenderer<VDKPPES>
     {
         Camera cam = context.camera;
         cam.depthTextureMode |= DepthTextureMode.Depth;
-        if (!GlobalVDKContext.isCreated)
+        if (!GlobalUDContext.isCreated)
             return;
 
-        vdkCameraOptions optionsContainer = cam.GetComponent<vdkCameraOptions>();
+        UDCameraOptions optionsContainer = cam.GetComponent<UDCameraOptions>();
         RenderOptions options;
         float resolutionScaling;
         if (optionsContainer != null)
@@ -94,12 +94,12 @@ public sealed class VDKPPER : PostProcessEffectRenderer<VDKPPES>
         udRenderInstance[] modelArray = UDUtilities.getUDSInstances();
         if (modelArray.Length > 0)
         {
-            vRenderView.SetMatrix(Vault.udRenderTargetMatrix.View, UDUtilities.GetUDMatrix(cam.worldToCameraMatrix));
-            vRenderView.SetMatrix(Vault.udRenderTargetMatrix.Projection, UDUtilities.GetUDMatrix(cam.projectionMatrix));
+            vRenderView.SetMatrix(udSDK.udRenderTargetMatrix.View, UDUtilities.GetUDMatrix(cam.worldToCameraMatrix));
+            vRenderView.SetMatrix(udSDK.udRenderTargetMatrix.Projection, UDUtilities.GetUDMatrix(cam.projectionMatrix));
 
             //interface to input render options: this allows setting of render flags, picking and filtering from unity objects attached to the camera
 
-            GlobalVDKContext.renderer.Render(vRenderView, modelArray, modelArray.Length, options);
+            GlobalUDContext.renderer.Render(vRenderView, modelArray, modelArray.Length, options);
 
             //pass the depth buffer back to the unity interface for further processing:
             if (optionsContainer != null && optionsContainer.recordDepthBuffer) 
@@ -115,7 +115,7 @@ public sealed class VDKPPER : PostProcessEffectRenderer<VDKPPES>
             depthTexture.LoadRawTextureData<float>(new Unity.Collections.NativeArray<float>(depthBuffer, Unity.Collections.Allocator.Temp));
             depthTexture.Apply();
 
-            var sheet = context.propertySheets.Get(Shader.Find("Hidden/VDK/VDKShader"));
+            var sheet = context.propertySheets.Get(Shader.Find("Hidden/UDSDK/UDSDKShader"));
             sheet.properties.SetTexture("_udCol", colourTexture);
             sheet.properties.SetTexture("_udDep", depthTexture);
             context.command.BlitFullscreenTriangle(context.source, context.destination, sheet, 0);

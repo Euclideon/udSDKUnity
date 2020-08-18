@@ -3,13 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Vault;
+using udSDK;
 
 static class constants
 {
   public const float MAX_RESOLUTION_SCALE = 3;
 }
-public class vdkCameraOptions : MonoBehaviour
+public class UDCameraOptions : MonoBehaviour
 {
     public Camera cam;
     public RenderOptions optionsStruct = new RenderOptions();

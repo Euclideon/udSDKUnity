@@ -4,9 +4,9 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 
 
-namespace Vault
+namespace udSDK
 {
-  static class VaultSDKLibrary
+  static class UDSDKLibrary
   {
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
     public const string name = "udSDK";
@@ -157,9 +157,9 @@ namespace Vault
         return *((int*)pOffset.ToPointer());
       }
     }
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError vdkAttributeSet_GetOffsetOfStandardAttribute(ref udAttributeSet pAttributeSet, StandardAttribute attribute, IntPtr pOffset);
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError vdkAttributeSet_GetOffsetOfNamedAttribute(ref udAttributeSet pAttributeSet, string pName, IntPtr pOffset);
     
   }
@@ -275,17 +275,17 @@ namespace Vault
             udError error = udContext.udContext_TryResume(ref pContext, pURL, pApplicationName, pUsername, true);
             if (error != udError.udE_Success)
                 error = udContext_Connect(ref pContext, pURL, pApplicationName, pUsername, pPassword);
-            if (error == Vault.udError.udE_ConnectionFailure)
+            if (error == udSDK.udError.udE_ConnectionFailure)
                 throw new Exception("Could not connect to server.");
-            else if (error == Vault.udError.udE_AuthFailure)
+            else if (error == udSDK.udError.udE_AuthFailure)
                 throw new Exception("Username or Password incorrect.");
-            else if (error == Vault.udError.udE_OutOfSync)
+            else if (error == udSDK.udError.udE_OutOfSync)
                 throw new Exception("Your clock doesn't match the remote server clock.");
-            else if (error == Vault.udError.udE_SecurityFailure)
+            else if (error == udSDK.udError.udE_SecurityFailure)
                 throw new Exception("Could not open a secure channel to the server.");
-            else if (error == Vault.udError.udE_ServerFailure)
+            else if (error == udSDK.udError.udE_ServerFailure)
                 throw new Exception("Unable to negotiate with server, please confirm the server address");
-            else if (error != Vault.udError.udE_Success)
+            else if (error != udSDK.udError.udE_Success)
                 throw new Exception("Unknown error occurred: " + error.ToString() + ", please try again later.");
         }
 
@@ -302,27 +302,27 @@ namespace Vault
         public void Disconnect(bool endSession = false)
         {
             udError error = udContext_Disconnect(ref pContext, endSession);
-            if (error != Vault.udError.udE_Success)
+            if (error != udSDK.udError.udE_Success)
                 throw new Exception("udContext.Disconnect failed.");
         }
 
         public void GetSessionInfo(ref udSessionInfo info)
         {
             udError error = udContext_GetSessionInfo(pContext, ref info);
-            if (error != Vault.udError.udE_Success)
+            if (error != udSDK.udError.udE_Success)
                 throw new Exception("udContext.Disconnect failed.");
         }
         public IntPtr pContext = IntPtr.Zero;
 
-        [DllImport(VaultSDKLibrary.name)]
+        [DllImport(UDSDKLibrary.name)]
         private static extern udError udContext_TryResume(ref IntPtr ppContext, string pURL, string pApplicationName, string pUsername, bool tryDongle);
-        [DllImport(VaultSDKLibrary.name)]
+        [DllImport(UDSDKLibrary.name)]
         private static extern udError udContext_Connect(ref IntPtr ppContext, string pURL, string pApplicationName, string pUsername, string pPassword);
-        [DllImport(VaultSDKLibrary.name)]
+        [DllImport(UDSDKLibrary.name)]
         private static extern udError udContext_Disconnect(ref IntPtr ppContext, bool endSession);
-        [DllImport(VaultSDKLibrary.name)]
+        [DllImport(UDSDKLibrary.name)]
         private static extern udError udContext_GetSessionInfo(IntPtr pContext, ref udSessionInfo pInfo);
-        [DllImport(VaultSDKLibrary.name)]
+        [DllImport(UDSDKLibrary.name)]
         private static extern udError udConfig_IgnoreCertificateVerification(bool ignore);
     }
 
@@ -345,7 +345,7 @@ namespace Vault
                 throw new Exception("context not instantiatiated");
 
             udError error = udRenderContext_Create(context.pContext, ref pRenderer);
-            if (error != Vault.udError.udE_Success)
+            if (error != udSDK.udError.udE_Success)
                 throw new Exception("vdkRenderContext.Create failed: " + error.ToString());
 
             this.context = context;
@@ -358,7 +358,7 @@ namespace Vault
                 return;
             }
             udError error = udRenderContext_Destroy(ref pRenderer);
-            if (error != Vault.udError.udE_Success)
+            if (error != udSDK.udError.udE_Success)
                 throw new Exception("vdkRenderContext.Destroy failed: " + error.ToString());
 
             pRenderer = IntPtr.Zero;
@@ -380,18 +380,18 @@ namespace Vault
 
             udError error = udRenderContext_Render(pRenderer, renderView.pRenderView, pModels, modelCount, options.options);
 
-            if (error != Vault.udError.udE_Success)
+            if (error != udSDK.udError.udE_Success)
             {
                 Debug.Log("vdkRenderContext.Render failed: " + error.ToString());
             }
             options.pickRendered = true;
         }
 
-        [DllImport(VaultSDKLibrary.name)]
+        [DllImport(UDSDKLibrary.name)]
         private static extern udError udRenderContext_Create(IntPtr pContext, ref IntPtr ppRenderer);
-        [DllImport(VaultSDKLibrary.name)]
+        [DllImport(UDSDKLibrary.name)]
         private static extern udError udRenderContext_Destroy(ref IntPtr ppRenderer);
-        [DllImport(VaultSDKLibrary.name)]
+        [DllImport(UDSDKLibrary.name)]
         private static extern udError udRenderContext_Render(IntPtr pRenderer, IntPtr pRenderView, udRenderInstance[] pModels, int modelCount, [In, Out] udRenderOptions options);
     }
 
@@ -411,7 +411,7 @@ namespace Vault
                 throw new Exception("renderer not instantiated");
 
             udError error = udRenderTarget_Create(context.pContext, ref pRenderView, renderer.pRenderer, width, height);
-            if (error != Vault.udError.udE_Success)
+            if (error != udSDK.udError.udE_Success)
                 throw new Exception("vdkRenderView.Create failed: " + error.ToString());
 
             this.context = context;
@@ -426,7 +426,7 @@ namespace Vault
                 depthBufferHandle.Free();
 
             udError error = udRenderTarget_Destroy(ref pRenderView);
-            if (error != Vault.udError.udE_Success)
+            if (error != udSDK.udError.udE_Success)
                 throw new Exception("vdkRenderView.Destroy failed.");
 
             pRenderView = IntPtr.Zero;
@@ -444,14 +444,14 @@ namespace Vault
             depthBufferHandle = GCHandle.Alloc(depthBuffer, GCHandleType.Pinned);
 
             udError error = udRenderTarget_SetTargets(pRenderView, colorBufferHandle.AddrOfPinnedObject(), clearColor, depthBufferHandle.AddrOfPinnedObject());
-            if (error != Vault.udError.udE_Success)
+            if (error != udSDK.udError.udE_Success)
                 throw new Exception("vdkRenderView.SetTargets failed.");
         }
 
         public void GetMatrix(udRenderTargetMatrix matrixType, double[] cameraMatrix)
         {
             udError error = udRenderTarget_GetMatrix(pRenderView, matrixType, cameraMatrix);
-            if (error != Vault.udError.udE_Success)
+            if (error != udSDK.udError.udE_Success)
                 throw new Exception("vdkRenderView.GetMatrix failed.");
         }
 
@@ -461,7 +461,7 @@ namespace Vault
                 throw new Exception("view not instantiated");
 
             udError error = udRenderTarget_SetMatrix(pRenderView, matrixType, cameraMatrix);
-            if (error != Vault.udError.udE_Success)
+            if (error != udSDK.udError.udE_Success)
                 throw new Exception("vdkRenderView.SetMatrix failed: " + error.ToString());
         }
 
@@ -471,19 +471,19 @@ namespace Vault
         private GCHandle colorBufferHandle;
         private GCHandle depthBufferHandle;
 
-        [DllImport(VaultSDKLibrary.name)]
+        [DllImport(UDSDKLibrary.name)]
         private static extern udError udRenderTarget_Create(IntPtr pContext, ref IntPtr ppRenderView, IntPtr pRenderer, UInt32 width, UInt32 height);
 
-        [DllImport(VaultSDKLibrary.name)]
+        [DllImport(UDSDKLibrary.name)]
         private static extern udError udRenderTarget_Destroy(ref IntPtr ppRenderView);
 
-        [DllImport(VaultSDKLibrary.name)]
+        [DllImport(UDSDKLibrary.name)]
         private static extern udError udRenderTarget_SetTargets(IntPtr pRenderView, IntPtr pColorBuffer, UInt32 colorClearValue, IntPtr pDepthBuffer);
 
-        [DllImport(VaultSDKLibrary.name)]
+        [DllImport(UDSDKLibrary.name)]
         private static extern udError udRenderTarget_GetMatrix(IntPtr pRenderView, udRenderTargetMatrix matrixType, double[] cameraMatrix);
 
-        [DllImport(VaultSDKLibrary.name)]
+        [DllImport(UDSDKLibrary.name)]
         private static extern udError udRenderTarget_SetMatrix(IntPtr pRenderView, udRenderTargetMatrix matrixType, double[] cameraMatrix);
     }
 
@@ -557,7 +557,7 @@ namespace Vault
     public void Load(udContext context, string modelLocation, ref udPointCloudHeader header)
     {
       udError error = udPointCloud_Load(context.pContext, ref pModel, modelLocation, ref header);
-      if (error != Vault.udError.udE_Success)
+      if (error != udSDK.udError.udE_Success)
         throw new Exception("udPointCloud.Load failed: " + error.ToString());
 
       this.context = context;
@@ -566,7 +566,7 @@ namespace Vault
     public void Unload()
     {
       udError error = udPointCloud_Unload(ref pModel);
-      if (error != Vault.udError.udE_Success)
+      if (error != udSDK.udError.udE_Success)
         throw new Exception("udPointCloud.Unload failed.");
     }
 
@@ -574,7 +574,7 @@ namespace Vault
     public void GetMetadata(ref string ppJSONMetadata)
     {
       udError error = udPointCloud_GetMetadata(pModel, ref ppJSONMetadata);
-      if (error != Vault.udError.udE_Success)
+      if (error != udSDK.udError.udE_Success)
         throw new Exception("udPointCloud.GetMetadata failed.");
     }
 
@@ -587,19 +587,19 @@ namespace Vault
     public IntPtr pModel = IntPtr.Zero;
     private udContext context;
 
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udPointCloud_Load(IntPtr pContext, ref IntPtr ppModel, string modelLocation, ref udPointCloudHeader header);
 
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udPointCloud_Unload(ref IntPtr ppModel);
 
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udPointCloud_GetMetadata(IntPtr pModel, ref string ppJSONMetadata);
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udPointCloud_GetNodeColour(IntPtr pModel, UInt64 voxelID, IntPtr pColour);
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udPointCloud_GetAttributeAddress(IntPtr pModel, ulong voxelID, uint attributeOffset, ref IntPtr ppAttributeAddress);
-    [DllImport(VaultSDKLibrary.name)]
+    [DllImport(UDSDKLibrary.name)]
     private static extern udError udPointCloud_GetStreamingStatus(IntPtr pModel);
   }
 
@@ -608,14 +608,14 @@ namespace Vault
         public void Create(udContext context)
         {
             udError error = vdkConvert_CreateContext(context.pContext, ref pConvertContext);
-            if (error != Vault.udError.udE_Success)
+            if (error != udSDK.udError.udE_Success)
                 throw new Exception("vdkConvertContext.Create failed.");
         }
 
         public void Destroy()
         {
             udError error = vdkConvert_DestroyContext(ref pConvertContext);
-            if (error != Vault.udError.udE_Success)
+            if (error != udSDK.udError.udE_Success)
                 throw new Exception("vdkConvertContext.Destroy failed.");
         }
 
@@ -623,38 +623,38 @@ namespace Vault
         public void AddFile(string fileName)
         {
             udError error = vdkConvert_AddItem(pConvertContext, fileName);
-            if (error != Vault.udError.udE_Success)
+            if (error != udSDK.udError.udE_Success)
                 throw new Exception("vdkConvertContext.AddItem failed.");
         }
         public void SetFileName(string fileName)
         {
             udError error = vdkConvert_SetOutputFilename(pConvertContext, fileName);
-            if (error != Vault.udError.udE_Success)
+            if (error != udSDK.udError.udE_Success)
                 throw new Exception("vdkConvertContext.SetOutputFilename failed.");
         }
 
         public void DoConvert()
         {
             udError error = vdkConvert_DoConvert(pConvertContext);
-            if (error != Vault.udError.udE_Success)
+            if (error != udSDK.udError.udE_Success)
                 throw new Exception("vdkConvertContext.DoConvert failed.");
         }
 
         public IntPtr pConvertContext;
 
-        [DllImport(VaultSDKLibrary.name)]
+        [DllImport(UDSDKLibrary.name)]
         private static extern udError vdkConvert_CreateContext(IntPtr pContext, ref IntPtr ppConvertContext);
 
-        [DllImport(VaultSDKLibrary.name)]
+        [DllImport(UDSDKLibrary.name)]
         private static extern udError vdkConvert_DestroyContext(ref IntPtr ppConvertContext);
 
-        [DllImport(VaultSDKLibrary.name)]
+        [DllImport(UDSDKLibrary.name)]
         private static extern udError vdkConvert_AddItem(IntPtr pConvertContext, string fileName);
 
-        [DllImport(VaultSDKLibrary.name)]
+        [DllImport(UDSDKLibrary.name)]
         private static extern udError vdkConvert_SetOutputFilename(IntPtr pConvertContext, string fileName);
 
-        [DllImport(VaultSDKLibrary.name)]
+        [DllImport(UDSDKLibrary.name)]
         private static extern udError vdkConvert_DoConvert(IntPtr pConvertContext);
     }
 

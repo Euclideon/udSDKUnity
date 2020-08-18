@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEditor.PackageManager;
 using UnityEditor.PackageManager.Requests;
 #endif
-using Vault;
+using udSDK;
 
 
 
@@ -44,15 +44,15 @@ namespace vdk
 
         private void LoadUserInfo()
         {
-            usernameEntry = EditorPrefs.GetString(GlobalVDKContext.SavedUsernameKey);
-            passwordEntry = EditorPrefs.GetString(GlobalVDKContext.SavedPasswordKey);
+            usernameEntry = EditorPrefs.GetString(GlobalUDContext.SavedUsernameKey);
+            passwordEntry = EditorPrefs.GetString(GlobalUDContext.SavedPasswordKey);
 
             CommitUserInfo();
         }
 
         private string PrefsUsername()
         {
-            return EditorPrefs.GetString(GlobalVDKContext.SavedUsernameKey);
+            return EditorPrefs.GetString(GlobalUDContext.SavedUsernameKey);
         }
 
         // Strings used to store the entered info
@@ -109,8 +109,8 @@ namespace vdk
         // Called from ONGUI when the user commits info
         private void CommitUserInfo()
         {
-            EditorPrefs.SetString(GlobalVDKContext.SavedUsernameKey, usernameEntry);
-            EditorPrefs.SetString(GlobalVDKContext.SavedPasswordKey, passwordEntry);
+            EditorPrefs.SetString(GlobalUDContext.SavedUsernameKey, usernameEntry);
+            EditorPrefs.SetString(GlobalUDContext.SavedPasswordKey, passwordEntry);
         }
 
         // Totally wipe user information from the system. Called from ONGUI when button is pressed
@@ -120,12 +120,12 @@ namespace vdk
             passwordEntry = "";
 
             // Clear editor prefs 
-            EditorPrefs.SetString(GlobalVDKContext.SavedUsernameKey, "");
-            EditorPrefs.SetString(GlobalVDKContext.SavedPasswordKey, "");
+            EditorPrefs.SetString(GlobalUDContext.SavedUsernameKey, "");
+            EditorPrefs.SetString(GlobalUDContext.SavedPasswordKey, "");
 
             // Player prefs isn't saved, but on the off chance it was during development make sure to clear it
-            PlayerPrefs.SetString(GlobalVDKContext.SavedUsernameKey, "");
-            PlayerPrefs.SetString(GlobalVDKContext.SavedPasswordKey, "");
+            PlayerPrefs.SetString(GlobalUDContext.SavedUsernameKey, "");
+            PlayerPrefs.SetString(GlobalUDContext.SavedPasswordKey, "");
             
         }
     }

@@ -1,26 +1,26 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Vault {
-    public class vdkQueryFilter
+namespace udSDK {
+    public class udQueryFilter
     {
         public IntPtr pQueryFilter = IntPtr.Zero;
-        public vdkQueryFilter()
+        public udQueryFilter()
         {
-            udError error = vdkQueryFilter_Create(ref pQueryFilter);
+            udError error = udQueryFilter_Create(ref pQueryFilter);
             if (error != udError.udE_Success)
                 throw new Exception("Query Creation Failed: " + error.ToString());
         }
 
-        ~vdkQueryFilter()
+        ~udQueryFilter()
         {
-            udError error = vdkQueryFilter_Destroy(ref pQueryFilter);
+            udError error = udQueryFilter_Destroy(ref pQueryFilter);
             if (error != udError.udE_Success)
                 throw new Exception("Query Destruction Failed: " + error.ToString());
         }
 
         /*
-         *Invert the result of a vdkQueryFilter
+         *Invert the result of a udQueryFilter
          * 
         Parameters
 
@@ -30,13 +30,13 @@ namespace Vault {
         public void SetInverted(bool inverted)
         {
             
-            udError error = vdkQueryFilter_SetInverted(pQueryFilter, inverted);
+            udError error = udQueryFilter_SetInverted(pQueryFilter, inverted);
             if (error != udError.udE_Success)
                 throw new Exception("Query Inversion Failed: " + error.ToString());
         }
 
         /*
-         *Set the vdkQueryFilter to find voxels within a box.
+         *Set the udQueryFilter to find voxels within a box.
          * 
         Note:
 
@@ -44,7 +44,7 @@ namespace Vault {
 
         Parameters:
 
-        pQueryFilter: The vdkQueryFilter to configure.
+        pQueryFilter: The udQueryFilter to configure.
 
         centrePoint: The world space {X,Y,Z} array for the center point.
 
@@ -56,20 +56,20 @@ namespace Vault {
         public void SetAsBox(double[] centrePoint, double[] halfSize, double[] yawPitchRoll)
         {
             
-            udError error = vdkQueryFilter_SetAsBox(pQueryFilter, centrePoint, halfSize, yawPitchRoll);
+            udError error = udQueryFilter_SetAsBox(pQueryFilter, centrePoint, halfSize, yawPitchRoll);
             if (error != udError.udE_Success)
                 throw new Exception("Query SetAsBox Failed: " + error.ToString());
         }
 
         /*
-         *Set the vdkQueryFilter to find voxels within a cylinder.
+         *Set the udQueryFilter to find voxels within a cylinder.
          * 
         Note
 
             When inverted, this filter will return all points outside the cylinder.
         Parameters
 
-        pQueryFilter: The vdkQueryFilter to configure.
+        pQueryFilter: The udQueryFilter to configure.
 
         centrePoint: The world space {X,Y,Z} array for the center point of the cylinder.
 
@@ -83,13 +83,13 @@ namespace Vault {
         public void SetAsCylinder(double[] centrePoint, double radius, double halfHeight, double[] yawPitchRoll)
         {
             
-            udError error = vdkQueryFilter_SetAsCylinder(pQueryFilter, centrePoint, radius, halfHeight, yawPitchRoll);
+            udError error = udQueryFilter_SetAsCylinder(pQueryFilter, centrePoint, radius, halfHeight, yawPitchRoll);
             if (error != udError.udE_Success)
                 throw new Exception("Query SetAsCylinder Failed: " + error.ToString());
         }
 
         /*
-         *Set the vdkQueryFilter to find voxels within a sphere.
+         *Set the udQueryFilter to find voxels within a sphere.
          *
          * 
         Note:
@@ -98,7 +98,7 @@ namespace Vault {
 
         Parameters:
 
-        pQueryFilter: The vdkQueryFilter to configure.
+        pQueryFilter: The udQueryFilter to configure.
 
         centrePoint: The world space {X,Y,Z} array for the center point.
 
@@ -108,21 +108,21 @@ namespace Vault {
         public void SetAsSphere(double[] centrePoint, double radius)
         {
             
-            udError error = vdkQueryFilter_SetAsSphere(pQueryFilter, centrePoint, radius);
+            udError error = udQueryFilter_SetAsSphere(pQueryFilter, centrePoint, radius);
             if (error != udError.udE_Success)
                 throw new Exception("Query SetAsSphere Failed: " + error.ToString());
         }
-        [DllImport(VaultSDKLibrary.name)]
-        private static extern udError vdkQueryFilter_Create(ref IntPtr ppQueryFilter);
-        [DllImport(VaultSDKLibrary.name)]
-        private static extern udError vdkQueryFilter_Destroy(ref IntPtr ppQueryFilter);
-        [DllImport(VaultSDKLibrary.name)]
-        private static extern udError vdkQueryFilter_SetInverted(IntPtr pQueryFilter, bool inverted);
-        [DllImport(VaultSDKLibrary.name)]
-        private static extern udError vdkQueryFilter_SetAsBox(IntPtr pQueryFilter, double[] centrePoint, double[] halfSize, double[] yawPitchRoll);
-        [DllImport(VaultSDKLibrary.name)]
-        private static extern udError vdkQueryFilter_SetAsCylinder(IntPtr pQueryFilter, double[] centrePoint, double radius, double halfHeight, double[] yawPitchRoll);
-        [DllImport(VaultSDKLibrary.name)]
-        private static extern udError vdkQueryFilter_SetAsSphere(IntPtr pQueryFilter, double[] centrePoint, double radius);
+        [DllImport(UDSDKLibrary.name)]
+        private static extern udError udQueryFilter_Create(ref IntPtr ppQueryFilter);
+        [DllImport(UDSDKLibrary.name)]
+        private static extern udError udQueryFilter_Destroy(ref IntPtr ppQueryFilter);
+        [DllImport(UDSDKLibrary.name)]
+        private static extern udError udQueryFilter_SetInverted(IntPtr pQueryFilter, bool inverted);
+        [DllImport(UDSDKLibrary.name)]
+        private static extern udError udQueryFilter_SetAsBox(IntPtr pQueryFilter, double[] centrePoint, double[] halfSize, double[] yawPitchRoll);
+        [DllImport(UDSDKLibrary.name)]
+        private static extern udError udQueryFilter_SetAsCylinder(IntPtr pQueryFilter, double[] centrePoint, double radius, double halfHeight, double[] yawPitchRoll);
+        [DllImport(UDSDKLibrary.name)]
+        private static extern udError udQueryFilter_SetAsSphere(IntPtr pQueryFilter, double[] centrePoint, double radius);
     }
 }

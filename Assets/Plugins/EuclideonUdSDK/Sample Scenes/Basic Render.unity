@@ -277,10 +277,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -1.478
       objectReference: {fileID: 0}
+    - target: {fileID: 1862531765257222250, guid: 67a68208f19790145b478a09a089cb92,
+        type: 3}
+      propertyPath: m_BeforeTransparentBundles.Array.data[0].assemblyQualifiedName
+      value: VDKPPES, Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      objectReference: {fileID: 0}
     - target: {fileID: 1862531765257222253, guid: 67a68208f19790145b478a09a089cb92,
         type: 3}
       propertyPath: m_Name
-      value: VDKCamera
+      value: udSDKCamera
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 67a68208f19790145b478a09a089cb92, type: 3}
