@@ -21,14 +21,14 @@ The udSDK is tested with Unity 2019.3.4f1 - it may work in other versions of Uni
 The fastest way to install udSDK for Unity is to go [here](https://Euclideon.com/unity) and follow the onscreen instructions.
 
 ### Installation - Github Samples
-1. Download and extract the latest udSDK package from [here](https://udstream.euclideon.com) using your license credentials (if you do not have one, free trials are available from [here](https://zfrmz.com/gwVUru84d60yUedxmLx9/?ref=Unity%20Sample%20Code) )
+1. Download and extract the latest udSDK package from [here](https://udstream.euclideon.com) using your license credentials. You can obtain a free account [from our website](https://www.euclideon.com/free-development-resources/) 
 2. Clone or Download the Unity udSDK examples from [here](https://github.com/Euclideon/udSDKUnity)
 3. Copy the files from _udSDK_2.0\lib\(your operating system here)\ _ to your Unity project working directory
-3. Open the udSDK Unity example project by navigating to _the ‘udSDKUnity' directory and opening Basic Render
+3. Open the udSDK Unity example project by navigating to _the ‘udSDKUnity' directory and opening Basic Render from udSDKUnity/Assets/Plugins/EuclideonUdSDK/Sample Scenes 
 5. Open Unity Hub, select add and then the location of the downlaoded project
 4. From the Toolbar in the Unity Editor, Navigate to UD > Set User Info - and enter your udgc username/password, then press Save User Info.
 
-udgc with Unity is now ready to go! Press play!
+udSDK with Unity is now ready to go! Press play!
 
 ### Changing UDS model
 
@@ -76,17 +76,17 @@ Each of UDS to be loaded in unity is represented as a one of these models.
 
 ### udLogin
 
-This file contains the login logic for the unity example, including login credentials. GlobaludSDKContext contains a ``` vdkContext``` for managing licensing 
-and login information between objects, and a ```vdkRenderContext```, enabling the rendering of and caching the UDS model information
+This file contains the login logic for the unity example, including login credentials. GlobaludSDKContext contains a ``` udContext``` for managing licensing 
+and login information between objects, and a ```udRenderContext```, enabling the rendering of and caching the UDS model information
 
 ### UDPPER 
 
-_UDPPES.cs_ contains the implemention of udSDK in Unity as a post processing effect. The associated shader is ```vdkShader.shader```
+_UDPPES.cs_ contains the implemention of udSDK in Unity as a post processing effect. The associated shader is ```udShader.shader```
 
 ### UD Collider
 
 This object demonstrates how to achieve physical collisions between Euclideon UDS models and native Unity colliders. Because of the potential scale of UDS objects it is not practical to construct mesh colliders of UDS objects (espeially if these objects are being streamed externally)
-The approach taken is to construct a mesh of the UDS object local to a point of interest (for example a player or the potential colliding object using information available from an instance of ```vdkRenderView```. 
+The approach taken is to construct a mesh of the UDS object local to a point of interest (for example a player or the potential colliding object using information available from an instance of ```udRenderView```. 
 
 Because the information contained in UDS files (especially unfiltered point clouds) can be noisy, we have included functionality to smooth the generated surfaces.
 
