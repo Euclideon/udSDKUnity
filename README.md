@@ -23,9 +23,10 @@ The fastest way to install udSDK for Unity is to go [here](https://Euclideon.com
 ### Installation - Github Samples
 1. Download and extract the latest udSDK package from [here](https://udstream.euclideon.com) using your license credentials (if you do not have one, free trials are available from [here](https://zfrmz.com/gwVUru84d60yUedxmLx9/?ref=Unity%20Sample%20Code) )
 2. Clone or Download the Unity udSDK examples from [here](https://github.com/Euclideon/udSDKUnity)
-3. Copy the files from _Euclideon_udsdkXX/lib/(_your operating system here_)/_ to your Unity project working directory
-3. Open the udSDK Unity example project by navigating to _vaultsdksamples/integrations/unity-csharp/Assets/Scenes and opening Basic Render
-4. From the Toolbar, Navigate to UD > Set User Info - and enter your udgc username/password, then press Save User Info.
+3. Copy the files from _udSDK_2.0\lib\(your operating system here)\ _ to your Unity project working directory
+3. Open the udSDK Unity example project by navigating to _the ‘udSDKUnity' directory and opening Basic Render
+5. Open Unity Hub, select add and then the location of the downlaoded project
+4. From the Toolbar in the Unity Editor, Navigate to UD > Set User Info - and enter your udgc username/password, then press Save User Info.
 
 udgc with Unity is now ready to go! Press play!
 
@@ -73,7 +74,7 @@ Various settings can be passed to the renderer including the point rendering mod
 
 Each of UDS to be loaded in unity is represented as a one of these models.
 
-### vdkLogin
+### udLogin
 
 This file contains the login logic for the unity example, including login credentials. GlobaludSDKContext contains a ``` vdkContext``` for managing licensing 
 and login information between objects, and a ```vdkRenderContext```, enabling the rendering of and caching the UDS model information
