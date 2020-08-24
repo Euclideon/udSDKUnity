@@ -248,7 +248,7 @@ namespace udSDK
         {
           AndroidJavaClass jc = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
           AndroidJavaObject jo = jc.GetStatic<AndroidJavaObject>("currentActivity");
-          AndroidJavaClass jcvdk = new AndroidJavaClass("com.euclideon.VaultSDK");
+          AndroidJavaClass jcvdk = new AndroidJavaClass("com.euclideon.udSDK");
           jcvdk.CallStatic("setupJNI", jo);
         }
       }
@@ -556,9 +556,12 @@ namespace udSDK
   {
     public void Load(udContext context, string modelLocation, ref udPointCloudHeader header)
     {
+      if (context.pContext == IntPtr.Zero) 
+        throw new Exception("Point cloud load failed: udContext is not initialised");
+
       udError error = udPointCloud_Load(context.pContext, ref pModel, modelLocation, ref header);
       if (error != udSDK.udError.udE_Success)
-        throw new Exception("udPointCloud.Load failed: " + error.ToString());
+        throw new Exception("udPointCloud.Load " +modelLocation + " failed: " + error.ToString());
 
       this.context = context;
     }

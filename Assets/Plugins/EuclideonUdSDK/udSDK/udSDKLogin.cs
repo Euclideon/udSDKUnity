@@ -30,7 +30,7 @@ namespace udSDK
             vaultPassword = GlobalUDContext.SavedPasswordKey;
 
             // No longer using player prefs as they save to disk persistantly
-#if UNITY_EDITOR
+          #if UNITY_EDITOR
 
             vaultUsername = EditorPrefs.GetString(SavedUsernameKey);
             vaultPassword = EditorPrefs.GetString(SavedPasswordKey);
@@ -54,11 +54,12 @@ namespace udSDK
                   try
                   {
                     GlobalUDContext.uContext.Connect(vaultServer, "Unity", vaultUsername, vaultPassword);
+                    GlobalUDContext.isCreated = true;
+                    Debug.Log("Logged in!");
                   }
                   catch(System.Exception f) {
                     Debug.Log("Login Failed: " + f.ToString());
-                    GlobalUDContext.isCreated = true;
-                    Debug.Log("Logged in!");
+                    return;
                   }
                     //uContext.RequestLicense(LicenseType.Render);
                 }

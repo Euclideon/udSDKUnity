@@ -77,7 +77,7 @@ namespace udSDK
 
     IntPtr pUserData; //!<This is application specific user data. The application should traverse the tree to release these before releasing the udProject.
 
-    public readonly IntPtr pInternalData; //!<Internal VaultSDK specific state for this node.
+    public readonly IntPtr pInternalData; //!<Internal udSDK specific state for this node.
 
   }
 	public class UDProject
