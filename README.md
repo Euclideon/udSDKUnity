@@ -129,8 +129,9 @@ As the attached mesh is modified often by this script, baking options for the me
 
 The provided scenes have been tested on Android:
 Compiling to Android involves the following:
-- Copy libvaultSDK.so from "[udSDK Location]\lib\android_arm64\libvaultSDK.so" (or android X64 depending on your target platform) to Assets/Plugins/EuclideonUdSDK
+- Copy udSDK.so from "[udSDK Location]\lib\android_arm64\libudSDK.so" (or android X64 depending on your target platform) to Assets/Plugins/EuclideonUdSDK
 - Select the newly added file from the Unity project pane and in the inspector under platform settings select your target platform and check the box "load on startup"
 - In File -> Build Settings ensure that the Menu 3d Scene is loaded first, then the forst scene in your application
 - In the bottom left of this window click player settings -> Sndroid settings, set the scripting backend to IL2CPP and the target architecture to ARM64 (or X64 if you are using that platform)
+
 

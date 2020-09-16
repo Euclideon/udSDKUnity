@@ -22,7 +22,7 @@
   {
     PS_OUTPUT output;
 
-#if UNITY_UV_STARTS_AT_TOP
+#if 1//UNITY_UV_STARTS_AT_TOP
     float2 udUV = float2(i.texcoord.x, 1 - i.texcoord.y);
 #else
     float2 udUV = float2(i.texcoord.x, i.texcoord.y);
@@ -34,11 +34,12 @@
     float depthCam = tex2D(_CameraDepthTexture, i.texcoord).r;
     float depthVDK = (_udDep.Sample(my_point_clamp_sampler, udUV).r * 0.5 + 0.5);
 
-#if defined(UNITY_REVERSED_Z)
+#if UNITY_REVERSED_Z
+    //depthCam = 1.0 - depthCam;
     depthVDK = 1.0 - depthVDK;
-    if (depthVDK == 0.0 || depthCam > depthVDK)
+    if (depthVDK == 0.0 || depthCam > depthVDK /*&& 0*/)
 #else
-    if (depthVDK == 1.0 || depthCam < depthVDK)
+    if (depthVDK == 1.0 || depthCam < depthVDK )
 #endif
     {
       output.Color0 = color;
@@ -47,7 +48,11 @@
     else
     {
       output.Color0 = ud;
+//#if UNITY_REVERSED_Z
       output.Depth0 = depthVDK;
+//#else
+      //output.Depth0 = -depthVDK - 1;
+//#endif
     }
 
     return output;
