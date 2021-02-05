@@ -35,7 +35,7 @@ namespace udSDK
             vaultUsername = EditorPrefs.GetString(SavedUsernameKey);
             vaultPassword = EditorPrefs.GetString(SavedPasswordKey);
           #endif
-//            Debug.Log("Attempting to login with: " + vaultUsername + " / " + vaultPassword);
+            Debug.Log("udSDK Trying to Login: " + vaultUsername);
             if (!GlobalUDContext.isCreated)
             {
                 if (Application.platform == RuntimePlatform.Android)
@@ -55,7 +55,7 @@ namespace udSDK
                   {
                     GlobalUDContext.uContext.Connect(vaultServer, "Unity", vaultUsername, vaultPassword);
                     GlobalUDContext.isCreated = true;
-                    Debug.Log("Logged in!");
+                    Debug.Log("udSDK Logged in!");
                   }
                   catch(System.Exception f) {
                     Debug.Log("Login Failed: " + f.ToString());

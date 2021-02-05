@@ -12,6 +12,12 @@ public class LoginUDSDK : MonoBehaviour
     public GameObject password;
     private string Username;
     private string Password;
+
+    public void Start()
+    {
+        Debug.Log("udSDK Starting Wrapper");
+    }
+
     public void Login()
     {
         GlobalUDContext.SavedUsernameKey = username.GetComponent<InputField>().text;
