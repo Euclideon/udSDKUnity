@@ -43,7 +43,7 @@ namespace udSDK
                 try
                 {
                     Debug.Log("Attempting to resume Euclideon udSDK session");
-                    uContext.Try_Resume(vaultServer, "Unity", vaultUsername, true);
+                    uContext.Try_Resume(vaultServer, "Unity", vaultUsername, false);
                     //uContext.RequestLicense(LicenseType.Render);
                     isCreated = true;
                     Debug.Log("Resume Succeeded");
