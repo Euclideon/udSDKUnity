@@ -1,4 +1,4 @@
-#UDSDK- Unity Plugin
+# udSDK- Unity Plugin
 
 This project demonstrates the use of Euclideon udSDK developer Kit (udSDK SDK) with the Unity Real Time Development Platform. 
 
