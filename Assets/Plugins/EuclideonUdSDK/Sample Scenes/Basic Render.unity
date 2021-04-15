@@ -38,12 +38,12 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -118,6 +118,8 @@ NavMeshSettings:
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
+    maxJobWorkers: 0
+    preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
@@ -132,6 +134,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: UDS Model
+      objectReference: {fileID: 0}
+    - target: {fileID: 1001013997915314186, guid: e79d6a7ad7cab2b4ba35ed74586486e0,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1001013997915314186, guid: e79d6a7ad7cab2b4ba35ed74586486e0,
         type: 3}
@@ -150,6 +157,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1001013997915314186, guid: e79d6a7ad7cab2b4ba35ed74586486e0,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1001013997915314186, guid: e79d6a7ad7cab2b4ba35ed74586486e0,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
@@ -162,16 +174,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1001013997915314186, guid: e79d6a7ad7cab2b4ba35ed74586486e0,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1001013997915314186, guid: e79d6a7ad7cab2b4ba35ed74586486e0,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1001013997915314186, guid: e79d6a7ad7cab2b4ba35ed74586486e0,
         type: 3}
@@ -190,13 +192,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1001013997915314187, guid: e79d6a7ad7cab2b4ba35ed74586486e0,
         type: 3}
-      propertyPath: geolocate
-      value: 0
+      propertyPath: path
+      value: https://brisbane2019.oss-ap-southeast-2.aliyuncs.com/CRR_LR_75mm_Aerometrex.uds
       objectReference: {fileID: 0}
     - target: {fileID: 1001013997915314187, guid: e79d6a7ad7cab2b4ba35ed74586486e0,
         type: 3}
-      propertyPath: path
-      value: https://sampleeuclideon.blob.core.windows.net/sample/NAB%202mm%20clean.uds
+      propertyPath: geolocate
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e79d6a7ad7cab2b4ba35ed74586486e0, type: 3}
@@ -209,18 +211,23 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1862531765257222245, guid: 67a68208f19790145b478a09a089cb92,
         type: 3}
-      propertyPath: placeCubesOnPick
+      propertyPath: showPickMarker
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1862531765257222245, guid: 67a68208f19790145b478a09a089cb92,
         type: 3}
-      propertyPath: showPickMarker
+      propertyPath: placeCubesOnPick
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1862531765257222245, guid: 67a68208f19790145b478a09a089cb92,
         type: 3}
       propertyPath: resolutionScaling
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862531765257222248, guid: 67a68208f19790145b478a09a089cb92,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1862531765257222248, guid: 67a68208f19790145b478a09a089cb92,
         type: 3}
@@ -239,6 +246,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1862531765257222248, guid: 67a68208f19790145b478a09a089cb92,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.6389525
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862531765257222248, guid: 67a68208f19790145b478a09a089cb92,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: 0.028237343
       objectReference: {fileID: 0}
@@ -251,16 +263,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 0.0138120055
-      objectReference: {fileID: 0}
-    - target: {fileID: 1862531765257222248, guid: 67a68208f19790145b478a09a089cb92,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.6389525
-      objectReference: {fileID: 0}
-    - target: {fileID: 1862531765257222248, guid: 67a68208f19790145b478a09a089cb92,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1862531765257222248, guid: 67a68208f19790145b478a09a089cb92,
         type: 3}
@@ -337,6 +339,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -361,6 +364,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1880199276
 MeshFilter:
   m_ObjectHideFlags: 0
