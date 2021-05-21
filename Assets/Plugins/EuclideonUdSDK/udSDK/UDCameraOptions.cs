@@ -38,11 +38,9 @@ public class UDCameraOptions : MonoBehaviour
     
     void Start()
     {
-        optionsStruct.setPick(0, 0);
         previewCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
         (previewCube.GetComponent<Renderer>()).material.color = Color.black;
         previewCube.GetComponent<Collider>().enabled = false;
-
     }
 
     void Update()
@@ -69,15 +67,16 @@ public class UDCameraOptions : MonoBehaviour
 
         if (optionsStruct.pickRendered)
         {
-            if (placeNext && optionsStruct.Pick.hit == 0 )
+            udPick pick = optionsStruct.getPick(); 
+
+            if (placeNext && pick.hit == 0 )
                 Debug.Log("missed!");
             else
             {
-                Vector3 pickCentre = optionsStruct.PickLocation();
                 if (placeNext)
                 {
-                    Debug.Log("Mouse located at " + pickCentre.ToString());
-                    if (optionsStruct.Pick.isHighestLOD==0)
+                    Debug.Log("Mouse located at " + pick.pointCenter.ToString());
+                    if (pick.isHighestLOD==0)
                     {
                         Debug.Log("Warning: pick may not represent actual point in cloud");
                     }
@@ -86,19 +85,19 @@ public class UDCameraOptions : MonoBehaviour
                     {
                         var marker = GameObject.CreatePrimitive(PrimitiveType.Cube);
                         marker.GetComponent<Renderer>().material.color = Color.red;
-                        marker.transform.position = pickCentre;
+                        marker.transform.position = pick.pointCenter;
                     }
                 }
-                previewCube.transform.position = pickCentre;
+                previewCube.transform.position = pick.pointCenter;
             }
             placeNext = false;
         }
 
         Vector3 mp = Input.mousePosition;
-        optionsStruct.setPick((uint)(mp.x * resolutionScaling), (uint)((cam.pixelHeight - mp.y)*resolutionScaling));
         
         if (Input.GetMouseButtonDown(0))
         {
+            optionsStruct.setPick((uint)(mp.x * resolutionScaling), (uint)((cam.pixelHeight - mp.y)*resolutionScaling));
             placeNext = true;
         }
     }

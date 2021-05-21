@@ -197,7 +197,15 @@ namespace udSDK
         public UInt32 isHighestLOD;//true if hit was as accurate as possible
         public UInt32 modelIndex; //index of the model in the array hit by this pick
         public fixed double pointCenter[3]; //location of the point hit by the pick
-        public IntPtr voxelID; //ID of the hit voxel
+        public udVoxelID voxelID; //ID of the hit voxel
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct udVoxelID
+    {
+        public UInt64 index ; 
+        public IntPtr pTrav ; 
+        public IntPtr pRenderInfo ; 
     }
 
     public enum udRenderContextFlags
@@ -220,12 +228,12 @@ namespace udSDK
 
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct udRenderOptions
+    public struct udRenderSettings
     {
-        public udRenderContextFlags flags; //optional flags providing information on how to perform the render
+        public udRenderContextFlags flags; // optional flags providing information on how to perform the render
         public IntPtr pPick;
         public udRenderContextPointMode pointMode;
-        public IntPtr pFilter;//pointer to a vdkQueryFilter
+        public IntPtr pFilter; // pointer to a vdkQueryFilter
     }
 
 
@@ -364,10 +372,13 @@ namespace udSDK
             pRenderer = IntPtr.Zero;
         }
 
-        public void Render(udRenderTarget renderView, udRenderInstance[] pModels, int modelCount, RenderOptions options)
+        public void Render(udRenderTarget renderView, udRenderInstance[] pModels, int modelCount, RenderOptions options = null )
         {
             if (modelCount == 0)
                 return;
+
+            if (options == null)
+                options = new RenderOptions();
 
             if (renderView == null)
                 throw new Exception("renderView is null");
@@ -392,7 +403,7 @@ namespace udSDK
         [DllImport(UDSDKLibrary.name)]
         private static extern udError udRenderContext_Destroy(ref IntPtr ppRenderer);
         [DllImport(UDSDKLibrary.name)]
-        private static extern udError udRenderContext_Render(IntPtr pRenderer, IntPtr pRenderView, udRenderInstance[] pModels, int modelCount, [In, Out] udRenderOptions options);
+        private static extern udError udRenderContext_Render(IntPtr pRenderer, IntPtr pRenderView, udRenderInstance[] pModels, int modelCount, [In, Out] udRenderSettings options);
     }
 
     public class udRenderTarget
@@ -487,18 +498,33 @@ namespace udSDK
         private static extern udError udRenderTarget_SetMatrix(IntPtr pRenderView, udRenderTargetMatrix matrixType, double[] cameraMatrix);
     }
 
+    public struct udPick 
+    {
+        public int x; // view space mouse x
+        public int y; // view space mouse y
+        public int hit ; // true if voxel was hit by this pick
+        public int isHighestLOD ; // true if his was as accurate as possible
+        public int modelIndex ; // the index of the model in the array hit by this pick
+        public UnityEngine.Vector3 pointCenter ; // the position of the point hit by the pick 
+        public udVoxelID voxelID ; // ID of the hit voxel 
+    }
+
     public class RenderOptions
     {
-        private unsafe udRenderPicking pick;
-        public udRenderOptions options;
+        // this is an interface to the udRenderSettings struct
+        // it provides a safe udPick option for accessing the pick results inside unity component scripts 
+
+        public udRenderSettings options ;
         public bool pickSet = false;
         public bool pickRendered = false;
 
         public RenderOptions(udRenderContextPointMode pointMode, udRenderContextFlags flags)
         {
             options.pointMode = pointMode;
-            //this will need to change once support for multiple picks is introduced:
-            options.pPick = Marshal.AllocHGlobal(Marshal.SizeOf(pick));
+
+            //this will need to change once support for multiple picks is introduced
+            options.pPick = Marshal.AllocHGlobal(Marshal.SizeOf<udRenderPicking>());            
+
             options.flags = flags;
         }
 
@@ -509,17 +535,42 @@ namespace udSDK
 
         public void setPick(uint x, uint y)
         {
-            pick = new udRenderPicking();
+            udRenderPicking pick = new udRenderPicking();
             pick.x = x;
             pick.y = y;
-            Marshal.StructureToPtr(pick, options.pPick, true);
+
+            Marshal.StructureToPtr(pick, options.pPick, false);
 
             pickRendered = false;
             pickSet = true;
-
         }
 
-        public unsafe udRenderPicking Pick
+        public udPick getPick()
+        {
+            UnityEngine.Debug.Log("Getting pick");
+
+            if(!pickSet)
+                return new udPick();
+
+            udRenderPicking targetPick = this.Pick;
+            udPick newPick = new udPick();
+            newPick.hit = (int)targetPick.hit ;
+            newPick.x   = (int)targetPick.x ;
+            newPick.y   = (int)targetPick.y ;
+
+            unsafe
+            {
+                newPick.pointCenter = new UnityEngine.Vector3((float)targetPick.pointCenter[0], (float)targetPick.pointCenter[1], (float)targetPick.pointCenter[2]);
+            }
+            
+            newPick.isHighestLOD = (int)targetPick.isHighestLOD ;
+
+            newPick.voxelID = targetPick.voxelID ;
+
+            return newPick ; 
+        }
+
+        public udRenderPicking Pick
         {
             get
             {
@@ -529,18 +580,11 @@ namespace udSDK
                 if (!pickRendered)
                     throw new Exception("Render must be called before pick can be read");
 
-                pick = *((udRenderPicking*)options.pPick.ToPointer());
-                return pick;
+                return (udRenderPicking)Marshal.PtrToStructure(options.pPick, typeof(udRenderPicking)); 
             }
         }
 
-        unsafe public UnityEngine.Vector3 PickLocation()
-        {
-            udRenderPicking pick = this.Pick;
-            return new UnityEngine.Vector3((float)pick.pointCenter[0], (float)pick.pointCenter[1], (float)pick.pointCenter[2]);
-        }
-
-        public udRenderOptions Options {
+        public udRenderSettings Options {
             get
             {
                 return options;
@@ -548,7 +592,8 @@ namespace udSDK
         }
 
         ~RenderOptions()
-        {
+        { 
+            Marshal.DestroyStructure<udRenderPicking>(options.pPick);
             Marshal.FreeHGlobal(options.pPick);
         }
     }
