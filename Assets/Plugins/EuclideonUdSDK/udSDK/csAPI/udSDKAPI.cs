@@ -203,9 +203,9 @@ namespace udSDK
     [StructLayout(LayoutKind.Sequential)]
     public struct udVoxelID
     {
-        public UInt64 index ; 
-        public IntPtr pTrav ; 
-        public IntPtr pRenderInfo ; 
+        public UInt64 index; 
+        public IntPtr pTrav; 
+        public IntPtr pRenderInfo; 
     }
 
     public enum udRenderContextFlags
@@ -502,11 +502,11 @@ namespace udSDK
     {
         public int x; // view space mouse x
         public int y; // view space mouse y
-        public int hit ; // true if voxel was hit by this pick
-        public int isHighestLOD ; // true if his was as accurate as possible
-        public int modelIndex ; // the index of the model in the array hit by this pick
-        public UnityEngine.Vector3 pointCenter ; // the position of the point hit by the pick 
-        public udVoxelID voxelID ; // ID of the hit voxel 
+        public int hit; // true if voxel was hit by this pick
+        public int isHighestLOD; // true if his was as accurate as possible
+        public int modelIndex; // the index of the model in the array hit by this pick
+        public UnityEngine.Vector3 pointCenter; // the position of the point hit by the pick 
+        public udVoxelID voxelID; // ID of the hit voxel 
     }
 
     public class RenderOptions
@@ -514,7 +514,7 @@ namespace udSDK
         // this is an interface to the udRenderSettings struct
         // it provides a safe udPick option for accessing the pick results inside unity component scripts 
 
-        public udRenderSettings options ;
+        public udRenderSettings options;
         public bool pickSet = false;
         public bool pickRendered = false;
 
@@ -554,20 +554,20 @@ namespace udSDK
 
             udRenderPicking targetPick = this.Pick;
             udPick newPick = new udPick();
-            newPick.hit = (int)targetPick.hit ;
-            newPick.x   = (int)targetPick.x ;
-            newPick.y   = (int)targetPick.y ;
+            newPick.hit = (int)targetPick.hit;
+            newPick.x   = (int)targetPick.x;
+            newPick.y   = (int)targetPick.y;
 
             unsafe
             {
                 newPick.pointCenter = new UnityEngine.Vector3((float)targetPick.pointCenter[0], (float)targetPick.pointCenter[1], (float)targetPick.pointCenter[2]);
             }
             
-            newPick.isHighestLOD = (int)targetPick.isHighestLOD ;
+            newPick.isHighestLOD = (int)targetPick.isHighestLOD;
 
-            newPick.voxelID = targetPick.voxelID ;
+            newPick.voxelID = targetPick.voxelID;
 
-            return newPick ; 
+            return newPick; 
         }
 
         public udRenderPicking Pick

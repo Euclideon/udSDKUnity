@@ -38,6 +38,7 @@ public class UDCameraOptions : MonoBehaviour
     
     void Start()
     {
+        optionsStruct.setPick(0, 0); 
         previewCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
         (previewCube.GetComponent<Renderer>()).material.color = Color.black;
         previewCube.GetComponent<Collider>().enabled = false;
@@ -94,10 +95,12 @@ public class UDCameraOptions : MonoBehaviour
         }
 
         Vector3 mp = Input.mousePosition;
-        
+
+        // set pick every frame, so you may get pick every frame - irrespective of mouseclicks
+        optionsStruct.setPick((uint)(mp.x * resolutionScaling), (uint)((cam.pixelHeight - mp.y)*resolutionScaling));
+
         if (Input.GetMouseButtonDown(0))
-        {
-            optionsStruct.setPick((uint)(mp.x * resolutionScaling), (uint)((cam.pixelHeight - mp.y)*resolutionScaling));
+        {    
             placeNext = true;
         }
     }
