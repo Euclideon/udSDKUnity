@@ -11,7 +11,6 @@ namespace udSDK
         public static bool isCreated = false;
         public static udContext uContext = new udContext();
         public static udRenderContext renderer = new udRenderContext();
-        public static Dictionary<Camera, udRenderOptions> optionList = new Dictionary<Camera, udRenderOptions>();
         public static UDSessionThreadManager sessionKeeper = new UDSessionThreadManager();
         public static string vaultServer = "https://udstream.euclideon.com";
 
@@ -35,6 +34,7 @@ namespace udSDK
             vaultUsername = EditorPrefs.GetString(SavedUsernameKey);
             vaultPassword = EditorPrefs.GetString(SavedPasswordKey);
           #endif
+          
             Debug.Log("udSDK Trying to Login: " + vaultUsername);
             if (!GlobalUDContext.isCreated)
             {
@@ -64,7 +64,11 @@ namespace udSDK
                     //uContext.RequestLicense(LicenseType.Render);
                 }
             }
-            renderer.Create(uContext); 
+            else
+            {
+              Debug.Log("udSDK Skipping Login: already logged in");
+            }
+            GlobalUDContext.renderer.Create(uContext);
         }
     }
 }
