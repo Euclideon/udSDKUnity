@@ -108,13 +108,17 @@ namespace udSDK
             {
                 try
                 {
-                    udSessionInfo info = new udSessionInfo();
-                    GlobalUDContext.uContext.GetSessionInfo(ref info);
-                    System.DateTime epochStart = new System.DateTime(1970, 1, 1, 0, 0, 0, 0);
-                    ulong cur_time = (ulong)(System.DateTime.UtcNow - epochStart).TotalSeconds;
-                    string name = new string(info.displayName);
-                    name = name.Trim('\0');
-                    UnityEngine.Debug.Log((info.isOffline==1?" Offline":" Online")+ " License Expiry: " + (info.expiresTimestamp - cur_time).ToString());
+                    UDSessionInfo info = GlobalUDContext.uContext.GetSessionInfo();
+
+                    string message = string.Empty;
+                    if (info.isOffline)
+                        message += "Offline ";
+                    else
+                        message += "Online ";
+
+                    message += "License Expiry: " + info.expiresTimestamp.ToString();
+
+                    UnityEngine.Debug.Log(message);
                     Thread.Sleep(1000);
                 }
                 catch {
