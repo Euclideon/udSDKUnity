@@ -251,12 +251,18 @@ namespace udSDK
 
     public enum udRenderContextFlags
     {
-        udRF_None = (0),
-        udRF_Preserve_Buffers = 1 << 0,
-        udRF_ComplexIntersections = 1 << 1,
-        udRF_BlockingStreaming = 1 << 2,
+        udRCF_None = 0, //!< Render the points using the default configuration.
+
+        udRCF_PreserveBuffers = 1 << 0, //!< The colour and depth buffers won't be cleared before drawing and existing depth will be respected
+        udRCF_ComplexIntersections = 1 << 1, //!< This flag is required in some scenes where there is a very large amount of intersecting point clouds
+                                             //!< It will internally batch rendering with the udRCF_PreserveBuffers flag after the first render.
+        udRCF_BlockingStreaming = 1 << 2, //!< This forces the streamer to load as much of the pointcloud as required to give an accurate representation in the current view. A small amount of further refinement may still occur.
         udRCF_LogarithmicDepth = 1 << 3, //!< Calculate the depth as a logarithmic distribution.
         udRCF_ManualStreamerUpdate = 1 << 4, //!< The streamer won't be updated internally but a render call without this flag or a manual streamer update will be required
+        udRCF_ZeroAlphaSkip = 1 << 5, //!< If the voxel has 0 alpha (upper 8 bits) after the voxel shader then the voxel will not be drawn to the buffers (effectively skipped)
+
+        udRCF_2PixelOpt = 1 << 6, //!< Optimisation that allows the renderer to resolve the last 2 pixels simulataneously, this can result in slight inaccuracies (generally a few pixels) in the final image for a huge performance improvement.
+        udRCF_DisableOrthographic = 1 << 7, //!< Disables the renderer entering high-performance orthographic mode
     }
 
     public enum udRenderContextPointMode
