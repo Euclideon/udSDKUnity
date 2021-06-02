@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor ; 
+#endif
 
 using udSDK;
 
@@ -102,3 +105,24 @@ public class UDSModel : MonoBehaviour
     }
 }
 
+#if UNITY_EDITOR
+[CustomEditor(typeof(UDSModel))]
+public class UDSModelGUI : Editor 
+{
+    UDSModel script;
+    GameObject gameObject ; 
+    
+    void OnEnable() {
+        script = (UDSModel) target;
+        gameObject = script.gameObject;
+    }
+
+    public override void OnInspectorGUI()
+    {
+        if(gameObject.tag != "UDSModel")
+            EditorGUILayout.HelpBox("This is not displayed because gameObject tag is not 'UDSModel'", MessageType.Warning);
+
+        DrawDefaultInspector();
+    }
+}
+#endif
