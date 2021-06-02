@@ -607,7 +607,7 @@ namespace udSDK
             options.flags = flags;
         }
 
-        public RenderOptions() : this(udRenderContextPointMode.udRCPM_Rectangles, udRenderContextFlags.udRF_None)
+        public RenderOptions() : this(udRenderContextPointMode.udRCPM_Rectangles, udRenderContextFlags.udRCF_None)
         {
 
         }
