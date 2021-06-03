@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 using System;
 using Microsoft.Win32;
+using UnityEngine.Networking;
 
 public class udProjectNodeUnity : MonoBehaviour
 {
@@ -16,19 +17,104 @@ public class udProjectNodeUnity : MonoBehaviour
   public string URI;
   GameObject firstChild;
   GameObject nextSibling;
+
+  // keeps track of all coordinates in the nodedata
+  double[] positions = new double[3]; 
+
+  private UDProjectUnity project; 
+
+  Vector3 DoublesToVector3(double[] doubles)
+  {
+      return new Vector3((float)doubles[0], (float)doubles[1], (float)doubles[2]);
+  }
+
+  double[] GetReorderedPosition(double[] positions, int i)
+  {
+      double[] position = new double[3];
+
+      position[0] = -positions[3 * i];
+      position[2] = -positions[3 * i + 1];
+      position[1] = -positions[3 * i + 2];
+
+      return position; 
+  }
+
+  IEnumerator LoadMediaImage(SpriteRenderer sprite)
+  {
+    string targetURI = URI;
+
+    if (!URI.StartsWith("http") && !URI.StartsWith("www"))
+        URI = "file://" + Application.dataPath + "/" + URI;  
+
+    // warning : this syntax changes somewhat in later versions of Unity 
+    using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(URI))
+    {
+        yield return uwr.SendWebRequest();
+
+        if (uwr.isNetworkError || uwr.isHttpError)
+        {
+            Debug.Log(uwr.error);
+        }
+        else
+        {
+            // Get downloaded asset bundle
+            var tex = DownloadHandlerTexture.GetContent(uwr);
+            sprite.sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
+        }
+    }
+
+    yield return null;
+  }
+
+  GameObject PlaceChildSphere(double[] position, float size)
+  {
+      Vector3 positionVector = DoublesToVector3(position); 
+
+      var sphereGO = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+      var renderer = sphereGO.GetComponent<Renderer>();
+
+      var shader = Shader.Find("udSDK/Demo/DepthOffsetSprite");
+      if (shader == null)
+        throw new Exception("Required shader is missing : udSDK/Demo/DepthOffsetSprite");
+      renderer.material = new Material(shader);
+      renderer.material.SetFloat("_ZOffset", 0 + size*0.01f);
+      renderer.material.color = project.appearance.interestColor; 
+
+      sphereGO.transform.parent = transform;
+      sphereGO.transform.position = positionVector;
+      sphereGO.transform.localScale = Vector3.one * size;
+
+      return sphereGO; 
+  }
+
   public void LoadTree(IntPtr pNode)
   {
+    project = GetComponentInParent<UDProjectUnity>(); 
+    projectNode = new UDProjectNode(pNode);
 
-    this.projectNode = new UDProjectNode(pNode);
     if (projectNode.nodeData.pName != IntPtr.Zero)
-      this.name = Marshal.PtrToStringAnsi(projectNode.nodeData.pName);
+      gameObject.name = Marshal.PtrToStringAnsi(projectNode.nodeData.pName);
 
     if (projectNode.nodeData.pURI != IntPtr.Zero)
-      this.URI = Marshal.PtrToStringAnsi(projectNode.nodeData.pURI);
+      URI = Marshal.PtrToStringAnsi(projectNode.nodeData.pURI);
 
+    if (projectNode.nodeData.pCoordinates != IntPtr.Zero)
+    {
+        if (!(projectNode.nodeData.geomCount == 0))
+        {
+            positions = new double[projectNode.nodeData.geomCount * 3];
+            Marshal.Copy(projectNode.nodeData.pCoordinates, positions, 0, projectNode.nodeData.geomCount * 3);
+        }
+        else
+        {
+            positions = new double[3];
+            Marshal.Copy(projectNode.nodeData.pCoordinates, positions, 0, 3);
+        }
+    }
 
     this.itemType = projectNode.nodeData.itemtype;
     this.geometryType = projectNode.nodeData.geomtype;
+
     switch (itemType)
     {
       case udProjectNodeType.udPNT_Custom://!<Need to check the itemtypeStr string manually.
@@ -60,13 +146,44 @@ public class udProjectNodeUnity : MonoBehaviour
         break;
 
       case udProjectNodeType.udPNT_PointOfInterest:
-        var mf = gameObject.AddComponent<MeshFilter>();
+        if (geometryType != udProjectGeometryType.udPGT_LineString)
+        {
+          double[] pointPosition = GetReorderedPosition(positions, 0);
+          pointPosition = project.CheckPosition(pointPosition); 
+          var sphereGO = PlaceChildSphere(pointPosition, project.appearance.pointSize); 
+          sphereGO.name = "Point of Interest"; 
+        } 
         break;
       case udProjectNodeType.udPNT_Folder: //!<A folder of other nodes (“Folder”)
         break;
-      case udProjectNodeType.udPNT_LiveFeed: //!<A Euclideon udSDK live feed container (“IOT”)
+      case udProjectNodeType.udPNT_GTFS: //!< A General Transit Feed Specification object ("GTFS")
         break;
       case udProjectNodeType.udPNT_Media: //!<An Image, Movie, Audio file or other media object (“Media”)
+        // only supporting images presently
+        var icon = new GameObject(); 
+        var sprite = icon.AddComponent<SpriteRenderer>();
+
+        var shader = Shader.Find("udSDK/Demo/SpriteBillboard");
+        if (shader == null)
+          throw new Exception("Required shader is missing : udSDK/Demo/SpriteBillboard");
+        sprite.material = new Material(shader);
+        sprite.material.SetFloat("_ZOffset", 0.5f);
+
+        Texture2D tex = Texture2D.blackTexture;
+        sprite.sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
+        
+        icon.transform.parent = transform;
+
+        double[] spritePosition = GetReorderedPosition(positions, 0);
+        spritePosition = project.CheckPosition(spritePosition); 
+        Vector3 positionVector = DoublesToVector3(spritePosition); 
+        icon.transform.position = positionVector;
+
+        icon.transform.localScale = Vector3.one * project.appearance.imageMediaSize;
+
+        // load the image in a coroutine
+        icon.name = "Media : " + URI;
+        StartCoroutine(LoadMediaImage(sprite));
         break;
       case udProjectNodeType.udPNT_Viewpoint:
         break;
@@ -80,57 +197,53 @@ public class udProjectNodeUnity : MonoBehaviour
         break;
 
       case(udProjectGeometryType.udPGT_Point): //!<pCoordinates is a single 3D position
-        {
-          double[] position = new double[3];
-          Marshal.Copy(projectNode.nodeData.pCoordinates, position, 0, 3);
-          transform.position = new Vector3((float)position[0], (float)position[1], (float)position[2]);
-          break;
-        }
+        // we check the position here, so that it sets any required offset values
+        project.CheckPosition(GetReorderedPosition(positions, 0)); 
+        break;
 
       case(udProjectGeometryType.udPGT_MultiPoint): //!<Array of udPGT_Point, pCoordinates is an array of 3D positions.
         if (!(projectNode.nodeData.geomCount==0)) 
         {
           //create a child object for each geometry object
-          double[] positions = new double[projectNode.nodeData.geomCount * 3];
-          Marshal.Copy(projectNode.nodeData.pCoordinates, positions, 0, projectNode.nodeData.geomCount * 3);
           for(int i = 0; i < projectNode.nodeData.geomCount; i++)
           {
-            GameObject pointGO = new GameObject();
-            double[] position = new double[3];
-            position[0] = positions[3 * i];
-            position[1] = positions[3 * i + 1];
-            position[2] = positions[3 * i + 2];
-            pointGO.transform.parent = transform;
-            pointGO.transform.position = new Vector3((float)position[0], (float)position[1], (float)position[2]);
-            pointGO.name = "Point " + i.ToString(); 
+            double[] position = GetReorderedPosition(positions, i);
+            position = project.CheckPosition(position); 
+            var sphereGO = PlaceChildSphere(position, project.appearance.lineSize);
+            sphereGO.name = "Point "+i; 
           }
         }
         break;
 
       case(udProjectGeometryType.udPGT_LineString): //!<pCoordinates is an array of 3D positions forming an open line
         LineRenderer lr = gameObject.AddComponent<LineRenderer>();
+
+        var shader = Shader.Find("udSDK/Demo/DepthOffsetSprite");
+        if (shader == null)
+          throw new Exception("Required shader is missing : udSDK/Demo/DepthOffsetSprite");
+        lr.material = new Material(shader);
+        lr.material.SetFloat("_ZOffset", 0 + project.appearance.lineSize * 0.01f);
+        lr.material.color = project.appearance.interestColor; 
+
+        lr.useWorldSpace = false; // this gives us more tangible editor controls
         lr.positionCount = projectNode.nodeData.geomCount;
+        
         Vector3[] verts = new Vector3[projectNode.nodeData.geomCount];
         if (!(projectNode.nodeData.geomCount==0)) 
         {
-          //create a child object for each geometry object
-          double[] positions = new double[projectNode.nodeData.geomCount * 3];
-          Marshal.Copy(projectNode.nodeData.pCoordinates, positions, 0, projectNode.nodeData.geomCount * 3);
-          for(int i = 0; i < projectNode.nodeData.geomCount; i++)
-          {
-            GameObject pointGO = new GameObject();
-            double[] position = new double[3];
-            position[0] = positions[3 * i];
-            position[1] = positions[3 * i + 1];
-            position[2] = positions[3 * i + 2];
-            pointGO.transform.parent = transform;
-            Vector3 posVec =new Vector3((float)position[0], (float)position[1], (float)position[2]);
-            pointGO.transform.position = posVec;
-            verts[i] = posVec;
-            pointGO.name = "Point " + i.ToString(); 
-          }
+            //create a child object for each geometry object
+            for(int i = 0; i < projectNode.nodeData.geomCount; i++)
+            {
+                double[] position = GetReorderedPosition(positions, i);
+                position = project.CheckPosition(position); 
+                var sphereGO = PlaceChildSphere(position, project.appearance.lineSize);
+                verts[i] = sphereGO.transform.position; 
+                sphereGO.name = "Point "+i; 
+            }
         }
+
         lr.SetPositions(verts);
+        lr.SetWidth(project.appearance.lineSize, project.appearance.lineSize);
         break;
 
       case(udProjectGeometryType.udPGT_MultiLineString): //!<Array of udPGT_LineString; pCoordinates is NULL and children will be present.

@@ -24,15 +24,32 @@ namespace udSDK
 
     The itemtypeStr in the udProjectNode is a string version. This enum serves to simplify the reading of standard types. The the string in brackets at the end of the comment is the string.
      */
-    udPNT_Custom, //!<Need to check the itemtypeStr string manually.
-    udPNT_PointCloud, //!<A Euclideon Unlimited Detail Point Cloud file (“UDS”)
-    udPNT_PointOfInterest, //!<A point, line or region describing a location of interest (“POI”)
-    udPNT_Folder, //!<A folder of other nodes (“Folder”)
-    udPNT_LiveFeed, //!<A Euclideon udSDK live feed container (“IOT”)
-    udPNT_Media, //!<An Image, Movie, Audio file or other media object (“Media”)
-    udPNT_Viewpoint, //!<An Camera Location & Orientation (“Camera”)
-    udPNT_VisualisationSettings, //!<Visualisation settings (itensity, map height etc) (“VizSet”)
-    udPNT_Count, //!<Total number of node types. Used internally but can be used as an iterator max when displaying different type modes.
+    udPNT_Custom, //!< Need to check the itemtypeStr string manually
+
+    udPNT_PointCloud, //!< A Euclideon Unlimited Detail Point Cloud file ("UDS")
+    udPNT_PointOfInterest, //!< A point, line or region describing a location of interest ("POI")
+    udPNT_Folder, //!< A folder of other nodes ("Folder")
+    udPNT_Media, //!< An Image, Movie, Audio file or other media object ("Media")
+    udPNT_Viewpoint, //!< An Camera Location & Orientation ("Camera")
+    udPNT_VisualisationSettings, //!< Visualisation settings (itensity, map height etc) ("VizSet")
+    udPNT_I3S, //!< An Indexed 3d Scene Layer (I3S) or Scene Layer Package (SLPK) dataset ("I3S")
+    udPNT_Water, //!< A region describing the location of a body of water ("Water")
+    udPNT_ViewShed, //!< A point describing where to generate a view shed from ("ViewMap")
+    udPNT_Polygon, //!< A polygon model, usually an OBJ or FBX ("Polygon")
+    udPNT_QueryFilter, //!< A query filter to be applied to all PointCloud types in the scene ("QFilter")
+    udPNT_Places, //!< A collection of places that can be grouped together at a distance ("Places")
+    udPNT_HeightMeasurement, //!< A height measurement object ("MHeight")
+    udPNT_GTFS, //!< A General Transit Feed Specification object ("GTFS")
+    udPNT_Count //!< Total number of node types. Used internally but can be used as an iterator max when displaying different type modes.
+  }
+
+  public enum udProjectLoadSource 
+  {
+    udProjectLoadSource_Memory, //!< The project source exists in memory; udProject_CreateInMemory, udProject_LoadFromMemory or udProject_SaveToMemory
+    udProjectLoadSource_Server, //!< The project source exists from the server; udProject_CreateInServer, udProject_LoadFromServer or udProject_SaveToServer
+    udProjectLoadSource_URI, //!< The project source exists from a file or URL; udProject_CreateInFile, udProject_LoadFromFile or udProject_SaveToFile
+
+    udProjectLoadSource_Count //!< Total number of source types. Used internally but can be used as an iterator max when displaying different source types.
   }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -46,6 +63,7 @@ namespace udSDK
         This struct is exposed to avoid having a huge API of accessor functions but it should be treated as read only with the exception of pUserData. Making changes to the internal data will cause issues syncronising data
 
     */
+    public readonly bool isVisible;
     [MarshalAs(UnmanagedType.ByValArray, SizeConst = 37)]
     public readonly char[] UUID; //!<Unique identifier for this node “id”.
 
@@ -87,13 +105,19 @@ namespace udSDK
 
 		public UDProject(string geoJSON)
 		{
-      udError err = udProject_LoadFromMemory(ref pudProject, geoJSON);
+      if(!GlobalUDContext.isCreated)
+        throw new Exception("Global context not loaded, cannot load project.");
+
+      UnityEngine.Debug.Log("Attempting project load from memory"); 
+      // udError err = udProject_LoadFromMemory(ref pudProject, geoJSON);
+      udError err = udProject_LoadFromMemory(GlobalUDContext.uContext.pContext, ref pudProject, geoJSON);
 
       if(err != udError.udE_Success)
         throw new Exception("project load failed: "+ err.ToString());
 
       pRootNode = IntPtr.Zero;
       udProject_GetProjectRoot(pudProject, ref pRootNode);
+      UnityEngine.Debug.Log("Project loaded"); 
 		}
 
     ~UDProject()
@@ -107,13 +131,13 @@ namespace udSDK
     private static extern udError udProject_CreateLocal(ref IntPtr ppProject, string pName);
     //Create a local only instance of udProject filled in with the contents of a GeoJSON string.
     [DllImport(UDSDKLibrary.name)]
-    private static extern udError udProject_LoadFromMemory(ref IntPtr ppProject, string pGeoJSON);
+    private static extern udError udProject_LoadFromMemory(IntPtr pContext, ref IntPtr ppProject, string pGeoJSON);
     //Destroy the instance of the project.
     [DllImport(UDSDKLibrary.name)]
     private static extern udError udProject_Release(ref IntPtr ppProject);
     //Export a project to a GeoJSON string in memory.
     [DllImport(UDSDKLibrary.name)]
-    private static extern udError udProject_WriteToMemory(IntPtr pProject, ref IntPtr ppMemory);
+    private static extern udError udProject_SaveToMemory(IntPtr pContext, IntPtr pProject, ref IntPtr ppMemory);
     //Get the project root node.
     [DllImport(UDSDKLibrary.name)]
     private static extern udError udProject_GetProjectRoot(IntPtr pProject, ref IntPtr ppRootNode);
