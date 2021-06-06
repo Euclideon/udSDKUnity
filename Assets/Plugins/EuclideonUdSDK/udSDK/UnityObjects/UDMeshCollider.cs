@@ -313,7 +313,7 @@ public class UDMeshCollider : MonoBehaviour
         RenderOptions options = new RenderOptions();
       //we need the highest LOD if we are not updating the mesh every frame
       if(blockOnStream)
-        options.options.flags = udRenderContextFlags.udRF_BlockingStreaming;
+        options.options.flags = udRenderContextFlags.udRCF_BlockingStreaming;
 
         try
         {
