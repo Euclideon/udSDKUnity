@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.Rendering.PostProcessing;
 
 using udSDK;
@@ -9,6 +10,8 @@ using System.Runtime.InteropServices;
 [PostProcess(typeof(UDPPER), PostProcessEvent.BeforeTransparent, "VDK/UDPPES")]
 public sealed class UDPPES : PostProcessEffectSettings
 {
+    [Tooltip("Apply the depth pass from udShader to _CameraDepthTexture")]
+    public BoolParameter depthPass = new BoolParameter { value = true };
 }
 public sealed class UDPPER : PostProcessEffectRenderer<UDPPES>
 {
@@ -119,6 +122,9 @@ public sealed class UDPPER : PostProcessEffectRenderer<UDPPES>
             sheet.properties.SetTexture("_udCol", colourTexture);
             sheet.properties.SetTexture("_udDep", depthTexture);
             context.command.BlitFullscreenTriangle(context.source, context.destination, sheet, 0);
+
+            if(settings.depthPass)
+                context.command.BlitFullscreenTriangle(context.source, BuiltinRenderTextureType.Depth, sheet, 0);
         }
     }
 }
