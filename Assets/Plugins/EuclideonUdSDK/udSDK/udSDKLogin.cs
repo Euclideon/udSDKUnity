@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using udSDK;
+
 namespace udSDK
 {
-
     public static class GlobalUDContext
     {
         public static bool isCreated = false;
@@ -20,8 +20,8 @@ namespace udSDK
 
         // These strings exist to ensure during development no typo or error is ever set regarding the saving/loading/reading of 
         // .. usernames and passwords.
-        public static string SavedUsernameKey = "VDKUsername";
-        public static string SavedPasswordKey = "VDKPassword";
+        public static string SavedUsernameKey = "Username";
+        public static string SavedPasswordKey = "Password";
         public static void Login()
         {
             //For builds, set in login page

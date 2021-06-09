@@ -21,10 +21,10 @@ public struct UDProjectAppearance
 public class UDProjectUnity : MonoBehaviour
 {
  
-  public string path = @"C:/git/vaultsdkunity/Assets/VDK/project_cloud_located.json";
-  public bool isLoaded = false;
-  private string geoJSON;
-  UDProject proj;
+    public string path;
+    public bool isLoaded = false;
+    private string geoJSON;
+    UDProject proj;
 
     // this retains an offset, to keep everything close to world origin
     private double[] positionOffset = new double[3];
@@ -37,12 +37,6 @@ public class UDProjectUnity : MonoBehaviour
         imageMediaSize = 100f,
         lineSize = 20f
     };
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     public double[] CheckPosition(double[] position)
     {
@@ -70,41 +64,39 @@ public class UDProjectUnity : MonoBehaviour
         
         positionSet = true; 
     }
-  void LoadFromFile(string path)
-  {
-    geoJSON = System.IO.File.ReadAllText(path);
-    proj = new UDProject(geoJSON);
-    this.path = path;
-    print("loaded node!");
-  }
+    void LoadFromFile(string path)
+    {
+        geoJSON = System.IO.File.ReadAllText(path);
+        proj = new UDProject(geoJSON);
+        this.path = path;
+        print("loaded node!");
+    }
 
     // Update is called once per frame
     void Update()
     {
-    if (!isLoaded)
-    {
-        if(!GlobalUDContext.isCreated)
+        if (!isLoaded)
         {
-            Debug.Log("Cannot load project before global context.");
-            return; 
+            if(!GlobalUDContext.isCreated)
+            {
+                Debug.Log("Cannot load project before global context.");
+                return; 
+            }
+
+            try
+            {
+                LoadFromFile(path);
+                GameObject rootNodeGO = new GameObject();
+                rootNodeGO.transform.parent = transform;
+                var pn = rootNodeGO.AddComponent<udProjectNodeUnity>();
+                pn.LoadTree(proj.pRootNode);
+            }
+            catch(Exception e) 
+            {
+                Debug.LogError("caught exception loading project: " + e.ToString());
+            }
+            
+            isLoaded = true;
         }
-
-      try
-      {
-        LoadFromFile(path);
-        GameObject rootNodeGO = new GameObject();
-        rootNodeGO.transform.parent = transform;
-        var pn = rootNodeGO.AddComponent<udProjectNodeUnity>();
-        pn.LoadTree(proj.pRootNode);
-        //pn.projectNode = proj.rootNode;
-
-      }
-      catch(Exception e) {
-        Debug.LogError("caught exception loading project: " + e.ToString());
-      }
-      isLoaded = true;
-
-    }
-
     }
 }

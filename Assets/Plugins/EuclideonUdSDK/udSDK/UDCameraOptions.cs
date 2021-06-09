@@ -15,7 +15,7 @@ public class UDCameraOptions : MonoBehaviour
     public RenderOptions optionsStruct = new RenderOptions();
     public udRenderContextPointMode pointMode = udRenderContextPointMode.udRCPM_Rectangles;
     public bool showPickMarker = false;
-    [Tooltip("Factor by which to scale VDK resolution relative to camera resolution: lower numbers will increase frame rate at the cost of resolution")]
+    [Tooltip("Factor by which to scale udSDK resolution relative to camera resolution: lower numbers will increase frame rate at the cost of resolution")]
     public float resolutionScaling = 1;
 
     [System.NonSerialized]
