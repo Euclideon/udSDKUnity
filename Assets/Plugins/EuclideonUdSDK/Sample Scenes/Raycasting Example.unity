@@ -229,9 +229,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 0
+  m_CookingOptions: 16
   m_Mesh: {fileID: 0}
 --- !u!4 &1018307921
 Transform:
@@ -261,6 +261,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1001013997915314186, guid: e79d6a7ad7cab2b4ba35ed74586486e0,
         type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1001013997915314186, guid: e79d6a7ad7cab2b4ba35ed74586486e0,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: -10.325752
       objectReference: {fileID: 0}
@@ -276,6 +281,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1001013997915314186, guid: e79d6a7ad7cab2b4ba35ed74586486e0,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1001013997915314186, guid: e79d6a7ad7cab2b4ba35ed74586486e0,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
@@ -287,16 +297,6 @@ PrefabInstance:
     - target: {fileID: 1001013997915314186, guid: e79d6a7ad7cab2b4ba35ed74586486e0,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1001013997915314186, guid: e79d6a7ad7cab2b4ba35ed74586486e0,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1001013997915314186, guid: e79d6a7ad7cab2b4ba35ed74586486e0,
-        type: 3}
-      propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1001013997915314186, guid: e79d6a7ad7cab2b4ba35ed74586486e0,
@@ -325,6 +325,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1862531765257222248, guid: 67a68208f19790145b478a09a089cb92,
         type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862531765257222248, guid: 67a68208f19790145b478a09a089cb92,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.272791
       objectReference: {fileID: 0}
@@ -340,6 +345,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1862531765257222248, guid: 67a68208f19790145b478a09a089cb92,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.6389525
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862531765257222248, guid: 67a68208f19790145b478a09a089cb92,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: 0.028237343
       objectReference: {fileID: 0}
@@ -352,16 +362,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 0.0138120055
-      objectReference: {fileID: 0}
-    - target: {fileID: 1862531765257222248, guid: 67a68208f19790145b478a09a089cb92,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.6389525
-      objectReference: {fileID: 0}
-    - target: {fileID: 1862531765257222248, guid: 67a68208f19790145b478a09a089cb92,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1862531765257222248, guid: 67a68208f19790145b478a09a089cb92,
         type: 3}
@@ -381,7 +381,7 @@ PrefabInstance:
     - target: {fileID: 1862531765257222253, guid: 67a68208f19790145b478a09a089cb92,
         type: 3}
       propertyPath: m_Name
-      value: VDKCamera
+      value: UDSCamera
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 67a68208f19790145b478a09a089cb92, type: 3}

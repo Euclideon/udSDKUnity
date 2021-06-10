@@ -32,17 +32,23 @@ It may work in other versions of Unity, but no guarantee is provided for this. P
 
    ![image](https://user-images.githubusercontent.com/28862516/134596491-d18349f4-2a43-4eb5-a136-1d2df42afb9f.png)
 
-3. Copy **all** files from udSDK_Developer_2.1\lib\{Your_operating_environment}\ to your Unity project root directory
-![image](https://user-images.githubusercontent.com/28862516/134596551-e5a05e72-56f9-43ab-a99e-392cfdf35932.png)
+3. Copy **all** files from the SDK that correspond to your operating system to your Unity project root. These can be found at the path: `udSDK/lib/{Your_operating_environment}/`
+   
+   ![image](./docs/WindowsSDKFiles.png "Windows SDK Files")
+   ![image](./docs/SDKFilesInPlace.png "SDK Files In Place")
+
 
 4. Open the udSDK Unity example scenes by navigating to the 'udSDKUnity' directory and opening Basic Render from **./Assets/Plugins/EuclideonUdSDK/Sample Scenes/**, either on file explorer or Unity Project Explorer
+
 ![image](https://user-images.githubusercontent.com/28862516/134596776-8e0bb6ba-7d22-46f8-9b68-8341e73a1aaf.png)
 ![image](https://user-images.githubusercontent.com/28862516/134596918-c6707bc4-4b1f-4c7c-9768-415810781ddb.png)
 
 5. Open Unity Hub, select add and then browse the cloned or downloaded project folder
+
 ![image](https://user-images.githubusercontent.com/28862516/134596861-c6ea1ead-a966-41b1-ac9d-30df9c21ca1a.png)
 
 6. From the toolbar on top of the Unity Editor, Navigate to Euclideon > udSDK Login - enter your Euclideon username and password, then press Confirm to save your credentials
+
 ![image](https://user-images.githubusercontent.com/28862516/134603715-dd27cbd4-74c0-4d79-984c-32e9d7e04978.png)
 
 7. udSDK with Unity is now ready to go, click 'play'!
@@ -62,17 +68,17 @@ Photogrammetry model of the Gold Coast courtesy of [Aerometrex](https://aerometr
 # Sample Scenes
 Each included example is accompanied by a scene demonstrating the use of the objects. The best way to become farmiliar with these unity objects is to explore their usage in those scenes.
 Currently there are 6 sample demo scenes
-- Basic Render - showing importing a UDS and usage of the picking system (extraction of voxel data from the point cloud given a coordinate in screen space)
+- Basic Render - Import a UDS and use the picking system to extract voxel data.
 ![image](https://user-images.githubusercontent.com/28862516/134597971-34173e4f-f90a-42a7-96fc-11e01c9e396c.png)
-- Driving demo -Showing the usage of the udSDK collider object to make local mesh colliders for physics simulation
+- Driving demo - Use the udSDK collider object to make localized mesh colliders for physics simulation.
 ![image](https://user-images.githubusercontent.com/28862516/134598026-1de917c0-17c5-4938-b71e-ada5b4a72f43.png)
-- Filter Demo - demonstrating the use of a query filter to selectively render volumes of the point cloud
+- Filter Demo - Use of a query filter to selectively render volumes of the point cloud.
 ![image](https://user-images.githubusercontent.com/28862516/134598173-339c056e-f665-48ee-83d4-e9fa703c5bd8.png)
-- Raycasting Example - Showing usage of the udSDK Collider to estimate surfaces in front of the camera for raycasting.
+- Raycasting Example - Use the udSDK Collider to estimate surface distance using raycasting.
 ![image](https://user-images.githubusercontent.com/28862516/134598278-33bb0947-b4e6-4a1f-ad0c-170b29e16808.png)
-- Projects demo - Example of importing udStream Projects including a uds and POIs into Unity
+- Projects demo - Import a udStream Project including models, media and POIs into your Unity scene.
 ![image](https://user-images.githubusercontent.com/28862516/134598379-9ef3b97d-041f-45df-afef-8c6a6be6c45c.png)
-- DepthOfField - Example of visual effect of using the depth buffer to simulate camera lens effect
+- DepthOfField - Explore visual effects using the depth buffer to simulate a camera lens effect.
 ![image](https://user-images.githubusercontent.com/28862516/134598519-45dc447d-78cc-4674-adb0-a10d99c30695.png)
 
 Examples of use of the API features are located under Assets/Plugins/EuclideonUdSDK/Scenes 
@@ -159,22 +165,29 @@ If you would like to include your uds models with the build, rather than served 
 The streaming assets workflow is required to support filetypes such as uds, that are not recognized by Unity. It is a simple way to ensure that files are included in the build package as is; beware, anything you put in this folder will be 
 
 1. In your root assets directory, create a "StreamingAssets" folder.
+   
    ![Example StreamingAssets Folder](./docs/StreamingAssetsFolder.png "Example StreamingAssets folder")
+   
 2. Put any models you would like exported in your build into that folder.
+   
    ![Example Folder Layout](./docs/StreamingAssetExample.png "Example Folder Layout")
+   
 3. Enter a relative filepath as the URI for your uds model, like so:
    - Right click and copy path
+   
    ![Copy Relative Path](./docs/RightClickPath.png "Copy Relative Path")
+     
    - Enter path in UDSModel component
-   ![Enter Relative Path](./docs/RelativePathModel.png "Enter Relative Path")
+   
+![Enter Relative Path](./docs/RelativePathModel.png "Enter Relative Path")
 
 ## Android Support
 
 The provided scenes have been tested on Android:
 Compiling to Android involves the following:
-1. Copy udSDK.so from "[udSDK Location]\lib\android_arm64\libudSDK.so" (or android X64 depending on your target platform) to Assets/Plugins/EuclideonUdSDK
-2. Select the newly added file from the Unity project pane and in the inspector under platform settings select your target platform and check the box "load on startup"
+1. Copy udSDK.so from `[udSDK Location]\lib\android_arm64\libudSDK.so` (or android X64 depending on your target platform) to `Assets/Plugins/EuclideonUdSDK`
+2. Select the newly added file from the Unity project pane and in the inspector under platform settings select your target platform and check the box "Load on startup"
 3. In File -> Build Settings ensure that the "Menu 3d" Scene is loaded first, then the first scene in your application
-4. In the bottom left of this window click player settings -> Sndroid settings, set the scripting backend to IL2CPP and the target architecture to ARM64 (or X64 if you are using that platform)
+4. In the bottom left of this window click player settings -> Android settings, set the scripting backend to IL2CPP and the target architecture to ARM64 (or X64 if you are using that platform)
 
 
