@@ -109,7 +109,6 @@ namespace udSDK
         throw new Exception("Global context not loaded, cannot load project.");
 
       UnityEngine.Debug.Log("Attempting project load from memory"); 
-      // udError err = udProject_LoadFromMemory(ref pudProject, geoJSON);
       udError err = udProject_LoadFromMemory(GlobalUDContext.uContext.pContext, ref pudProject, geoJSON);
 
       if(err != udError.udE_Success)

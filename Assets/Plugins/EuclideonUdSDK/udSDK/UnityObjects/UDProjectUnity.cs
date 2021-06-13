@@ -51,11 +51,9 @@ public class UDProjectUnity : MonoBehaviour
             SetPosition(position);
             return new double[] {0,0,0}; 
         }
-
-        // Debug.Log("Given position : " + position[0] + ", " + position[1] + ", " + position[2]);
-        // Debug.Log("Return position : " + (positionOffset[0] - position[0]) + ", " + (positionOffset[1] - position[1]) + ", " + (positionOffset[2] - position[2]));
-
-        return new double[]{
+        
+        return new double[]
+        {
             positionOffset[0] - position[0],
             positionOffset[1] - position[1],
             positionOffset[2] - position[2]
