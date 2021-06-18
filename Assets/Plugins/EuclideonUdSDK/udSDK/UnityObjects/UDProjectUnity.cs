@@ -5,6 +5,19 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 using udSDK;
 
+[System.Serializable]
+public struct UDProjectAppearance 
+{
+    [Tooltip("Control the color of lines and points.")]
+    public Color interestColor;
+    [Tooltip("Control the size of points.")]
+    public float pointSize;
+    [Tooltip("Control the size of image media.")]
+    public float imageMediaSize;
+    [Tooltip("Control the size of lines.")]
+    public float lineSize;
+}
+
 public class UDProjectUnity : MonoBehaviour
 {
  
@@ -13,10 +26,49 @@ public class UDProjectUnity : MonoBehaviour
   private string geoJSON;
   UDProject proj;
 
+    // this retains an offset, to keep everything close to world origin
+    private double[] positionOffset = new double[3];
+    private bool positionSet = false; 
+
+    [Tooltip("Modify the visuals of a project when loaded.")]
+    public UDProjectAppearance appearance = new UDProjectAppearance{
+        interestColor = new Color(1f, 0.42f, 0f),
+        pointSize = 50f,
+        imageMediaSize = 100f,
+        lineSize = 20f
+    };
+
     // Start is called before the first frame update
     void Start()
     {
         
+    }
+
+    public double[] CheckPosition(double[] position)
+    {
+        if(!positionSet)
+        {
+            SetPosition(position);
+            return new double[] {0,0,0}; 
+        }
+        
+        return new double[]
+        {
+            positionOffset[0] - position[0],
+            positionOffset[1] - position[1],
+            positionOffset[2] - position[2]
+        };
+    }
+
+    public void SetPosition(double[] position)
+    {
+        positionOffset[0] = position[0]; 
+        positionOffset[1] = position[1]; 
+        positionOffset[2] = position[2];
+        
+        Debug.Log("Set project position : " + position[0] + ", " + position[1] + ", " + position[2]);
+        
+        positionSet = true; 
     }
   void LoadFromFile(string path)
   {
@@ -31,6 +83,12 @@ public class UDProjectUnity : MonoBehaviour
     {
     if (!isLoaded)
     {
+        if(!GlobalUDContext.isCreated)
+        {
+            Debug.Log("Cannot load project before global context.");
+            return; 
+        }
+
       try
       {
         LoadFromFile(path);
