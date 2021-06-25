@@ -25,6 +25,7 @@ public class UDCameraOptions : MonoBehaviour
     public bool placeNext = false;
     GameObject previewCube;
 
+    public udPick lastPick ;
 
     //depth buffer of the camera for surface estimate calculations
     float[] depthBuffer;
@@ -68,7 +69,7 @@ public class UDCameraOptions : MonoBehaviour
 
         if (optionsStruct.pickRendered)
         {
-            udPick pick = optionsStruct.getPick(); 
+            udPick pick = lastPick = optionsStruct.getPick(); 
 
             if (placeNext && pick.hit == 0 )
                 Debug.Log("missed!");
