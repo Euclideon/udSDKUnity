@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -98,7 +99,7 @@ public class UDSModel : MonoBehaviour
                         );
             isLoaded = true;
         }
-        catch (System.Exception e)
+        catch (Exception e)
         {
             Debug.LogError("Could not open UDS: " + Path + " " + e.Message);
         }

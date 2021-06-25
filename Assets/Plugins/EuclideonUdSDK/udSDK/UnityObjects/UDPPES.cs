@@ -7,7 +7,7 @@ using udSDK;
 using System.Runtime.InteropServices;
 
 [Serializable]
-[PostProcess(typeof(UDPPER), PostProcessEvent.BeforeTransparent, "VDK/UDPPES")]
+[PostProcess(typeof(UDPPER), PostProcessEvent.BeforeTransparent, "UD/UDPPES")]
 public sealed class UDPPES : PostProcessEffectSettings
 {
     [Tooltip("Apply the depth pass from udShader to _CameraDepthTexture")]

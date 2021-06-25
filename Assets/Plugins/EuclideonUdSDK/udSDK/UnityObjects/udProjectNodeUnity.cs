@@ -24,19 +24,19 @@ public class udProjectNodeUnity : MonoBehaviour
   private UDProjectUnity project; 
 
   Vector3 DoublesToVector3(double[] doubles)
-  {
-      return new Vector3((float)doubles[0], (float)doubles[1], (float)doubles[2]);
+  { 
+    return new Vector3((float)doubles[0], (float)doubles[1], (float)doubles[2]);
   }
 
   double[] GetReorderedPosition(double[] positions, int i)
   {
-      double[] position = new double[3];
+    double[] position = new double[3];
 
-      position[0] = -positions[3 * i];
-      position[2] = -positions[3 * i + 1];
-      position[1] = -positions[3 * i + 2];
+    position[0] = -positions[3 * i];
+    position[2] = -positions[3 * i + 1];
+    position[1] = -positions[3 * i + 2];
 
-      return position; 
+    return position; 
   }
 
   IEnumerator LoadMediaImage(SpriteRenderer sprite)
@@ -44,23 +44,23 @@ public class udProjectNodeUnity : MonoBehaviour
     string targetURI = URI;
 
     if (!URI.StartsWith("http") && !URI.StartsWith("www"))
-        URI = "file://" + Application.dataPath + "/" + URI;  
+      URI = "file://" + Application.dataPath + "/" + URI;  
 
     // warning : this syntax changes somewhat in later versions of Unity 
     using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(URI))
     {
-        yield return uwr.SendWebRequest();
+      yield return uwr.SendWebRequest();
 
-        if (uwr.isNetworkError || uwr.isHttpError)
-        {
-            Debug.Log(uwr.error);
-        }
-        else
-        {
-            // Get downloaded asset bundle
-            var tex = DownloadHandlerTexture.GetContent(uwr);
-            sprite.sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
-        }
+      if (uwr.isNetworkError || uwr.isHttpError)
+      {
+        Debug.Log(uwr.error);
+      }
+      else
+      {
+        // Get downloaded asset bundle
+        var tex = DownloadHandlerTexture.GetContent(uwr);
+        sprite.sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
+      }
     }
 
     yield return null;
@@ -68,23 +68,23 @@ public class udProjectNodeUnity : MonoBehaviour
 
   GameObject PlaceChildSphere(double[] position, float size)
   {
-      Vector3 positionVector = DoublesToVector3(position); 
+    Vector3 positionVector = DoublesToVector3(position); 
 
-      var sphereGO = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-      var renderer = sphereGO.GetComponent<Renderer>();
+    var sphereGO = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+    var renderer = sphereGO.GetComponent<Renderer>();
 
-      var shader = Shader.Find("udSDK/Demo/DepthOffsetSprite");
-      if (shader == null)
-        throw new Exception("Required shader is missing : udSDK/Demo/DepthOffsetSprite");
-      renderer.material = new Material(shader);
-      renderer.material.SetFloat("_ZOffset", 0 + size*0.01f);
-      renderer.material.color = project.appearance.interestColor; 
+    var shader = Shader.Find("udSDK/Demo/DepthOffsetSprite");
+    if (shader == null)
+      throw new Exception("Required shader is missing : udSDK/Demo/DepthOffsetSprite");
+    renderer.material = new Material(shader);
+    renderer.material.SetFloat("_ZOffset", 0 + size*0.01f);
+    renderer.material.color = project.appearance.interestColor; 
 
-      sphereGO.transform.parent = transform;
-      sphereGO.transform.position = positionVector;
-      sphereGO.transform.localScale = Vector3.one * size;
+    sphereGO.transform.parent = transform;
+    sphereGO.transform.position = positionVector;
+    sphereGO.transform.localScale = Vector3.one * size;
 
-      return sphereGO; 
+    return sphereGO; 
   }
 
   public void LoadTree(IntPtr pNode)
@@ -100,16 +100,16 @@ public class udProjectNodeUnity : MonoBehaviour
 
     if (projectNode.nodeData.pCoordinates != IntPtr.Zero)
     {
-        if (!(projectNode.nodeData.geomCount == 0))
-        {
-            positions = new double[projectNode.nodeData.geomCount * 3];
-            Marshal.Copy(projectNode.nodeData.pCoordinates, positions, 0, projectNode.nodeData.geomCount * 3);
-        }
-        else
-        {
-            positions = new double[3];
-            Marshal.Copy(projectNode.nodeData.pCoordinates, positions, 0, 3);
-        }
+      if (!(projectNode.nodeData.geomCount == 0))
+      {
+        positions = new double[projectNode.nodeData.geomCount * 3];
+        Marshal.Copy(projectNode.nodeData.pCoordinates, positions, 0, projectNode.nodeData.geomCount * 3);
+      }
+      else
+      {
+        positions = new double[3];
+        Marshal.Copy(projectNode.nodeData.pCoordinates, positions, 0, 3);
+      }
     }
 
     this.itemType = projectNode.nodeData.itemtype;
@@ -154,10 +154,13 @@ public class udProjectNodeUnity : MonoBehaviour
           sphereGO.name = "Point of Interest"; 
         } 
         break;
+      
       case udProjectNodeType.udPNT_Folder: //!<A folder of other nodes (“Folder”)
         break;
+      
       case udProjectNodeType.udPNT_GTFS: //!< A General Transit Feed Specification object ("GTFS")
         break;
+      
       case udProjectNodeType.udPNT_Media: //!<An Image, Movie, Audio file or other media object (“Media”)
         // only supporting images presently
         var icon = new GameObject(); 
@@ -185,8 +188,10 @@ public class udProjectNodeUnity : MonoBehaviour
         icon.name = "Media : " + URI;
         StartCoroutine(LoadMediaImage(sprite));
         break;
+      
       case udProjectNodeType.udPNT_Viewpoint:
         break;
+      
       case udProjectNodeType.udPNT_VisualisationSettings: //!<Visualisation settings (itensity, map height etc) (“VizSet”)
         break;
     }
@@ -259,10 +264,8 @@ public class udProjectNodeUnity : MonoBehaviour
         break;
     }
 
-
-    
     //create sibling
-  if(projectNode.nodeData.pNextSibling != System.IntPtr.Zero)
+    if(projectNode.nodeData.pNextSibling != System.IntPtr.Zero)
     {
       nextSibling = new GameObject();
       nextSibling.transform.parent = transform.parent;
@@ -271,7 +274,7 @@ public class udProjectNodeUnity : MonoBehaviour
     }
 
     //create a child (if exists)
-  if(projectNode.nodeData.pFirstChild != System.IntPtr.Zero)
+    if(projectNode.nodeData.pFirstChild != System.IntPtr.Zero)
     {
       firstChild = new GameObject();
       firstChild.transform.parent = transform;
@@ -280,15 +283,4 @@ public class udProjectNodeUnity : MonoBehaviour
     }
     
   }
-
-  void ProcessCustomType() 
-  {
-      
-  }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

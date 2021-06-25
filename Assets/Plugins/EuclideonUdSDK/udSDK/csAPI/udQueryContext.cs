@@ -1,10 +1,13 @@
 using System;
 using System.Runtime.InteropServices;
+using UnityEngine;
 
-namespace udSDK {
+namespace udSDK 
+{
     public class udQueryFilter
     {
         public IntPtr pQueryFilter = IntPtr.Zero;
+
         public udQueryFilter()
         {
             udError error = udQueryFilter_Create(ref pQueryFilter);
@@ -29,7 +32,6 @@ namespace udSDK {
          */
         public void SetInverted(bool inverted)
         {
-            
             udError error = udQueryFilter_SetInverted(pQueryFilter, inverted);
             if (error != udError.udE_Success)
                 throw new Exception("Query Inversion Failed: " + error.ToString());
@@ -55,7 +57,6 @@ namespace udSDK {
          */
         public void SetAsBox(double[] centrePoint, double[] halfSize, double[] yawPitchRoll)
         {
-            
             udError error = udQueryFilter_SetAsBox(pQueryFilter, centrePoint, halfSize, yawPitchRoll);
             if (error != udError.udE_Success)
                 throw new Exception("Query SetAsBox Failed: " + error.ToString());
@@ -82,7 +83,6 @@ namespace udSDK {
          */
         public void SetAsCylinder(double[] centrePoint, double radius, double halfHeight, double[] yawPitchRoll)
         {
-            
             udError error = udQueryFilter_SetAsCylinder(pQueryFilter, centrePoint, radius, halfHeight, yawPitchRoll);
             if (error != udError.udE_Success)
                 throw new Exception("Query SetAsCylinder Failed: " + error.ToString());
@@ -107,21 +107,26 @@ namespace udSDK {
          */
         public void SetAsSphere(double[] centrePoint, double radius)
         {
-            
             udError error = udQueryFilter_SetAsSphere(pQueryFilter, centrePoint, radius);
             if (error != udError.udE_Success)
                 throw new Exception("Query SetAsSphere Failed: " + error.ToString());
         }
+
         [DllImport(UDSDKLibrary.name)]
         private static extern udError udQueryFilter_Create(ref IntPtr ppQueryFilter);
+
         [DllImport(UDSDKLibrary.name)]
         private static extern udError udQueryFilter_Destroy(ref IntPtr ppQueryFilter);
+
         [DllImport(UDSDKLibrary.name)]
         private static extern udError udQueryFilter_SetInverted(IntPtr pQueryFilter, bool inverted);
+
         [DllImport(UDSDKLibrary.name)]
         private static extern udError udQueryFilter_SetAsBox(IntPtr pQueryFilter, double[] centrePoint, double[] halfSize, double[] yawPitchRoll);
+
         [DllImport(UDSDKLibrary.name)]
         private static extern udError udQueryFilter_SetAsCylinder(IntPtr pQueryFilter, double[] centrePoint, double radius, double halfHeight, double[] yawPitchRoll);
+
         [DllImport(UDSDKLibrary.name)]
         private static extern udError udQueryFilter_SetAsSphere(IntPtr pQueryFilter, double[] centrePoint, double radius);
     }

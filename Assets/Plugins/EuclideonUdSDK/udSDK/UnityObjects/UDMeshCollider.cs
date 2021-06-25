@@ -311,16 +311,17 @@ public class UDMeshCollider : MonoBehaviour
         Matrix4x4 projection = Matrix4x4.Ortho(-width / 2, width / 2, height / 2, -height / 2, zNear, zFar);
         renderView.SetMatrix(udSDK.udRenderTargetMatrix.Projection, UDUtilities.GetUDMatrix(projection));
         RenderOptions options = new RenderOptions();
-      //we need the highest LOD if we are not updating the mesh every frame
-      if(blockOnStream)
-        options.options.flags = udRenderContextFlags.udRCF_BlockingStreaming;
+        
+        //we need the highest LOD if we are not updating the mesh every frame
+        if(blockOnStream)
+            options.options.flags = udRenderContextFlags.udRCF_BlockingStreaming;
 
         try
         {
             GlobalUDContext.renderer.Render(renderView, modelArray, modelArray.Length, options);
         }
         catch (Exception e){
-            Debug.Log("VDK dropped frame: " + e.ToString());
+            Debug.Log("Dropped frame: " + e.ToString());
         }
         MakeSheetMesh(width, height, (int)widthPix, (int)heightPix, depthBuffer);
     }
