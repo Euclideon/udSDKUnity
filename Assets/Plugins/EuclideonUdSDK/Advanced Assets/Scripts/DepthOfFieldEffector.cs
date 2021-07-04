@@ -48,7 +48,6 @@ public class DepthOfFieldEffector : MonoBehaviour
         {
             case ChangeMode.Immediate:
                 return; 
-                break;
             case ChangeMode.Lerp:
                 LerpAndChangeValue(ref focalLengthValue,   ref dFocalLengthValue,   ref depthOfFieldEffect.focalLength.value);
                 LerpAndChangeValue(ref apertureValue,      ref dApertureValue,      ref depthOfFieldEffect.aperture.value);
