@@ -22,6 +22,11 @@ namespace udSDK
         // .. usernames and passwords.
         public static string SavedUsernameKey = "Username";
         public static string SavedPasswordKey = "Password";
+        
+        // For validating the version 
+        public static UDVersion sdkVersion; // the version of the sdk currently linked to the project
+        public static UDVersion wrapperVersion = new UDVersion(2, 1, 0); // the latest version of the sdk supported by the sdk
+
         public static void Login()
         {
             //For builds, set in login page
@@ -63,12 +68,35 @@ namespace udSDK
                   }
                     //uContext.RequestLicense(LicenseType.Render);
                 }
+                GlobalUDContext.CheckSDKVersion();
             }
             else
             {
               Debug.Log("udSDK Skipping Login: already logged in");
             }
+
             GlobalUDContext.renderer.Create(uContext);
+        }
+        
+        public static void CheckSDKVersion()
+        {
+          if(sdkVersion == null)
+            GlobalUDContext.sdkVersion = new UDVersion(); 
+
+          if (GlobalUDContext.sdkVersion.Equals(wrapperVersion))
+            return ; 
+
+          // identify mismatches that will likely affect the functionality (major, and minor versions, ignoring patch)
+          if(wrapperVersion.GreaterThan(sdkVersion, 1) )
+          {
+            Debug.LogWarning("udSDK "+sdkVersion.Format()+" is deprecated, and does not match the integration. "+
+                             "Please update to the supported version "+wrapperVersion.Format()+".");
+          }
+          else if(sdkVersion.GreaterThan(wrapperVersion, 1) )
+          {
+            Debug.LogWarning("udSDK "+sdkVersion.Format()+" is newer than the integration. "+
+                             "The integration should be updated, as certain features may not be working correctly.");
+          }
         }
     }
 }
