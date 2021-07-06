@@ -248,7 +248,7 @@ public class udProjectNodeUnity : MonoBehaviour
         }
 
         lr.SetPositions(verts);
-        lr.SetWidth(project.appearance.lineSize, project.appearance.lineSize);
+        lr.startWidth = lr.endWidth = project.appearance.lineSize;
         break;
 
       case(udProjectGeometryType.udPGT_MultiLineString): //!<Array of udPGT_LineString; pCoordinates is NULL and children will be present.
