@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 #if UNITY_EDITOR
 using UnityEditor ; 
 #endif
@@ -29,6 +30,10 @@ public class UDSModel : MonoBehaviour
     public Vector3 geolocationOffset = Vector3.zero;
     public string path = "";
     public bool geolocate = false;
+    
+    [HideInInspector]
+    public UnityEvent m_OnLoaded;
+    
     public string Path
     {
         get { return path; }
@@ -42,9 +47,14 @@ public class UDSModel : MonoBehaviour
         }
     }
 
+    private void Awake()
+    {
+        // adding this init in Awake so that it happens at the earliest possible time 
+        m_OnLoaded = new UnityEvent();
+    }
+
     private void Update()
     {
-
         if (geolocate)
         {
             this.transform.localPosition =  UDUtilities.UDtoGL *
@@ -98,11 +108,21 @@ public class UDSModel : MonoBehaviour
                           )
                         );
             isLoaded = true;
+            
+            m_OnLoaded.Invoke();
         }
         catch (Exception e)
         {
             Debug.LogError("Could not open UDS: " + Path + " " + e.Message);
         }
+    }
+    
+    [ContextMenu("Reload")]
+    public void Reload()
+    {
+        // we don't force a reload, only ensure reload happens at the next opportunity
+        isLoaded = false;
+        udModel.Unload();
     }
 }
 
