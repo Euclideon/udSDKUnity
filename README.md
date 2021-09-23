@@ -6,33 +6,51 @@ This project demonstrates the use of Euclideon udSDK developer Kit (udSDK SDK) w
 Language:              C#
 Type:                  Integration
 Contributor:           Euclideon udSDK Development Team <support@euclideon.com>
-Organization:          Euclideon, https://euclideon.com/
+Organization:          Euclideon, https://www.euclideon.com/
 Date:                  2020-08-10
-udSDK Version:         1.0.0
+Last Updated:          2021-09-24
+udSDK Version:         2.1.0
 Toolsets:              Requires Unity >= 2019.3.4f1
 ```
 
 ## Quickstart guide 
 
 **The Unity-udSDK sample requires a free Euclideon Account to use, licenses can be obtained [here](https://www.euclideon.com/udsdk/)** 
-The udSDK is tested with Unity 2019.3.4f1 - it may work in other versions of Unity, but we can't guarantee that it does. Please sneure you have Unity 2019.3.4f1 installed.
+The udSDK is tested with Unity on following versions:
+```
+- 2019.3.4f1
+- 2020.1.9f1
+- 2020.3.18f1
+```
+It may work in other versions of Unity, but no guarantee is provided for this. Please ensure you have one of the tested versions installed.
 
 ### Installation - New or Existing Project
 The fastest way to install udSDK for Unity is to go [here](https://Euclideon.com/unity) and follow the onscreen instructions.
 
 ### Installation - Github Samples
 1. Download and extract the latest udSDK package from [here](https://udstream.euclideon.com) using your license credentials. You can obtain a free account [from our website](https://www.euclideon.com/free-development-resources/) 
+
 2. Clone or Download the Unity udSDK examples from [here](https://github.com/Euclideon/udSDKUnity)
-3. Copy the files from _udSDK_2.0\lib\(your operating system here)\ _ to your Unity project working directory
-3. Open the udSDK Unity example project by navigating to _the ‘udSDKUnity' directory and opening Basic Render from udSDKUnity/Assets/Plugins/EuclideonUdSDK/Sample Scenes 
-5. Open Unity Hub, select add and then the location of the downlaoded project
-4. From the Toolbar in the Unity Editor, Navigate to UD > Set User Info - and enter your udgc username/password, then press Save User Info.
+![image](https://user-images.githubusercontent.com/28862516/134596491-d18349f4-2a43-4eb5-a136-1d2df42afb9f.png)
 
-udSDK with Unity is now ready to go! Press play!
+3. Copy **all** files from udSDK_Developer_2.1\lib\{Your_operating_environment}\ to your Unity project root directory
+![image](https://user-images.githubusercontent.com/28862516/134596551-e5a05e72-56f9-43ab-a99e-392cfdf35932.png)
 
-### Changing UDS model
+4. Open the udSDK Unity example scenes by navigating to the 'udSDKUnity' directory and opening Basic Render from **./Assets/Plugins/EuclideonUdSDK/Sample Scenes/**, either on file explorer or Unity Project Explorer
+![image](https://user-images.githubusercontent.com/28862516/134596776-8e0bb6ba-7d22-46f8-9b68-8341e73a1aaf.png)
+![image](https://user-images.githubusercontent.com/28862516/134596918-c6707bc4-4b1f-4c7c-9768-415810781ddb.png)
 
-The UDS can be changed by modifying the path attribute of the Model object in the project hierarchy (by default on the left of the screen) using the inspector (by default on the right)
+5. Open Unity Hub, select add and then browse the cloned or downloaded project folder
+![image](https://user-images.githubusercontent.com/28862516/134596861-c6ea1ead-a966-41b1-ac9d-30df9c21ca1a.png)
+
+6. From the toolbar on top of the Unity Editor, Navigate to Euclideon > udSDK Login - enter your Euclideon username and password, then press Confirm to save your credentials.
+![image](https://user-images.githubusercontent.com/28862516/134596110-8f8cbde6-65a8-44a6-9ccf-b4f2ceed38eb.png)
+
+udSDK with Unity is now ready to go, click 'play'!
+
+### Changing UDS model url
+
+The UDS model can be changed by modifying the path attribute of the 'UDS Model' object in the project hierarchy (by default on the *left* of the screen) using the inspector (by default on the *right*)
 
 There is a UDS model included with this example for demonstration purposes, paths to your own model can be pasted into the _path_ field of the US model object
 UDS file format developed by Euclideon allowing streamable, unlimited sized 3D datasets requiring only low spec hardware. 
@@ -44,18 +62,25 @@ Photogrammetry model of the Gold Coast courtesy of [Aerometrex](https://aerometr
 
 # Sample Scenes
 Each included example is accompanied by a scene demonstrating the use of the objects. The best way to become farmiliar with these unity objects is to explore their usage in those scenes.
-Currently there are four sample scenes
+Currently there are 6 sample demo scenes
 - Basic Render - showing importing a UDS and usage of the picking system (extraction of voxel data from the point cloud given a coordinate in screen space)
+![image](https://user-images.githubusercontent.com/28862516/134597971-34173e4f-f90a-42a7-96fc-11e01c9e396c.png)
 - Driving demo -Showing the usage of the udSDK collider object to make local mesh colliders for physics simulation
+![image](https://user-images.githubusercontent.com/28862516/134598026-1de917c0-17c5-4938-b71e-ada5b4a72f43.png)
 - Filter Demo -  demonstrating the use of a query filter to selectively render volumes of the point cloud
+![image](https://user-images.githubusercontent.com/28862516/134598173-339c056e-f665-48ee-83d4-e9fa703c5bd8.png)
 - Raycasting Example - Showing usage of the udSDK Collider to estimate surfaces in front of the camera for raycasting.
+![image](https://user-images.githubusercontent.com/28862516/134598278-33bb0947-b4e6-4a1f-ad0c-170b29e16808.png)
 - Projects demo - Example of importing udStream Projects including a uds and POIs into Unity
+![image](https://user-images.githubusercontent.com/28862516/134598379-9ef3b97d-041f-45df-afef-8c6a6be6c45c.png)
+- DepthOfField - Example of visual effect of using the depth buffer to simlulate camera lens effect
+![image](https://user-images.githubusercontent.com/28862516/134598519-45dc447d-78cc-4674-adb0-a10d99c30695.png)
 
-Examples of use of the  API features are located under Assets/Plugins/EuclideonUdSDK/Scenes 
+Examples of use of the API features are located under Assets/Plugins/EuclideonUdSDK/Scenes 
 ## Basic Example
 
 This is an example demonstrating how to use udSDK with Unity, it includes a minimalist example of a flight camera and an attached collider.
-Unlimited detail rendering is implemented as a postprocessing effect that can be applied to cameras in order to display UDS objects.
+Unlimited Detail rendering is implemented as a postprocessing effect that can be applied to cameras to display UDS objects.
 
 
 ### Sample Scene Structure
