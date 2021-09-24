@@ -21,6 +21,7 @@ The udSDK is tested with Unity on following versions:
 - 2019.3.4f1
 - 2020.1.9f1
 - 2020.3.18f1
+- 2021.1.22f1
 ```
 It may work in other versions of Unity, but no guarantee is provided for this. Please ensure you have one of the tested versions installed.
 
@@ -67,7 +68,7 @@ Currently there are 6 sample demo scenes
 ![image](https://user-images.githubusercontent.com/28862516/134597971-34173e4f-f90a-42a7-96fc-11e01c9e396c.png)
 - Driving demo -Showing the usage of the udSDK collider object to make local mesh colliders for physics simulation
 ![image](https://user-images.githubusercontent.com/28862516/134598026-1de917c0-17c5-4938-b71e-ada5b4a72f43.png)
-- Filter Demo -  demonstrating the use of a query filter to selectively render volumes of the point cloud
+- Filter Demo - demonstrating the use of a query filter to selectively render volumes of the point cloud
 ![image](https://user-images.githubusercontent.com/28862516/134598173-339c056e-f665-48ee-83d4-e9fa703c5bd8.png)
 - Raycasting Example - Showing usage of the udSDK Collider to estimate surfaces in front of the camera for raycasting.
 ![image](https://user-images.githubusercontent.com/28862516/134598278-33bb0947-b4e6-4a1f-ad0c-170b29e16808.png)
