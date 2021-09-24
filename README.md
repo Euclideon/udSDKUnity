@@ -44,10 +44,10 @@ The fastest way to install udSDK for Unity is to go [here](https://Euclideon.com
 5. Open Unity Hub, select add and then browse the cloned or downloaded project folder
 ![image](https://user-images.githubusercontent.com/28862516/134596861-c6ea1ead-a966-41b1-ac9d-30df9c21ca1a.png)
 
-6. From the toolbar on top of the Unity Editor, Navigate to Euclideon > udSDK Login - enter your Euclideon username and password, then press Confirm to save your credentials.
-![image](https://user-images.githubusercontent.com/28862516/134596110-8f8cbde6-65a8-44a6-9ccf-b4f2ceed38eb.png)
+6. From the toolbar on top of the Unity Editor, Navigate to Euclideon > udSDK Login - enter your Euclideon username and password, then press Confirm to save your credentials
+![image](https://user-images.githubusercontent.com/28862516/134603715-dd27cbd4-74c0-4d79-984c-32e9d7e04978.png)
 
-udSDK with Unity is now ready to go, click 'play'!
+7. udSDK with Unity is now ready to go, click 'play'!
 
 ### Changing UDS model url
 
