@@ -28,8 +28,9 @@ It may work in other versions of Unity, but no guarantee is provided for this. P
 ### Installation - Github Samples
 1. Download and extract the latest udSDK package from [here](https://udstream.euclideon.com) using your license credentials. You can obtain a free account [from our website](https://www.euclideon.com/free-development-resources/) 
 
-2. Clone or Download as a zip of the Unity udSDK examples source code from [here](https://github.com/Euclideon/udSDKUnity)
-![image](https://user-images.githubusercontent.com/28862516/134596491-d18349f4-2a43-4eb5-a136-1d2df42afb9f.png)
+2. Clone the Unity udSDK examples source code from [here](https://github.com/Euclideon/udSDKUnity) or Download as a zip.
+
+   ![image](https://user-images.githubusercontent.com/28862516/134596491-d18349f4-2a43-4eb5-a136-1d2df42afb9f.png)
 
 3. Copy **all** files from udSDK_Developer_2.1\lib\{Your_operating_environment}\ to your Unity project root directory
 ![image](https://user-images.githubusercontent.com/28862516/134596551-e5a05e72-56f9-43ab-a99e-392cfdf35932.png)
