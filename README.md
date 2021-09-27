@@ -28,7 +28,7 @@ It may work in other versions of Unity, but no guarantee is provided for this. P
 ### Installation - Github Samples
 1. Download and extract the latest udSDK package from [here](https://udstream.euclideon.com) using your license credentials. You can obtain a free account [from our website](https://www.euclideon.com/free-development-resources/) 
 
-2. Clone or Download the Unity udSDK examples from [here](https://github.com/Euclideon/udSDKUnity)
+2. Clone or Download as a zip of the Unity udSDK examples source code from [here](https://github.com/Euclideon/udSDKUnity)
 ![image](https://user-images.githubusercontent.com/28862516/134596491-d18349f4-2a43-4eb5-a136-1d2df42afb9f.png)
 
 3. Copy **all** files from udSDK_Developer_2.1\lib\{Your_operating_environment}\ to your Unity project root directory
@@ -71,7 +71,7 @@ Currently there are 6 sample demo scenes
 ![image](https://user-images.githubusercontent.com/28862516/134598278-33bb0947-b4e6-4a1f-ad0c-170b29e16808.png)
 - Projects demo - Example of importing udStream Projects including a uds and POIs into Unity
 ![image](https://user-images.githubusercontent.com/28862516/134598379-9ef3b97d-041f-45df-afef-8c6a6be6c45c.png)
-- DepthOfField - Example of visual effect of using the depth buffer to simlulate camera lens effect
+- DepthOfField - Example of visual effect of using the depth buffer to simulate camera lens effect
 ![image](https://user-images.githubusercontent.com/28862516/134598519-45dc447d-78cc-4674-adb0-a10d99c30695.png)
 
 Examples of use of the API features are located under Assets/Plugins/EuclideonUdSDK/Scenes 
