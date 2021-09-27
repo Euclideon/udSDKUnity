@@ -18,10 +18,10 @@ Toolsets:              Requires Unity >= 2019.3.4f1
 **The Unity-udSDK sample requires a free Euclideon Account to use, licenses can be obtained [here](https://www.euclideon.com/udsdk/)** 
 The udSDK is tested with Unity on following versions:
 ```
-- 2019.3.4f1
-- 2020.1.9f1
-- 2020.3.18f1
 - 2021.1.22f1
+- 2020.3.18f1
+- 2020.1.9f1
+- 2019.3.4f1
 ```
 It may work in other versions of Unity, but no guarantee is provided for this. Please ensure you have one of the tested versions installed.
 
