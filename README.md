@@ -25,9 +25,6 @@ The udSDK is tested with Unity on following versions:
 ```
 It may work in other versions of Unity, but no guarantee is provided for this. Please ensure you have one of the tested versions installed.
 
-### Installation - New or Existing Project
-The fastest way to install udSDK for Unity is to go [here](https://Euclideon.com/unity) and follow the onscreen instructions.
-
 ### Installation - Github Samples
 1. Download and extract the latest udSDK package from [here](https://udstream.euclideon.com) using your license credentials. You can obtain a free account [from our website](https://www.euclideon.com/free-development-resources/) 
 
