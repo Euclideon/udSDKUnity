@@ -46,6 +46,7 @@ public class UDSModel : MonoBehaviour
             isLoaded = false;
         }
     }
+    private string resolvedPath; // This resolves any issues with local streamable assets 
 
     private void Awake()
     {
@@ -79,12 +80,49 @@ public class UDSModel : MonoBehaviour
     // This gets called by getUDSInstances if it isn't loaded already
     public void LoadModel()
     {
+        // if not ready for loading, fail
         if (!GlobalUDContext.isCreated || isLoaded || Path == "" || Path == null)
             return;
 
+        // handle cases for local paths 
+        if (resolvedPath == "" || resolvedPath == null)
+        {
+            // while we are here, trim for convenience
+            // fyi windows copy as path tool always has quotes either side
+            char[] charsToTrim = {' ', '"'};
+            var trimmedString = Path.Trim(charsToTrim);
+            
+            // need to determine if we are using a url, an absolute path, or a local path 
+            if (trimmedString.StartsWith("Assets/StreamingAssets"))
+            {
+                // Warning, the path reference by streamingAssetsPath varies per platform 
+                // More details here : https://docs.unity3d.com/Manual/StreamingAssets.html
+                var pathChunks = trimmedString.Split(new[] {"StreamingAssets",}, StringSplitOptions.None);
+                string relativePath = pathChunks[pathChunks.Length-1];
+                List<RuntimePlatform> defaultPlatforms = new List<RuntimePlatform>() {
+                    RuntimePlatform.WindowsPlayer, 
+                    RuntimePlatform.WindowsEditor,
+                    RuntimePlatform.LinuxPlayer,
+                    RuntimePlatform.LinuxEditor,
+                    RuntimePlatform.OSXEditor,
+                    RuntimePlatform.OSXPlayer,
+                };
+                if (defaultPlatforms.Contains(Application.platform))
+                    resolvedPath = Application.streamingAssetsPath + relativePath;
+                else
+                    resolvedPath = trimmedString;
+            }
+            else
+            {
+                // this is the default original case 
+                resolvedPath = trimmedString;
+            } 
+        }
+
+        // attempt to load via udsdk
         try
         {
-            udModel.Load(GlobalUDContext.uContext, Path, ref header);
+            udModel.Load(GlobalUDContext.uContext, resolvedPath, ref header);
             storedMatrix = getStoredMatrix();
             double maxDim = 0;
             for (int i = 0; i < 3; i++) {
@@ -113,7 +151,7 @@ public class UDSModel : MonoBehaviour
         }
         catch (Exception e)
         {
-            Debug.LogError("Could not open UDS: " + Path + " " + e.Message);
+            Debug.LogError("Could not open UDS: " + resolvedPath + " " + e.Message);
         }
     }
     
