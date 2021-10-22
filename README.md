@@ -147,15 +147,34 @@ Smoothing on (note that tree branches are no longer captured by the collision mo
 
 As the attached mesh is modified often by this script, baking options for the mesh collider should be turned off for performance reasons
 
+## Creating a Build
 
+When you create a build, please do the following : 
+1. In File -> Build Settings ensure that the "Menu 3d" Scene is loaded first, then the first scene in your application
+2. Once built, ensure that the appropriate udSDK contents are copied into the build folder.
+
+If you would like to include your uds models with the build, rather than served over a network, then please consider the following workflow.
+
+#### Streaming Assets
+The streaming assets workflow is required to support filetypes such as uds, that are not recognized by Unity. It is a simple way to ensure that files are included in the build package as is; beware, anything you put in this folder will be 
+
+1. In your root assets directory, create a "StreamingAssets" folder.
+   ![Example StreamingAssets Folder](./docs/StreamingAssetsFolder.png "Example StreamingAssets folder")
+2. Put any models you would like exported in your build into that folder.
+   ![Example Folder Layout](./docs/StreamingAssetExample.png "Example Folder Layout")
+3. Enter a relative filepath as the URI for your uds model, like so:
+   - Right click and copy path
+   ![Copy Relative Path](./docs/RightClickPath.png "Copy Relative Path")
+   - Enter path in UDSModel component
+   ![Enter Relative Path](./docs/RelativePathModel.png "Enter Relative Path")
 
 ## Android Support
 
 The provided scenes have been tested on Android:
 Compiling to Android involves the following:
-- Copy udSDK.so from "[udSDK Location]\lib\android_arm64\libudSDK.so" (or android X64 depending on your target platform) to Assets/Plugins/EuclideonUdSDK
-- Select the newly added file from the Unity project pane and in the inspector under platform settings select your target platform and check the box "load on startup"
-- In File -> Build Settings ensure that the Menu 3d Scene is loaded first, then the forst scene in your application
-- In the bottom left of this window click player settings -> Sndroid settings, set the scripting backend to IL2CPP and the target architecture to ARM64 (or X64 if you are using that platform)
+1. Copy udSDK.so from "[udSDK Location]\lib\android_arm64\libudSDK.so" (or android X64 depending on your target platform) to Assets/Plugins/EuclideonUdSDK
+2. Select the newly added file from the Unity project pane and in the inspector under platform settings select your target platform and check the box "load on startup"
+3. In File -> Build Settings ensure that the "Menu 3d" Scene is loaded first, then the first scene in your application
+4. In the bottom left of this window click player settings -> Sndroid settings, set the scripting backend to IL2CPP and the target architecture to ARM64 (or X64 if you are using that platform)
 
 
