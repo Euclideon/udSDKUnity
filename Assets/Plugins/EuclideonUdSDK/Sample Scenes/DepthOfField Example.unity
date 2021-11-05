@@ -240,11 +240,7 @@ MonoBehaviour:
   - assemblyQualifiedName: UDPPES, Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   m_BeforeStackBundles: []
-  m_AfterStackBundles:
-  - assemblyQualifiedName: udAmbientOcclusion, Assembly-CSharp-firstpass, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  - assemblyQualifiedName: udDepthOfField, Assembly-CSharp-firstpass, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+  m_AfterStackBundles: []
 --- !u!114 &1173766346
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -418,5 +414,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   geolocationOffset: {x: 0, y: 0, z: 0}
-  path: 'N:\Aerometrex\Bendigo\Bendigo Non Primitive\Bendigo_nonPrimitive_SL.uds '
+  path: https://models.euclideon.com/solutions/Bendigo_nonPrimitive_SL.uds
   geolocate: 0
+  m_OnLoaded:
+    m_PersistentCalls:
+      m_Calls: []

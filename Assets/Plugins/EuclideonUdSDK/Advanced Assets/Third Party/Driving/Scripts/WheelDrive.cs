@@ -11,7 +11,7 @@ public enum DriveType
 
 public class WheelDrive : MonoBehaviour
 {
-    [Tooltip("Maximum steering angle of the wheels")]
+	[Tooltip("Maximum steering angle of the wheels")]
 	public float maxAngle = 30f;
 	[Tooltip("Maximum torque applied to the driving wheels")]
 	public float maxTorque = 300f;
@@ -30,11 +30,15 @@ public class WheelDrive : MonoBehaviour
 	[Tooltip("The vehicle's drive type: rear-wheels drive, front-wheels drive or all-wheels drive.")]
 	public DriveType driveType;
 
-    private WheelCollider[] m_Wheels;
+	private WheelCollider[] m_Wheels;
 
-    // Find all the WheelColliders down in the hierarchy.
+	private Rigidbody rb; 
+
+	// Find all the WheelColliders down in the hierarchy.
 	void Start()
 	{
+		rb = GetComponent<Rigidbody>();
+
 		m_Wheels = GetComponentsInChildren<WheelCollider>();
 
 		for (int i = 0; i < m_Wheels.Length; ++i) 
@@ -55,6 +59,13 @@ public class WheelDrive : MonoBehaviour
 	// This helps us to figure our which wheels are front ones and which are rear.
 	void Update()
 	{
+		// on the first player input, we want to make the car kinematic 
+		// this is because if the car is at ground level, the voxels streaming in send it flying 
+		if(rb.isKinematic && Input.GetAxis("Vertical") != 0)
+		{
+			rb.isKinematic = false;
+		}
+
 		m_Wheels[0].ConfigureVehicleSubsteps(criticalSpeed, stepsBelow, stepsAbove);
 
 		float angle = maxAngle * Input.GetAxis("Horizontal");
@@ -93,16 +104,16 @@ public class WheelDrive : MonoBehaviour
 				// Assume that the only child of the wheelcollider is the wheel shape.
 				Transform shapeTransform = wheel.transform.GetChild (0);
 
-                if (wheel.name == "a0l" || wheel.name == "a1l" || wheel.name == "a2l")
-                {
-                    shapeTransform.rotation = q * Quaternion.Euler(0, 180, 0);
-                    shapeTransform.position = p;
-                }
-                else
-                {
-                    shapeTransform.position = p;
-                    shapeTransform.rotation = q;
-                }
+				if (wheel.name == "a0l" || wheel.name == "a1l" || wheel.name == "a2l")
+				{
+					shapeTransform.rotation = q * Quaternion.Euler(0, 180, 0);
+					shapeTransform.position = p;
+				}
+				else
+				{
+					shapeTransform.position = p;
+					shapeTransform.rotation = q;
+				}
 			}
 		}
 	}
