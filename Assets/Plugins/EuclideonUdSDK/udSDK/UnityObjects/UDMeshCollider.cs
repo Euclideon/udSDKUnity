@@ -13,7 +13,7 @@ public class UDMeshCollider : MonoBehaviour
     [Tooltip("target object to follow")]
     public GameObject followTarget = null;
     [Tooltip("Determines whether to update the plane only when the target moves a threshold distance from the watcher point")]
-    public bool threshholdFollow = false;
+    public bool thresholdFollow = false;
     [Tooltip("Distance from which to update the plane location when threshold follow is turned on")]
     public double followThreshold;
     [Tooltip("Position of the virtual watcher camera relative to the target")]
@@ -38,9 +38,10 @@ public class UDMeshCollider : MonoBehaviour
     public bool laplacianSmoothing = false;
     [Tooltip("Determines if the collider rotates with the body of the target object")]
     public LockRotationToBody lockRotationToBody;
-    public Vector3 bodyLockOffset = new Vector3( 0, 0, 0);
+    public Vector3 bodyLockOffset = new Vector3(0, 0, 0);
     [System.Serializable]
-    public class LockRotationToBody {
+    public class LockRotationToBody
+    {
         public bool x = false;
         public bool y = false;
         public bool z = false;
@@ -54,18 +55,16 @@ public class UDMeshCollider : MonoBehaviour
 
     Transform previousTransform;
 
-
     public float[] depthBuffer;
     private Color32[] colourBuffer;
+
     void Awake()
     {
         SetRenderView();
         Update();
     }
 
-    /*
-     * converts the z buffer value to a world space displacement
-     */
+    /* Converts the buffer value to a world space displacement value. */
     float zBufferToDepth(float z)
     {
         return UDUtilities.zBufferToDepth(z, zNear, zFar);
@@ -170,7 +169,7 @@ public class UDMeshCollider : MonoBehaviour
         {
             for (int j = 0; j < numVertsX; j++)
             {
-                float sumNeighbours = 0; 
+                float sumNeighbours = 0;
                 float numNeighbours = 0;
                 if (i > 0 && j > 0)
                 {
@@ -182,7 +181,7 @@ public class UDMeshCollider : MonoBehaviour
 
                 if (i > 0)
                 {
-                   //node to the left 
+                    //node to the left 
                     float neighbour = verts[(i - 1) * numVertsX + j].z;
                     sumNeighbours += neighbour;
                     numNeighbours++;
@@ -190,7 +189,7 @@ public class UDMeshCollider : MonoBehaviour
 
                 if (j > 0)
                 {
-                   //node above
+                    //node above
                     float neighbour = verts[(i) * numVertsX + j - 1].z;
                     sumNeighbours += neighbour;
                     numNeighbours++;
@@ -198,7 +197,7 @@ public class UDMeshCollider : MonoBehaviour
 
                 if (j < numVertsX - 1)
                 {
-                   //below
+                    //below
                     float neighbour = verts[numVertsX + j + 1].z;
                     sumNeighbours += neighbour;
                     numNeighbours++;
@@ -214,7 +213,7 @@ public class UDMeshCollider : MonoBehaviour
 
                 if (i > 0 && j < numVertsX - 1)
                 {
-                   //left and below
+                    //left and below
                     float neighbour = verts[(i - 1) * numVertsX + j + 1].z;
                     sumNeighbours += neighbour;
                     numNeighbours++;
@@ -230,7 +229,7 @@ public class UDMeshCollider : MonoBehaviour
 
                 if (i < numVertsY - 1 && j > 0)
                 {
-                   //right and above
+                    //right and above
                     float neighbour = verts[(i + 1) * numVertsX + j - 1].z;
                     sumNeighbours += neighbour;
                     numNeighbours++;
@@ -244,18 +243,17 @@ public class UDMeshCollider : MonoBehaviour
         return newVerts;
     }
 
-    /*
-     * creates the render view and sets the targets
-     */
+    /* creates the render view and sets the targets */
     void SetRenderView()
     {
-        renderView = new udRenderTarget();
         if (!GlobalUDContext.isCreated)
-            GlobalUDContext.Login();
+            return;
+
+        renderView = new udRenderTarget();
 
         renderView.Create(GlobalUDContext.uContext, GlobalUDContext.renderer, (uint)widthPix, (uint)heightPix);
         depthBuffer = new float[widthPix * heightPix];
-        colourBuffer = null; 
+        colourBuffer = null;
         renderView.SetTargets(ref colourBuffer, 0, ref depthBuffer);
     }
 
@@ -266,41 +264,45 @@ public class UDMeshCollider : MonoBehaviour
         //if we are following a target, we only update the corresponding mesh whne the object has moved a requisite distance,
         //this reduces the number of updates to the mesh required.
         Vector3 offset;
-    if (!isStaticMesh && followTarget != null)
-    {
-      //check if the target has moved
-      
-      Vector3 newRot = transform.rotation.eulerAngles;
-      if (lockRotationToBody.x)
-        newRot.x = followTarget.transform.eulerAngles.x + this.bodyLockOffset.x;
+        if (!isStaticMesh && followTarget != null)
+        {
+            //check if the target has moved
+            Vector3 newRot = transform.rotation.eulerAngles;
 
-      if (lockRotationToBody.y)
-        newRot.y = followTarget.transform.eulerAngles.y + this.bodyLockOffset.y;
+            if (lockRotationToBody.x)
+                newRot.x = followTarget.transform.eulerAngles.x + this.bodyLockOffset.x;
 
-      if (lockRotationToBody.z)
-        newRot.z = followTarget.transform.eulerAngles.z + this.bodyLockOffset.z;
+            if (lockRotationToBody.y)
+                newRot.y = followTarget.transform.eulerAngles.y + this.bodyLockOffset.y;
 
-      transform.eulerAngles = newRot;
-      offset = Matrix4x4.Rotate(transform.rotation) * new Vector4(watcherPosition.x, watcherPosition.y, watcherPosition.z);
-      bool thresholdTrigger = (this.transform.position - followTarget.transform.position).magnitude > followThreshold;
-      if (!threshholdFollow || thresholdTrigger)
-      {
-        this.transform.position = followTarget.transform.position + offset;
-        UpdateView();
-      }
-    }
-    else if (!isStaticMesh)
-    {
-      //we update the mesh every frame
-      UpdateView();
-    }
-    else { 
-      
-    }
+            if (lockRotationToBody.z)
+                newRot.z = followTarget.transform.eulerAngles.z + this.bodyLockOffset.z;
+
+            transform.eulerAngles = newRot;
+            offset = Matrix4x4.Rotate(transform.rotation) * new Vector4(watcherPosition.x, watcherPosition.y, watcherPosition.z);
+            bool thresholdTrigger = (this.transform.position - followTarget.transform.position).magnitude > followThreshold;
+            if (!thresholdFollow || thresholdTrigger)
+            {
+                this.transform.position = followTarget.transform.position + offset;
+                UpdateView();
+            }
+        }
+        else if (!isStaticMesh)
+        {
+            //we update the mesh every frame
+            UpdateView();
+        }
+        else
+        {
+
+        }
     }
 
     private void UpdateView()
     {
+        if (!GlobalUDContext.isCreated)
+            return;
+
         if (renderView == null || renderView.pRenderView == IntPtr.Zero)
             SetRenderView();
 
@@ -311,16 +313,17 @@ public class UDMeshCollider : MonoBehaviour
         Matrix4x4 projection = Matrix4x4.Ortho(-width / 2, width / 2, height / 2, -height / 2, zNear, zFar);
         renderView.SetMatrix(udSDK.udRenderTargetMatrix.Projection, UDUtilities.GetUDMatrix(projection));
         RenderOptions options = new RenderOptions();
-        
+
         //we need the highest LOD if we are not updating the mesh every frame
-        if(blockOnStream)
+        if (blockOnStream)
             options.options.flags = udRenderContextFlags.udRCF_BlockingStreaming;
 
         try
         {
             GlobalUDContext.renderer.Render(renderView, modelArray, modelArray.Length, options);
         }
-        catch (Exception e){
+        catch (Exception e)
+        {
             Debug.Log("Dropped frame: " + e.ToString());
         }
         MakeSheetMesh(width, height, (int)widthPix, (int)heightPix, depthBuffer);
@@ -328,8 +331,10 @@ public class UDMeshCollider : MonoBehaviour
 
     public void OnDestroy()
     {
-        Debug.Log("destroying plane");
-        renderView.Destroy();
+        //Debug.Log("Destroying plane.");
+
+        if(renderView != null)
+            renderView.Destroy();
     }
 }
 

@@ -12,7 +12,7 @@ using udSDK;
 public class UDSModel : MonoBehaviour
 {
     [System.NonSerialized]
-    public udPointCloud udModel = new udPointCloud();
+    public udPointCloud model = new udPointCloud();
     [System.NonSerialized]
     public bool isLoaded = false;
     [System.NonSerialized]
@@ -22,14 +22,13 @@ public class UDSModel : MonoBehaviour
     public Matrix4x4 modelToPivot; //This represents the transformation between the file representation and the coordinate system centred at pivot
     public udPointCloudHeader header = new udPointCloudHeader();
 
-
     [System.NonSerialized]
     public Matrix4x4 storedMatrix;
     [System.NonSerialized]
     public Vector3 fileScale;
     public Vector3 geolocationOffset = Vector3.zero;
     public string path = "";
-    public bool geolocate = false;
+    public bool geolocate = true;
     
     [HideInInspector]
     public UnityEvent m_OnLoaded;
@@ -40,8 +39,9 @@ public class UDSModel : MonoBehaviour
         set
         {
             path = value;
+
             if (isLoaded == true)
-                udModel.Unload();
+                model.Unload();
 
             isLoaded = false;
         }
@@ -52,6 +52,11 @@ public class UDSModel : MonoBehaviour
     {
         // adding this init in Awake so that it happens at the earliest possible time 
         m_OnLoaded = new UnityEvent();
+    }
+
+    private void Start()
+    {
+        LoadModel();
     }
 
     private void Update()
@@ -68,6 +73,7 @@ public class UDSModel : MonoBehaviour
             geolocate = false;
         }
     }
+
     public Matrix4x4 getStoredMatrix() {
         return new Matrix4x4(
                 new Vector4((float)header.storedMatrix[0], (float)header.storedMatrix[1], (float)header.storedMatrix[2], (float)header.storedMatrix[3]),
@@ -116,13 +122,14 @@ public class UDSModel : MonoBehaviour
             {
                 // this is the default original case 
                 resolvedPath = trimmedString;
-            } 
+            }
         }
 
         // attempt to load via udsdk
         try
         {
-            udModel.Load(GlobalUDContext.uContext, resolvedPath, ref header);
+            model.Load(GlobalUDContext.uContext, resolvedPath, ref header);
+            
             storedMatrix = getStoredMatrix();
             double maxDim = 0;
             for (int i = 0; i < 3; i++) {
@@ -145,14 +152,14 @@ public class UDSModel : MonoBehaviour
                             (float)(-header.pivot[2])
                           )
                         );
-            isLoaded = true;
             
             m_OnLoaded.Invoke();
+            isLoaded = true;
         }
         catch (Exception e)
         {
-            Debug.LogError("Could not open UDS: " + resolvedPath + " " + e.Message);
-        }
+            Debug.LogError("Could not open UDS: <i>" + resolvedPath + "</i> with error: " + e.Message);
+        }     
     }
     
     [ContextMenu("Reload")]
@@ -160,7 +167,7 @@ public class UDSModel : MonoBehaviour
     {
         // we don't force a reload, only ensure reload happens at the next opportunity
         isLoaded = false;
-        udModel.Unload();
+        model.Unload();
     }
 }
 
@@ -169,7 +176,7 @@ public class UDSModel : MonoBehaviour
 public class UDSModelGUI : Editor 
 {
     UDSModel script;
-    GameObject gameObject ; 
+    GameObject gameObject; 
     
     void OnEnable() {
         script = (UDSModel) target;

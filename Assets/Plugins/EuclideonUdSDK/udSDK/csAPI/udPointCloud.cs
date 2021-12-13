@@ -38,6 +38,7 @@ namespace udSDK
     {
         public IntPtr pModel = IntPtr.Zero;
         private udContext context;
+        public string pJSONMetadata;
 
         public void Load(udContext context, string modelLocation, ref udPointCloudHeader header)
         {
@@ -58,9 +59,9 @@ namespace udSDK
                 throw new Exception("udPointCloud.Unload failed.");
         }
 
-        public void GetMetadata(ref string ppJSONMetadata)
+        public void GetMetadata()
         {
-            udError error = udPointCloud_GetMetadata(pModel, ref ppJSONMetadata);
+            udError error = udPointCloud_GetMetadata(pModel, ref pJSONMetadata);
             if (error != udError.udE_Success)
                 throw new Exception("udPointCloud.GetMetadata failed.");
         }

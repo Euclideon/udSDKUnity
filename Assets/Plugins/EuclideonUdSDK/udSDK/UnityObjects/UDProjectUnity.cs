@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using UnityEngine;
+using System.Collections;
 using udSDK;
 
 [System.Serializable]
-public struct UDProjectAppearance 
+public struct UDProjectAppearance
 {
     [Tooltip("Control the color of lines and points.")]
     public Color interestColor;
@@ -20,18 +18,20 @@ public struct UDProjectAppearance
 
 public class UDProjectUnity : MonoBehaviour
 {
- 
-    public string path;
+    [ReadOnly] public string path;
     public bool isLoaded = false;
-    private string geoJSON;
-    UDProject proj;
+    public udSDK.udProject proj = new udSDK.udProject();
+    [ReadOnly] public string udCloudSceneID;
+    [ReadOnly] public string udCloudProjectID;
+    [ReadOnly] public string udCloudWorkspaceID;
+    private UDSModel model;
 
     // this retains an offset, to keep everything close to world origin
     private double[] positionOffset = new double[3];
-    private bool positionSet = false; 
+    private bool positionSet = false;
 
     [Tooltip("Modify the visuals of a project when loaded.")]
-    public UDProjectAppearance appearance = new UDProjectAppearance{
+    public UDProjectAppearance appearance = new UDProjectAppearance {
         interestColor = new Color(1f, 0.42f, 0f),
         pointSize = 50f,
         imageMediaSize = 100f,
@@ -56,47 +56,60 @@ public class UDProjectUnity : MonoBehaviour
 
     public void SetPosition(double[] position)
     {
-        positionOffset[0] = position[0]; 
-        positionOffset[1] = position[1]; 
+        positionOffset[0] = position[0];
+        positionOffset[1] = position[1];
         positionOffset[2] = position[2];
-        
-        Debug.Log("Set project position : " + position[0] + ", " + position[1] + ", " + position[2]);
         
         positionSet = true; 
     }
-    void LoadFromFile(string path)
+    public void LoadFromFile(string projectPath)
     {
-        geoJSON = System.IO.File.ReadAllText(path);
-        proj = new UDProject(geoJSON);
-        this.path = path;
-        print("loaded node!");
+        LoadFromMemory(System.IO.File.ReadAllText(projectPath));
+        this.path = projectPath;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void LoadFromMemory (string geoJSON)
     {
-        if (!isLoaded)
+        if (!GlobalUDContext.isCreated)
         {
-            if(!GlobalUDContext.isCreated)
-            {
-                Debug.Log("Cannot load project before global context.");
-                return; 
-            }
-
-            try
-            {
-                LoadFromFile(path);
-                GameObject rootNodeGO = new GameObject();
-                rootNodeGO.transform.parent = transform;
-                var pn = rootNodeGO.AddComponent<udProjectNodeUnity>();
-                pn.LoadTree(proj.pRootNode);
-            }
-            catch(Exception e) 
-            {
-                Debug.LogError("caught exception loading project: " + e.ToString());
-            }
-            
-            isLoaded = true;
+            Debug.Log("Global context not loaded, cannot load project.");
+            return;
         }
+
+        if (isLoaded)
+        {
+            Debug.Log("Project already loaded.");
+            return;
+        }
+
+        proj.LoadFromMemory(GlobalUDContext.uContext, geoJSON);
+        proj.GetProjectRoot();
+        isLoaded = true;
+
+        UDProjectNodeUnity pn = gameObject.AddComponent<UDProjectNodeUnity>();
+        pn.LoadTree(proj.pRootNode);
+    }
+
+    public void LoadFromServer(string sid, string pid, string wid)
+    {
+        if (!GlobalUDContext.isCreated)
+        {
+            Debug.Log("Global context not loaded, cannot load project.");
+            return;
+        }
+
+        if (isLoaded)
+        {
+            Debug.Log("Project already loaded.");
+            return;
+        }
+
+        proj.LoadFromServer(GlobalUDContext.uContext, sid, wid + "/" + pid);
+        proj.GetProjectRoot();
+        Debug.Log("Project loaded from server.");
+        isLoaded = true;
+
+        UDProjectNodeUnity pn = gameObject.AddComponent<UDProjectNodeUnity>();
+        pn.LoadTree(proj.pRootNode);
     }
 }

@@ -28,8 +28,9 @@ namespace udSDK
         udRCF_DisableOrthographic = 1 << 7, //!< Disables the renderer entering high-performance orthographic mode
     }
 
-    /*Contains information returned by the picking system
-     */
+    /// <summary>
+    /// Contains information returned by the picking system.
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     unsafe public struct udRenderPicking
     {
@@ -42,9 +43,10 @@ namespace udSDK
         public udVoxelID voxelID; //ID of the hit voxel
     }
 
-    /*Unity serializable equivalent of udRenderPicking 
-    */
-    public struct udPick 
+    /// <summary>
+    /// Unity serializable equivalent of udRenderPicking.
+    /// </summary>
+    public struct udPick
     {
         public int x; // view space mouse x
         public int y; // view space mouse y
@@ -55,6 +57,9 @@ namespace udSDK
         public udVoxelID voxelID; // ID of the hit voxel 
     }
 
+    /// <summary>
+    /// Contains the settings of the render.
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct udRenderSettings
     {
@@ -64,6 +69,9 @@ namespace udSDK
         public IntPtr pFilter; // pointer to a udQueryFilter
     }
 
+    /// <summary>
+    /// Contains the instance of the point cloud within the renderer.
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct udRenderInstance
     {
@@ -74,6 +82,8 @@ namespace udSDK
         public IntPtr filter;
         public IntPtr voxelShader;
         public IntPtr voxelUserData;
+
+        public double opacity;
     }
 
     public class udRenderContext
@@ -101,6 +111,7 @@ namespace udSDK
                 throw new Exception("udRenderContext.Create failed: " + error.ToString());
 
             this.context = context;
+            this.context = context;
         }
 
         public void Destroy()
@@ -119,8 +130,11 @@ namespace udSDK
         public void Render(udRenderTarget renderView, udRenderInstance[] pModels, int modelCount, RenderOptions options = null )
         {
             if (modelCount == 0)
+            {
+                Debug.Log("Model count is zero!");
                 return;
-
+            }
+                
             if (options == null)
                 options = new RenderOptions();
 
@@ -202,7 +216,7 @@ namespace udSDK
 
         public udPick getPick()
         {
-            UnityEngine.Debug.Log("Getting pick");
+            //UnityEngine.Debug.Log("Getting pick");
 
             if(!pickSet)
                 return new udPick();

@@ -61,16 +61,16 @@ namespace udSDK
             GameObject[] objects = GameObject.FindGameObjectsWithTag("UDSModel");
             int count = 0;
             udRenderInstance[] modelArray = new udRenderInstance[objects.Length];
-            for (int i = 0; i < objects.Length; ++i)
+            for (int i = 0; i < objects.Length; i++)
             {
                 UDSModel model = (UDSModel) objects[i].GetComponent("UDSModel");
 
-                if (!model.isLoaded)
-                    model.LoadModel();
+                //if (!model.isLoaded)
+                //    model.LoadModel();
 
                 if (model.isLoaded)
                 {
-                    modelArray[count].pointCloud = model.udModel.pModel;
+                    modelArray[count].pointCloud = model.model.pModel;
                     Transform localTransform = objects[i].transform;
 
                     modelArray[count].worldMatrix = UDUtilities.GetUDMatrix(
@@ -79,6 +79,8 @@ namespace udSDK
                         );
                     count++;
                 }
+
+                
             }
             return modelArray.Where(m => (m.pointCloud != System.IntPtr.Zero)).ToArray();
         }
@@ -111,7 +113,7 @@ namespace udSDK
                     UDSessionInfo info = GlobalUDContext.uContext.GetSessionInfo();
 
                     string message = string.Empty;
-                    if (info.isOffline)
+                    if (info.apiVersion == 0)
                         message += "Offline ";
                     else
                         message += "Online ";

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class raycastTest : MonoBehaviour
+public class RaycastTest : MonoBehaviour
 {
     bool showRay = false;
     // Start is called before the first frame update

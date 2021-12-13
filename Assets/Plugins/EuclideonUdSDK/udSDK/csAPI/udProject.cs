@@ -1,6 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
-using UnityEngine;
+using System.Net;
 
 namespace udSDK
 {
@@ -93,48 +93,84 @@ namespace udSDK
 
         public readonly IntPtr pCoordinates; //!<The positions of the geometry of this node (NULL this this node doesn’t have points). The format is [X0,Y0,Z0,…Xn,Yn,Zn].
 
+        public readonly IntPtr pParent; //!< This is the parent item of the current node (NULL if root node)
+
         public readonly IntPtr pNextSibling; //!<This is the next item in the project (NULL if no further siblings)
 
         public readonly IntPtr pFirstChild; //!<Some types (“folder”, “collection”, “polygon”…) have children nodes, NULL if there are no children.
 
+        IntPtr pUserDataCleanUp;
+        
         IntPtr pUserData; //!<This is application specific user data. The application should traverse the tree to release these before releasing the udProject.
 
         public readonly IntPtr pInternalData; //!<Internal udSDK specific state for this node.
     }
 
-	public class UDProject
+	public class udProject
 	{
-        IntPtr pudProject;
-        public IntPtr pRootNode;
+        public IntPtr pRootNode = IntPtr.Zero;
+        IntPtr pProjectUUID = IntPtr.Zero;
+        public IntPtr pProject = IntPtr.Zero;
 
-        public UDProject(string geoJSON)
+        public udProject()
         {
-            if(!GlobalUDContext.isCreated)
-                throw new Exception("Global context not loaded, cannot load project.");
-
-            UnityEngine.Debug.Log("Attempting project load from memory"); 
-            udError err = udProject_LoadFromMemory(GlobalUDContext.uContext.pContext, ref pudProject, geoJSON);
-
-            if(err != udError.udE_Success)
-                throw new Exception("project load failed: "+ err.ToString());
-
-            pRootNode = IntPtr.Zero;
-            udProject_GetProjectRoot(pudProject, ref pRootNode);
-            UnityEngine.Debug.Log("Project loaded"); 
         }
 
-        ~UDProject()
+        public string GetUUID()
         {
-            udProject_Release(ref pudProject);
+            udError error = udProject_GetProjectUUID(pProject, ref pProjectUUID);
+
+            if (error != udError.udE_Success)
+                throw new Exception("Failed to get project UUID with error: " + error.ToString());
+
+            string UUID = Marshal.PtrToStringAnsi(pProjectUUID);
+            Marshal.FreeHGlobal(pProjectUUID);
+
+            return UUID;
         }
 
-        
+        public void LoadFromServer(udContext context, string projectUUID, string groupID)
+        {
+            udError error = udProject_LoadFromServer(context.pContext, ref pProject, projectUUID, groupID);
+
+            if (error != udError.udE_Success)
+                throw new Exception("Project load failed with error: " + error.ToString());
+        }
+
+        public void LoadFromMemory(udContext context, string geoJSON)
+        {
+            udError error = udProject_LoadFromMemory(context.pContext, ref pProject, geoJSON);
+
+            if (error != udError.udE_Success)
+                throw new Exception("project load failed: " + error.ToString());
+        }
+
+        //Must be called after loading
+        public void GetProjectRoot()
+        {
+            udProject_GetProjectRoot(pProject, ref pRootNode);
+        }
+
+        ~udProject()
+        {
+            udProject_Release(ref pProject);
+        }
+
         //Create an empty, local only, instance of udProject.
         [DllImport(UDSDKLibrary.name)]
         private static extern udError udProject_CreateLocal(ref IntPtr ppProject, string pName);
         //Create a local only instance of udProject filled in with the contents of a GeoJSON string.
         [DllImport(UDSDKLibrary.name)]
         private static extern udError udProject_LoadFromMemory(IntPtr pContext, ref IntPtr ppProject, string pGeoJSON);
+        //Create a local instance of udProject from a udServer
+        [DllImport(UDSDKLibrary.name)]
+        private static extern udError udProject_LoadFromServer(IntPtr pContext, ref IntPtr ppProject, string pProjectUUID, string pGroupID);
+        //Save a local instance of udProject to a udServer
+        [DllImport(UDSDKLibrary.name)]
+        private static extern udError udProject_SaveToServer(IntPtr pContext, IntPtr pProject, string pGroupID);
+        //Get the UUID of a udProject from a udServer
+        [DllImport(UDSDKLibrary.name)]
+        private static extern udError udProject_GetProjectUUID(IntPtr pProject, ref IntPtr ppProjectUUID);
         //Destroy the instance of the project.
         [DllImport(UDSDKLibrary.name)]
         private static extern udError udProject_Release(ref IntPtr ppProject);
@@ -161,6 +197,10 @@ namespace udSDK
         {
             pNode = nodeAddr;
             this.nodeData = (udProjectNode) Marshal.PtrToStructure(nodeAddr, typeof(udProjectNode));
+        }
+
+        ~UDProjectNode()
+        {
         }
 
         //Create a node in a project

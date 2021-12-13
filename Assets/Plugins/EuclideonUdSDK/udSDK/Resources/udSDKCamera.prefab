@@ -10,14 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 1862531765257222248}
   - component: {fileID: 1862531765257222255}
-  - component: {fileID: 1862531765257222254}
   - component: {fileID: 1862531765257222251}
   - component: {fileID: 1862531765257222249}
   - component: {fileID: 1862531765257222250}
-  - component: {fileID: 1862531765257222244}
   - component: {fileID: 1862531765257222245}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: udSDKCamera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,13 +28,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1862531765257222253}
-  m_LocalRotation: {x: 0.028237343, y: -0.7686037, z: 0.0138120055, w: 0.6389525}
-  m_LocalPosition: {x: 28.679, y: -45, z: 3.81}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 3.2860003, y: -100.56801, z: -1.478}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &1862531765257222255
 Camera:
   m_ObjectHideFlags: 0
@@ -80,14 +78,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &1862531765257222254
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1862531765257222253}
-  m_Enabled: 0
 --- !u!114 &1862531765257222251
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -100,7 +90,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f04e43dbc6439f64d999e534e16e1f73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainSpeed: 100
+  mainSpeed: 20
   shiftAdd: 250
   maxShift: 1000
   camSens: 0.25
@@ -181,22 +171,10 @@ MonoBehaviour:
   m_ShowCustomSorter: 1
   breakBeforeColorGrading: 0
   m_BeforeTransparentBundles:
-  - assemblyQualifiedName: VDKPPES, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+  - assemblyQualifiedName: UDPPES, Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
---- !u!114 &1862531765257222244
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1862531765257222253}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 028e291e24f058447a4786f383aab270, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1862531765257222245
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,7 +188,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 1862531765257222255}
-  pointMode: 0
-  recordDepthBuffer: 0
-  placeCubesOnPick: 1
-  placeNext: 0
+  pointMode: 1
+  flags: 64
+  showPickMarker: 0
+  resolutionScaling: 1
+  placeCubesOnPick: 0
+  usePreviewCube: 0

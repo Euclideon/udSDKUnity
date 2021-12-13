@@ -13,6 +13,7 @@ public sealed class UDPPES : PostProcessEffectSettings
     [Tooltip("Apply the depth pass from udShader to _CameraDepthTexture")]
     public BoolParameter depthPass = new BoolParameter { value = true };
 }
+
 public sealed class UDPPER : PostProcessEffectRenderer<UDPPES>
 {
     private int width = 1280;
@@ -25,11 +26,12 @@ public sealed class UDPPER : PostProcessEffectRenderer<UDPPES>
     private Texture2D depthTexture;
 
     private udRenderTarget vRenderView;
+
     public override void Init()
     {
         try
         {
-            GlobalUDContext.Login();
+            Release();
             InitialiseBuffers(width, height);
             InitialiseTextures();
             vRenderView = new udRenderTarget();
@@ -72,6 +74,7 @@ public sealed class UDPPER : PostProcessEffectRenderer<UDPPES>
     {
         Camera cam = context.camera;
         cam.depthTextureMode |= DepthTextureMode.Depth;
+
         if (!GlobalUDContext.isCreated)
             return;
 
@@ -90,8 +93,9 @@ public sealed class UDPPER : PostProcessEffectRenderer<UDPPES>
             resolutionScaling = 1;
         }
 
-        if ( (int)context.width*resolutionScaling != width ||  (int)context.height*resolutionScaling != height)
-            RebuildBuffers( (int)(context.width*resolutionScaling),  (int)(context.height*resolutionScaling));
+        if (colourTexture != null && depthTexture != null)
+            if ((int)context.width * resolutionScaling != width || (int)context.height * resolutionScaling != height)
+                RebuildBuffers((int)(context.width * resolutionScaling), (int)(context.height * resolutionScaling));
 
         GameObject[] objects = GameObject.FindGameObjectsWithTag("UDSModel");
         udRenderInstance[] modelArray = UDUtilities.getUDSInstances();

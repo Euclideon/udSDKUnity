@@ -1,8 +1,8 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+
 using udSDK;
 
 static class constants
@@ -14,6 +14,7 @@ public class UDCameraOptions : MonoBehaviour
     public Camera cam;
     public RenderOptions optionsStruct = new RenderOptions();
     public udRenderContextPointMode pointMode = udRenderContextPointMode.udRCPM_Rectangles;
+    public udRenderContextFlags flags = udRenderContextFlags.udRCF_BlockingStreaming;
     public bool showPickMarker = false;
     [Tooltip("Factor by which to scale udSDK resolution relative to camera resolution: lower numbers will increase frame rate at the cost of resolution")]
     public float resolutionScaling = 1;
@@ -24,6 +25,7 @@ public class UDCameraOptions : MonoBehaviour
     [System.NonSerialized]
     public bool placeNext = false;
     GameObject previewCube;
+    public bool usePreviewCube = false;
 
     public udPick lastPick ;
 
@@ -39,10 +41,14 @@ public class UDCameraOptions : MonoBehaviour
     
     void Start()
     {
-        optionsStruct.setPick(0, 0); 
-        previewCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        (previewCube.GetComponent<Renderer>()).material.color = Color.black;
-        previewCube.GetComponent<Collider>().enabled = false;
+        optionsStruct.setPick(0, 0);
+
+        if (usePreviewCube)
+        {
+            previewCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            (previewCube.GetComponent<Renderer>()).material.color = Color.black;
+            previewCube.GetComponent<Collider>().enabled = false;
+        } 
     }
 
     void Update()
@@ -58,14 +64,16 @@ public class UDCameraOptions : MonoBehaviour
             cam = Camera.main;
 
         optionsStruct.options.pointMode = pointMode;
-        if (!showPickMarker)
+        optionsStruct.options.flags = flags;
+
+        if (usePreviewCube)
         {
-          previewCube.SetActive(false);
+            if (!showPickMarker)
+                previewCube.SetActive(false);
+            else
+                previewCube.SetActive(true);
         }
-        else 
-        { 
-          previewCube.SetActive(true);
-        }
+      
 
         if (optionsStruct.pickRendered)
         {
@@ -90,7 +98,9 @@ public class UDCameraOptions : MonoBehaviour
                         marker.transform.position = pick.pointCenter;
                     }
                 }
-                previewCube.transform.position = pick.pointCenter;
+
+                if(usePreviewCube)
+                    previewCube.transform.position = pick.pointCenter;
             }
             placeNext = false;
         }
@@ -101,9 +111,7 @@ public class UDCameraOptions : MonoBehaviour
         optionsStruct.setPick((uint)(mp.x * resolutionScaling), (uint)((cam.pixelHeight - mp.y)*resolutionScaling));
 
         if (Input.GetMouseButtonDown(0))
-        {    
             placeNext = true;
-        }
     }
 
     /*
@@ -128,15 +136,10 @@ public class UDCameraOptions : MonoBehaviour
       }
 
       for (int i= 0; i< depthBuffer.Length; ++i)
-      {
-          depthBuffer[i] = UDUtilities.zBufferToDepth(depthBuffer[i], cam.nearClipPlane, cam.farClipPlane, false);
-      }
-  }
+            depthBuffer[i] = UDUtilities.zBufferToDepth(depthBuffer[i], cam.nearClipPlane, cam.farClipPlane, false);
+    }
   public float[] DepthBuffer
   {
-      get
-      {
-          return depthBuffer;
-      }
+      get { return depthBuffer; }
   }
 }

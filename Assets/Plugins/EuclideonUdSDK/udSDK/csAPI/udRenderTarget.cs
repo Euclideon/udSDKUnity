@@ -10,7 +10,6 @@ namespace udSDK
         View,       // The view-space transform for the model (does not need to be set explicitly)
         Projection, // The projection matrix (default is 60 degree LH)
         Viewport,   // Viewport scaling matrix (default width and height of viewport)
-
         Count
     };
 

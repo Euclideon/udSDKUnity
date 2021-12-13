@@ -1,10 +1,12 @@
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 using udSDK;
 
-public class LoginUDSDK : MonoBehaviour
+public class UDSDKLogin : MonoBehaviour
 {
     public GameObject username;
     public GameObject password;
@@ -20,12 +22,12 @@ public class LoginUDSDK : MonoBehaviour
     {
         GlobalUDContext.SavedUsernameKey = username.GetComponent<InputField>().text;
         GlobalUDContext.SavedPasswordKey = password.GetComponent<InputField>().text;
-        GlobalUDContext.Login();
+        //GlobalUDContext.Login();
     }
 
     public void LoadByIndex(int sceneIndex)
     {
-        Login();
+        //Login();
         SceneManager.LoadScene(sceneIndex);
     }
 }

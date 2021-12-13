@@ -8,25 +8,18 @@ using UnityEditor.PackageManager.Requests;
 using udSDK;
 
 #if UNITY_EDITOR
-public class udUserInfoEditor : EditorWindow
+public class UDUserInfoEditor : EditorWindow
 {
-    [MenuItem("Euclideon/udSDK Login")]
+    [MenuItem("Euclideon/udServer Login")]
     public static void ShowWindow()
     {
-        EditorWindow.GetWindow(typeof(udUserInput));
+        EditorWindow window = EditorWindow.GetWindow(typeof(UserInput));
+        window.titleContent = new GUIContent("udServer");
     }
 }
 
-public class udUserInput : EditorWindow
+public class UserInput : EditorWindow
 {
-    // Show window logic
-    private static void ShowWindow()
-    {
-        var window = GetWindow<udUserInput>();
-        window.titleContent = new GUIContent("newWindow");
-        window.Show();
-    }
-
     // Load username
     private void Awake()
     {
@@ -65,7 +58,7 @@ public class udUserInput : EditorWindow
         BottomButton.alignment = TextAnchor.LowerCenter;
 
         // Drawing the GUI elements
-        EditorGUILayout.LabelField("udSDK Login", CenteredBold);
+        EditorGUILayout.LabelField("udServer Login", CenteredBold);
 
         // Username and password
         EditorGUILayout.LabelField("Username:");
@@ -116,7 +109,7 @@ public class udUserInput : EditorWindow
 
         // Player prefs isn't saved, but on the off chance it was during development make sure to clear it
         PlayerPrefs.SetString(GlobalUDContext.SavedUsernameKey, "");
-        PlayerPrefs.SetString(GlobalUDContext.SavedPasswordKey, ""); 
+        PlayerPrefs.SetString(GlobalUDContext.SavedPasswordKey, "");
     }
 }
 #endif
