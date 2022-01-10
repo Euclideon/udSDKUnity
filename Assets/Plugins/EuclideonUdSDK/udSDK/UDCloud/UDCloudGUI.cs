@@ -26,26 +26,31 @@ public class UDCloudGUI : EditorWindow
 {
     bool[] foldouts = null;
     string pathText = "";
+    bool tryLoggingIn = false;
+    bool tryingToLogIn = false;
+    Vector2 scrollPosition;
 
     static void UnloadServerProjectsInScene()
     {
         UDProjectUnity oldProjectToUnload = GameObject.FindObjectOfType<UDProjectUnity>();
+
         if (oldProjectToUnload)
             Destroy(oldProjectToUnload.gameObject);
-
-        GameObject udCamera = GameObject.FindGameObjectWithTag("MainCamera");
-        if (udCamera)
-            Destroy(udCamera);
     }
 
     static void LoadServerProject(UDCloudNode sceneNode)
     {
         UnloadServerProjectsInScene();
-        GameObject udCamera = Instantiate(Resources.Load("udSDKCamera")) as GameObject;
-        udCamera.name = "udSDKCamera"; //so its not called (clone).
+        GameObject udCamera = GameObject.FindGameObjectWithTag("MainCamera");
+        if (!udCamera)
+        {
+            udCamera = Instantiate(Resources.Load("udSDKCamera")) as GameObject;
+            udCamera.name = "udSDKCamera"; //so its not called (clone).
+        }
         GameObject projectGO = new GameObject();
-        projectGO.AddComponent<UDProjectUnity>();
-        projectGO.GetComponent<UDProjectUnity>().LoadFromServer(sceneNode.uuid, sceneNode.parent.uuid, sceneNode.parent.parent.uuid);
+        UDProjectUnity projectComponent = projectGO.AddComponent<UDProjectUnity>();
+        projectComponent.LoadFromServer(sceneNode.uuid, sceneNode.parent.uuid, sceneNode.parent.parent.uuid);
+        DrawLoadingAnimation(projectComponent);
     }
 
     static void LoadLocalProject(string path)
@@ -58,10 +63,14 @@ public class UDCloudGUI : EditorWindow
         }
         GameObject projectGO = new GameObject();
         projectGO.AddComponent<UDProjectUnity>();
+
+        if (path.ToCharArray()[0] == '"' && path.ToCharArray()[path.Length] == '"') //removes quotes from a path, often neccessary from a 'copy as path' generated string
+            path = path.Substring(1, path.Length - 2);
+
         projectGO.GetComponent<UDProjectUnity>().LoadFromFile(path);
     }
 
-    static void OpenProjectInCloud(UDCloudNode sceneNode)
+    static void OpenProjectInWeb(UDCloudNode sceneNode)
     {
         string link = GlobalUDContext.cloudServer + "/api/" + sceneNode.parent.parent.uuid + "/" + sceneNode.parent.uuid + "/" + sceneNode.uuid + "/_scene/view";
         System.Diagnostics.Process.Start(link);
@@ -123,6 +132,17 @@ public class UDCloudGUI : EditorWindow
         EditorGUI.DrawRect(r, color);
     }
 
+    ///<summary>
+    /// Draws a small loading animaton to ease users.
+    ///</summary>
+    public static void DrawLoadingAnimation(UDProjectUnity proj)
+    {
+        if(proj.isLoaded && !proj.allModelsLoaded)
+        {
+
+        }
+    }
+
     /// <summary>
     /// Draws the welcome user header box.
     /// </summary>
@@ -135,8 +155,6 @@ public class UDCloudGUI : EditorWindow
         EditorGUILayout.Separator();
         EditorGUILayout.LabelField("Welcome <b>" + userNode.name + "</b>", style);
         EditorGUILayout.Separator();
-
-        DrawGUILine(Color.gray);
     }
 
     /// <summary>
@@ -146,23 +164,25 @@ public class UDCloudGUI : EditorWindow
     static void DrawCloudSceneOptions(UDCloudNode node)
     {
         GUIStyle style = GUI.skin.GetStyle("Button");
-        style.richText = true;
+        style.richText = true;  
 
         if (GUILayout.Button("Load in scene", style))
-            LoadServerProject(node);
+        {
+            LoadServerProject(node);         
+        }          
 
         if (GUILayout.Button("View in ud<b><i>Stream</i></b> Web", style))
-            OpenProjectInCloud(node);
+            OpenProjectInWeb(node);
     }
 
     /// <summary>
-    /// Draws the heirarchy in the inspector using a foldout boolean array equal to the tree size.
+    /// Draws the heirarchy in the inspector using a foldout boolean array whose size is equal to the tree size at the node.
     /// </summary>
     /// <param name="node"></param>
     void DrawCloudHeirarchy(UDCloudNode node, bool[] foldouts, float indentWidth = 10)
     {
         if (node.depth < 3)
-        {              
+        {
             if (node.children != null)
             {
                 for (int i = 0; i < node.children.Length; i++)
@@ -190,13 +210,16 @@ public class UDCloudGUI : EditorWindow
         GUIStyle buttonStyle = GUI.skin.GetStyle("Button");
         GUIStyle labelStyle = GUI.skin.GetStyle("Label");
         labelStyle.richText = true;
-        buttonStyle.richText= true;
+        buttonStyle.richText = true;
         labelStyle.alignment = TextAnchor.MiddleCenter;
 
         if (Application.isPlaying) //Runs only in Play mode
         {
             if (!GlobalUDContext.isCreated && !GlobalUDContext.isPartiallyCreated) //step 1
             {
+                tryLoggingIn = false;
+                tryingToLogIn = true;
+
                 BeginGUICentre(true, true);
                 string buttonName = "Go to ud<b><i>Cloud</i></b>";
                 float buttonWidth = labelStyle.CalcSize(new GUIContent(buttonName)).x + 10f;
@@ -204,7 +227,7 @@ public class UDCloudGUI : EditorWindow
                     GlobalUDContext.StartLogin_Cloud();
                 EndGUICentre(true, true);
 
-                if(!GlobalUDContext.triedResume)
+                if (!GlobalUDContext.triedResume)
                     GlobalUDContext.Resume();
             }
 
@@ -212,48 +235,65 @@ public class UDCloudGUI : EditorWindow
             {
                 foldouts = null;
                 pathText = "";
+                scrollPosition = Vector2.right;            
 
-                GUILayout.FlexibleSpace();
-                EditorGUILayout.LabelField("Once succesfuly authorised ", labelStyle);
-                BeginGUICentre(true, false);
-                string buttonName = "Click here";
-                float buttonWidth = labelStyle.CalcSize(new GUIContent(buttonName)).x + 10f;
-                if (GUILayout.Button(buttonName, buttonStyle, GUILayout.Width(buttonWidth)))
-                    GlobalUDContext.CompleteLogin_Cloud();
+                if (tryLoggingIn)
+                {
+                    BeginGUICentre(true, true);
+                    EditorGUILayout.LabelField("Logging in...", labelStyle);
+                }
+                else
+                {
+                    GUILayout.FlexibleSpace();
+
+                    EditorGUILayout.LabelField("Once succesfully authorised ", labelStyle);
+                    BeginGUICentre(true, false);
+                    string buttonName = "click here";
+                    float buttonWidth = labelStyle.CalcSize(new GUIContent(buttonName)).x + 10f;
+                    if (GUILayout.Button(buttonName, buttonStyle, GUILayout.Width(buttonWidth)))
+                        tryLoggingIn = true;
+                }
                 EndGUICentre(true, true);
-            }
 
-            if (GlobalUDContext.isCreated && !GlobalUDContext.isPartiallyCreated) //step 3
+                if (tryLoggingIn && Event.current.type == EventType.Repaint)
+                {
+                    GlobalUDContext.CompleteLogin_Cloud();
+                    tryLoggingIn = false;       
+                }
+            }
+            else if (GlobalUDContext.isCreated && !GlobalUDContext.isPartiallyCreated) //step 3
             {
-                
+                if (!GlobalUDContext.loadedCloudData)
+                    GlobalUDContext.LoadCloudData();
+
                 UDCloudNode root = GlobalUDContext.udCloudRootNode;
 
                 if (foldouts == null)
                 {
                     foldouts = new bool[root.treeSize];
                     for (int i = 0; i < foldouts.Length; i++)
-                    {
                         foldouts[i] = false;
-                    }
-                        
                 }
 
                 UDCloudGUI.DrawCloudUserBox(root);
-                GUILayout.FlexibleSpace();
-                DrawCloudHeirarchy(root, foldouts);
-                GUILayout.FlexibleSpace();
                 DrawGUILine(Color.gray);
+
+                GUILayout.FlexibleSpace();
+
+                scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
+                DrawCloudHeirarchy(root, foldouts);
+                EditorGUILayout.EndScrollView();
+
+                GUILayout.FlexibleSpace();
+
+                DrawGUILine(Color.gray);
+                EditorGUILayout.Separator();
                 BeginGUICentre(true, false);
-                GUILayout.Label("Local project: ");
+                GUILayout.Label("Local project path: ");
                 pathText = EditorGUILayout.TextField(pathText);
                 if (GUILayout.Button("Load scene", buttonStyle))
                     LoadLocalProject(pathText);
                 EndGUICentre(true, false);
-                DrawGUILine(Color.gray);
-                EditorGUILayout.Separator();
-                TimeSpan expiration = TimeSpan.FromSeconds(GlobalUDContext.uContext.GetSessionInfo().expiresTimestamp);
-                String humanReadableExpiration = string.Format("{0:D2}:{1:D2}:{2:D2}", expiration.Hours, expiration.Minutes, expiration.Seconds);
-                EditorGUILayout.LabelField("Session expires in: <b>" + humanReadableExpiration + "</b>", labelStyle);
                 EditorGUILayout.Separator();
             }
         }
@@ -263,6 +303,10 @@ public class UDCloudGUI : EditorWindow
             EditorGUILayout.LabelField("Enter play mode to use ud<b><i>Cloud</i></b>", labelStyle);
             EndGUICentre(true, true);
         }
+    }
+
+    private void Update()
+    {
         Repaint(); //Repaints GUI every frame
     }
 }

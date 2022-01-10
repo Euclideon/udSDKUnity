@@ -16,7 +16,7 @@ public class UDProjectNodeUnity : MonoBehaviour
     public udSDK.UDProjectNode childNode;
     [ReadOnly] public udProjectGeometryType geometryType;
     [ReadOnly] public string UUID;
-    private string URI;
+    public string URI;
     GameObject firstChild;
     GameObject nextSibling;
 
@@ -143,10 +143,11 @@ public class UDProjectNodeUnity : MonoBehaviour
                 break;
 
             case udProjectNodeType.udPNT_PointCloud://!<A Euclideon Unlimited Detail Point Cloud file (“UDS”)
-                                                    //
-                gameObject.tag = "UDSModel";             
+                gameObject.tag = "UDSModel";
                 UDSModel model = gameObject.AddComponent<UDSModel>();
                 model.path = this.URI;
+                gameObject.SetActive(false);
+
                 break;
 
             case udProjectNodeType.udPNT_PointOfInterest:

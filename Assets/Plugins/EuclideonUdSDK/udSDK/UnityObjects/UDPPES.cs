@@ -97,8 +97,9 @@ public sealed class UDPPER : PostProcessEffectRenderer<UDPPES>
             if ((int)context.width * resolutionScaling != width || (int)context.height * resolutionScaling != height)
                 RebuildBuffers((int)(context.width * resolutionScaling), (int)(context.height * resolutionScaling));
 
-        GameObject[] objects = GameObject.FindGameObjectsWithTag("UDSModel");
+        //GameObject[] objects = GameObject.FindGameObjectsWithTag("UDSModel");
         udRenderInstance[] modelArray = UDUtilities.getUDSInstances();
+
         if (modelArray.Length > 0)
         {
             vRenderView.SetMatrix(udSDK.udRenderTargetMatrix.View, UDUtilities.GetUDMatrix(cam.worldToCameraMatrix));

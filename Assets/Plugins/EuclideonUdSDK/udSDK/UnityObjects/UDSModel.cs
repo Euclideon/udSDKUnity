@@ -26,7 +26,7 @@ public class UDSModel : MonoBehaviour
     public Matrix4x4 storedMatrix;
     [System.NonSerialized]
     public Vector3 fileScale;
-    public Vector3 geolocationOffset = Vector3.zero;
+    public Vector3 geolocationOffset = new Vector3(-200000, 0, -5900000); //for bendigo...
     public string path = "";
     public bool geolocate = true;
     
@@ -83,7 +83,7 @@ public class UDSModel : MonoBehaviour
                 ) ;
     }
 
-    // This gets called by getUDSInstances if it isn't loaded already
+    // This gets called by getUDSInstances if it isn't loaded already //not anymore
     public void LoadModel()
     {
         // if not ready for loading, fail
@@ -96,14 +96,14 @@ public class UDSModel : MonoBehaviour
             // while we are here, trim for convenience
             // fyi windows copy as path tool always has quotes either side
             char[] charsToTrim = {' ', '"'};
-            var trimmedString = Path.Trim(charsToTrim);
+            string trimmedString = Path.Trim(charsToTrim);
             
             // need to determine if we are using a url, an absolute path, or a local path 
             if (trimmedString.StartsWith("Assets/StreamingAssets"))
             {
                 // Warning, the path reference by streamingAssetsPath varies per platform 
                 // More details here : https://docs.unity3d.com/Manual/StreamingAssets.html
-                var pathChunks = trimmedString.Split(new[] {"StreamingAssets",}, StringSplitOptions.None);
+                string[] pathChunks = trimmedString.Split(new[] {"StreamingAssets",}, StringSplitOptions.None);
                 string relativePath = pathChunks[pathChunks.Length-1];
                 List<RuntimePlatform> defaultPlatforms = new List<RuntimePlatform>() {
                     RuntimePlatform.WindowsPlayer, 

@@ -40,7 +40,7 @@ namespace udSDK
         /// <summary>
         /// The type of node this is. Automagically generated based on the depth of this node
         /// </summary>
-        ///  <remarks> Though subject to change to handle folder/file depth discrepancy.</remarks>
+        /// <remarks> Though subject to change to handle folder/file depth discrepancy.</remarks>
         public UDCloudNodeType type { get { return (UDCloudNodeType)depth; } }
 
         /// <summary>

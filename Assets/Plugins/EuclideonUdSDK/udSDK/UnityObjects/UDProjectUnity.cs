@@ -20,6 +20,7 @@ public class UDProjectUnity : MonoBehaviour
 {
     [ReadOnly] public string path;
     public bool isLoaded = false;
+    public bool allModelsLoaded = false;
     public udSDK.udProject proj = new udSDK.udProject();
     [ReadOnly] public string udCloudSceneID;
     [ReadOnly] public string udCloudProjectID;
@@ -90,7 +91,24 @@ public class UDProjectUnity : MonoBehaviour
         pn.LoadTree(proj.pRootNode);
     }
 
-    public void LoadFromServer(string sid, string pid, string wid)
+    private void Start()
+    {
+        StartCoroutine("ActivateModelsInProject");
+    }
+
+    public IEnumerator ActivateModelsInProject()
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            transform.GetChild(i).gameObject.SetActive(true);
+            yield return null;
+        }
+
+        Debug.Log("Project '<i>" + name + "</i>' loaded.");
+        allModelsLoaded = true;
+    }
+
+    public void LoadFromServer(string sceneID, string projectID, string workspaceID)
     {
         if (!GlobalUDContext.isCreated)
         {
@@ -104,9 +122,9 @@ public class UDProjectUnity : MonoBehaviour
             return;
         }
 
-        proj.LoadFromServer(GlobalUDContext.uContext, sid, wid + "/" + pid);
+        proj.LoadFromServer(GlobalUDContext.uContext, sceneID, workspaceID + "/" + projectID);
         proj.GetProjectRoot();
-        Debug.Log("Project loaded from server.");
+        
         isLoaded = true;
 
         UDProjectNodeUnity pn = gameObject.AddComponent<UDProjectNodeUnity>();

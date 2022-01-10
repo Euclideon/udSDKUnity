@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEditor;
 
@@ -95,16 +96,15 @@ namespace udSDK
             if (_isPartiallyCreated)
             {
                 try
-                {
+                {                   
                     GlobalUDContext.uContext.ConnectComplete();
-                    _isPartiallyCreated = false;
                     _isCreated = true;
                 }
                 catch (System.Exception e)
                 {
                     if (e.ToString().Contains(Enum.GetName(typeof(udError), 2))) //udE_NothingToDo
                     {
-                        Debug.Log("Waiting for browser to login...");
+                        Debug.Log("Waiting for browser to log in.");
                     }
                     else
                     {
@@ -116,12 +116,11 @@ namespace udSDK
 
             if (_isCreated)
             {
-                if (!GlobalUDContext.loadedCloudData)
-                    GlobalUDContext.LoadCloudData();
+                if(_isPartiallyCreated == true)
+                    GlobalUDContext.renderer.Create(GlobalUDContext.uContext);
 
-                GlobalUDContext.renderer.Create(uContext);         
+                _isPartiallyCreated = false;
             }
-                
         }
 
         /// <summary>
@@ -140,16 +139,22 @@ namespace udSDK
                 else
                     return "org/list";
             }
-
-            if (type == UDCloudNodeType.udCloud_Workspace)
+            else if (type == UDCloudNodeType.udCloud_Workspace)
+            {
                 return node.uuid + "/_project/list";
-
-            if (type == UDCloudNodeType.udCloud_Project)
+            }                
+            else if (type == UDCloudNodeType.udCloud_Project)
+            {
                 return node.parent.uuid + "/" + node.uuid + "/_scene/list";
+            }               
 
             return "";
         }
 
+
+        /// <summary>
+        /// Loads the data from the cloud, once.
+        /// </summary>
         public static void LoadCloudData()
         {
             if (_loadedCloudData)
@@ -166,55 +171,48 @@ namespace udSDK
         /// <param name="depthLimit">The limit at which the tree will stop growing.</param>
         public static void LoadCloudTree(UDCloudNode node, int depthLimit = 3)
         {
-            int type = (int) node.type;
+            int typeAsInt = (int) node.type;
             string listDirectory = GetUDCloudDirectory(node);
 
-            if (type < depthLimit)
+            if (typeAsInt < depthLimit)
             {
-                try
+                string query = GlobalUDContext.serverAPI.Query(GlobalUDContext.uContext, listDirectory, null);
+
+                if (node.uuid == null) //if rootnode is empty, write info to it.
                 {
-                    string query = GlobalUDContext.serverAPI.Query(GlobalUDContext.uContext, listDirectory, null);
+                    UDCloudJSON jsonObject = JsonUtility.FromJson<UDCloudJSON>(query);
 
-                    if (node.uuid == null) //if rootnode is empty, write info to it.
-                    {
-                        UDCloudJSON jsonObject = JsonUtility.FromJson<UDCloudJSON>(query);
+                    node.uuid = jsonObject.id;
+                    node.name = jsonObject.name;
 
-                        node.uuid = jsonObject.id;
-                        node.name = jsonObject.name;
-
-                        GlobalUDContext.LoadCloudTree(node); //loops back now with informed root node
-                    }
-                    else //now we create children nodes for workspaces(org), then projects, then scenes.
-                    {
-                        UDCloudQuery cloudQuery = JsonUtility.FromJson<UDCloudQuery>(query);
-                        UDCloudJSON[] jsonObjects = null;
-
-                        if (type == (int)UDCloudNodeType.udCloud_User)
-                            jsonObjects = cloudQuery.organisations;
-                        if (type == (int)UDCloudNodeType.udCloud_Workspace)
-                            jsonObjects = cloudQuery.projects;
-                        if (type == (int)UDCloudNodeType.udCloud_Project)
-                            jsonObjects = cloudQuery.scenes;
-
-                        if (jsonObjects.Length > 0)
-                        {
-                            node.children = new UDCloudNode[jsonObjects.Length];
-
-                            for (int i = 0; i < node.children.Length; i++)
-                            {
-                                node.children[i] = new UDCloudNode();
-                                node.children[i].parent = node;
-                                node.children[i].uuid = jsonObjects[i].id;
-                                node.children[i].name = jsonObjects[i].name;
-
-                                GlobalUDContext.LoadCloudTree(node.children[i]);
-                            }
-                        }                  
-                    }
+                    GlobalUDContext.LoadCloudTree(node); //loops back now with informed root node
                 }
-                catch (System.Exception e)
+                else //now we create children nodes for workspaces(orgs), then projects, then scenes.
                 {
-                    Debug.Log(e.ToString());
+                    UDCloudQuery cloudQuery = JsonUtility.FromJson<UDCloudQuery>(query);
+                    UDCloudJSON[] jsonObjects = null;
+
+                    if (typeAsInt == (int)UDCloudNodeType.udCloud_User)
+                        jsonObjects = cloudQuery.organisations;
+                    else if (typeAsInt == (int)UDCloudNodeType.udCloud_Workspace)
+                        jsonObjects = cloudQuery.projects;
+                    else if (typeAsInt == (int)UDCloudNodeType.udCloud_Project)
+                        jsonObjects = cloudQuery.scenes;
+
+                    if (jsonObjects.Length > 0)
+                    {
+                        node.children = new UDCloudNode[jsonObjects.Length];
+
+                        for (int i = 0; i < node.children.Length; i++)
+                        {
+                            node.children[i] = new UDCloudNode();
+                            node.children[i].parent = node;
+                            node.children[i].uuid = jsonObjects[i].id;
+                            node.children[i].name = jsonObjects[i].name;
+
+                            GlobalUDContext.LoadCloudTree(node.children[i]);
+                        }
+                    }
                 }
             }
         }

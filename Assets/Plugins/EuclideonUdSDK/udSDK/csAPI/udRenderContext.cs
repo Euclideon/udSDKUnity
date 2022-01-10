@@ -104,13 +104,12 @@ namespace udSDK
                 Destroy();
 
             if (context.pContext == IntPtr.Zero)
-                throw new Exception("context not instantiatiated");
+                throw new Exception("Context not instantiatiated.");
 
             udError error = udRenderContext_Create(context.pContext, ref pRenderer);
             if (error != udSDK.udError.udE_Success)
                 throw new Exception("udRenderContext.Create failed: " + error.ToString());
 
-            this.context = context;
             this.context = context;
         }
 

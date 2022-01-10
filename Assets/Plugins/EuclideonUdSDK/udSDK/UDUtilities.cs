@@ -58,29 +58,31 @@ namespace udSDK
          */
         public static udRenderInstance[] getUDSInstances()
         {
+            UDSModel[] models = GameObject.FindObjectsOfType<UDSModel>(includeInactive: true);
             GameObject[] objects = GameObject.FindGameObjectsWithTag("UDSModel");
-            int count = 0;
-            udRenderInstance[] modelArray = new udRenderInstance[objects.Length];
-            for (int i = 0; i < objects.Length; i++)
+
+            if (models.Length != objects.Length)
+                return new udRenderInstance[0];
+
+            udRenderInstance[] modelArray = new udRenderInstance[models.Length];
+            for (int i = 0; i < models.Length; i++)
             {
-                UDSModel model = (UDSModel) objects[i].GetComponent("UDSModel");
+                UDSModel model = models[i];
 
-                //if (!model.isLoaded)
-                //    model.LoadModel();
-
-                if (model.isLoaded)
+                if (!model.isLoaded)
                 {
-                    modelArray[count].pointCloud = model.model.pModel;
-                    Transform localTransform = objects[i].transform;
+                    continue;
+                }
+                else
+                {
+                    modelArray[i].pointCloud = model.model.pModel;
+                    Transform localTransform = model.transform;
 
-                    modelArray[count].worldMatrix = UDUtilities.GetUDMatrix(
+                    modelArray[i].worldMatrix = UDUtilities.GetUDMatrix(
                             Matrix4x4.TRS(model.transform.position, model.transform.rotation, model.transform.localScale) *
                             model.modelToPivot
                         );
-                    count++;
-                }
-
-                
+                }         
             }
             return modelArray.Where(m => (m.pointCloud != System.IntPtr.Zero)).ToArray();
         }
