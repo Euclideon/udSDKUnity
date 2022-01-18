@@ -103,4 +103,10 @@ Each GameObject that this integration introduces to the **Unity** scene has a ud
 
 A UDS model is a Euclideon Unlimited Detail Point Cloud file.
 
-----
+---
+
+### udCloudNode
+
+The data retrieved from udCloud is packaged in a heirarchy of udCloudNodes. Stemming from the User, to their workspaces, to projects, then to the scenes themselves.
+
+---
