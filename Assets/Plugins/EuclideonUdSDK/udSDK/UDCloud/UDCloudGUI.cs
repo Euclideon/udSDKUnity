@@ -27,40 +27,66 @@ public class UDCloudGUI : EditorWindow
     bool[] foldouts = null;
     string pathText = "";
     bool tryLoggingIn = false;
-    bool tryingToLogIn = false;
     Vector2 scrollPosition;
 
-    static void UnloadServerProjectsInScene()
+    /// <summary>
+    /// Unloads all ud<i><b>Cloud</b></i> scene gameObjects (udProjects) in the scene.
+    /// </summary>
+    static void UnloadProjectsInScene()
     {
-        UDProjectUnity oldProjectToUnload = GameObject.FindObjectOfType<UDProjectUnity>();
+        UDProjectUnity[] oldProjectsToUnload = GameObject.FindObjectsOfType<UDProjectUnity>();
 
-        if (oldProjectToUnload)
-            Destroy(oldProjectToUnload.gameObject);
+        for(int i = 0; i < oldProjectsToUnload.Length; i++)
+            Destroy(oldProjectsToUnload[i].gameObject);
     }
 
+    /// <summary>
+    /// Unloads all cameras in the scene.
+    /// </summary>
+    static void UnloadCamerasInScene()
+    {
+        Camera[] oldCamerasToUnload = GameObject.FindObjectsOfType<Camera>();
+
+        for (int i = 0; i < oldCamerasToUnload.Length; i++)
+            Destroy(oldCamerasToUnload[i].gameObject);
+    }
+
+    /// <summary>
+    /// Loads a ud<i><b>SDK</b></i> camera into the scene.
+    /// </summary>
+    static void LoadSDKCameraInScene()
+    {
+        GameObject udCamera = Instantiate(Resources.Load("udSDKCamera")) as GameObject;
+        udCamera.GetComponent<Camera>().fieldOfView = SceneView.lastActiveSceneView.camera.fieldOfView;
+        udCamera.name = "udSDKCamera"; //so its not called (clone).
+        udCamera.tag = "MainCamera";
+    }
+
+    /// <summary>
+    /// Loads a ud<i><b>Cloud</b></i> scene into the scene that corresponds to the given <paramref name="sceneNode"/>.
+    /// </summary>
+    /// <param name="sceneNode"></param>
     static void LoadServerProject(UDCloudNode sceneNode)
     {
-        UnloadServerProjectsInScene();
-        GameObject udCamera = GameObject.FindGameObjectWithTag("MainCamera");
-        if (!udCamera)
-        {
-            udCamera = Instantiate(Resources.Load("udSDKCamera")) as GameObject;
-            udCamera.name = "udSDKCamera"; //so its not called (clone).
-        }
+        UnloadProjectsInScene();
+        UnloadCamerasInScene();
+        LoadSDKCameraInScene();
         GameObject projectGO = new GameObject();
         UDProjectUnity projectComponent = projectGO.AddComponent<UDProjectUnity>();
         projectComponent.LoadFromServer(sceneNode.uuid, sceneNode.parent.uuid, sceneNode.parent.parent.uuid);
-        DrawLoadingAnimation(projectComponent);
+        //DrawLoadingAnimation(projectComponent);
     }
 
+    /// <summary>
+    /// Loads a ud<i><b>Stream</b></i> project from a local <paramref name="path"/>.
+    /// </summary>
+    /// <param name="path"></param>
     static void LoadLocalProject(string path)
     {
-        GameObject oldudCamera = GameObject.FindGameObjectWithTag("MainCamera");
-        if (!oldudCamera)
-        {
-            GameObject udCamera = Instantiate(Resources.Load("udSDKCamera")) as GameObject;
-            udCamera.name = "udSDKCamera"; //so its not called (clone).
-        }
+        UnloadProjectsInScene();
+        UnloadCamerasInScene();
+        LoadSDKCameraInScene();
+
         GameObject projectGO = new GameObject();
         projectGO.AddComponent<UDProjectUnity>();
 
@@ -70,6 +96,10 @@ public class UDCloudGUI : EditorWindow
         projectGO.GetComponent<UDProjectUnity>().LoadFromFile(path);
     }
 
+    /// <summary>
+    /// Opens a ud<i><b>Cloud</b></i> scene in ud<i><b>Stream</b></i> web using the system default browser.
+    /// </summary>
+    /// <param name="sceneNode"></param>
     static void OpenProjectInWeb(UDCloudNode sceneNode)
     {
         string link = GlobalUDContext.cloudServer + "/api/" + sceneNode.parent.parent.uuid + "/" + sceneNode.parent.uuid + "/" + sceneNode.uuid + "/_scene/view";
@@ -139,7 +169,6 @@ public class UDCloudGUI : EditorWindow
     {
         if(proj.isLoaded && !proj.allModelsLoaded)
         {
-
         }
     }
 
@@ -167,9 +196,7 @@ public class UDCloudGUI : EditorWindow
         style.richText = true;  
 
         if (GUILayout.Button("Load in scene", style))
-        {
-            LoadServerProject(node);         
-        }          
+            LoadServerProject(node);
 
         if (GUILayout.Button("View in ud<b><i>Stream</i></b> Web", style))
             OpenProjectInWeb(node);
@@ -218,7 +245,6 @@ public class UDCloudGUI : EditorWindow
             if (!GlobalUDContext.isCreated && !GlobalUDContext.isPartiallyCreated) //step 1
             {
                 tryLoggingIn = false;
-                tryingToLogIn = true;
 
                 BeginGUICentre(true, true);
                 string buttonName = "Go to ud<b><i>Cloud</i></b>";
@@ -235,7 +261,7 @@ public class UDCloudGUI : EditorWindow
             {
                 foldouts = null;
                 pathText = "";
-                scrollPosition = Vector2.right;            
+                scrollPosition = Vector2.right;
 
                 if (tryLoggingIn)
                 {
@@ -297,7 +323,7 @@ public class UDCloudGUI : EditorWindow
                 EditorGUILayout.Separator();
             }
         }
-        else //Info while in edit mode
+        else //Info to display while in edit mode
         {
             BeginGUICentre(true, true);
             EditorGUILayout.LabelField("Enter play mode to use ud<b><i>Cloud</i></b>", labelStyle);

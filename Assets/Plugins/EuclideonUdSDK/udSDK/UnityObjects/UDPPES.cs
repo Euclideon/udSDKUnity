@@ -97,7 +97,6 @@ public sealed class UDPPER : PostProcessEffectRenderer<UDPPES>
             if ((int)context.width * resolutionScaling != width || (int)context.height * resolutionScaling != height)
                 RebuildBuffers((int)(context.width * resolutionScaling), (int)(context.height * resolutionScaling));
 
-        //GameObject[] objects = GameObject.FindGameObjectsWithTag("UDSModel");
         udRenderInstance[] modelArray = UDUtilities.getUDSInstances();
 
         if (modelArray.Length > 0)
@@ -106,12 +105,11 @@ public sealed class UDPPER : PostProcessEffectRenderer<UDPPES>
             vRenderView.SetMatrix(udSDK.udRenderTargetMatrix.Projection, UDUtilities.GetUDMatrix(cam.projectionMatrix));
 
             //interface to input render options: this allows setting of render flags, picking and filtering from unity objects attached to the camera
-
             GlobalUDContext.renderer.Render(vRenderView, modelArray, modelArray.Length, options);
 
             //pass the depth buffer back to the unity interface for further processing:
             if (optionsContainer != null && optionsContainer.recordDepthBuffer) 
-              optionsContainer.setDepthImageFromZ(depthBuffer);//for as yet unimplemented features
+                optionsContainer.setDepthImageFromZ(depthBuffer); //for as yet unimplemented features
             
             //make sure that the textures exist before operating on them
             if (colourTexture == null || depthTexture == null)

@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Plugins/EuclideonUdSDK/Scenes/Driving Demo.unity
     guid: f51d483d9d6f70e45b1e63c4c06832be
   - enabled: 1
-    path: Assets/Plugins/EuclideonUdSDK/Scenes/Basic Render.unity
+    path: Assets/Plugins/EuclideonUdSDK/sample_scene.unity
     guid: 11571d8ce0d8dd5438e327ae51feab51
   - enabled: 0
     path: Assets/Plugins/EuclideonUdSDK/Scenes/SampleScene.unity

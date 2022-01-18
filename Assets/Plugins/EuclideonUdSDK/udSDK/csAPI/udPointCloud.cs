@@ -71,6 +71,14 @@ namespace udSDK
             return udPointCloud_GetStreamingStatus(this.pModel);
         }
 
+        public UInt16 GetAttributeAddress( udVoxelID voxelID, uint attributeOffset)
+        {
+            IntPtr attributeAddress = IntPtr.Zero;
+            udPointCloud_GetAttributeAddress(pModel, voxelID, attributeOffset, ref attributeAddress);
+
+            return (ushort) Marshal.ReadInt16(attributeAddress);
+        }
+
         [DllImport(UDSDKLibrary.name)]
         private static extern udError udPointCloud_Load(IntPtr pContext, ref IntPtr ppModel, string modelLocation, ref udPointCloudHeader header);
 

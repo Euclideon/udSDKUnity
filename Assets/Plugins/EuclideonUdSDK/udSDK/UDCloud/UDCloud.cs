@@ -104,14 +104,18 @@ namespace udSDK
         /// The index of the node with respect to the root node.
         /// <para>(e.g.)</para>
         /// <code>
-        /// d=0               [0]        
-        /// -               /  |  \      
-        /// d=1          [6]  [5]  [1]    
-        /// -           /   \     /   \
-        /// d=2       [10]  [7] [4]   [2] 
-        /// -           |   / \        |              
-        /// d=3       [11][9] [8]     [3] 
-        /// </code>
+        /// -   v [0]
+        /// -         v [1] 
+        /// -               v [2] 
+        /// -                     > [3]
+        /// -               > [4]                 
+        /// -         > [5]          
+        /// -         v [6]
+        /// -               v [7]
+        /// -                     > [8]
+        /// -                     > [9]
+        /// -               > [10]
+        /// </code>                                       
         /// </summary>
         public int rootIndex
         {
@@ -208,8 +212,6 @@ namespace udSDK
 
             return pos;
         }
-
-
     }
 
     /// <summary>

@@ -145,9 +145,14 @@ public class UDProjectNodeUnity : MonoBehaviour
             case udProjectNodeType.udPNT_PointCloud://!<A Euclideon Unlimited Detail Point Cloud file (“UDS”)
                 gameObject.tag = "UDSModel";
                 UDSModel model = gameObject.AddComponent<UDSModel>();
+                model.projectPosition = new Vector3((float)positions[0], (float)positions[2], (float)positions[1]);
+                model.projectRotation = new Vector3(
+                    (float)projectNode.GetMetadataDouble("transform.rotation.x"),
+                    (float)projectNode.GetMetadataDouble("transform.rotation.y"),
+                    (float)projectNode.GetMetadataDouble("transform.rotation.z"));
+                model.inProject = true;
                 model.path = this.URI;
                 gameObject.SetActive(false);
-
                 break;
 
             case udProjectNodeType.udPNT_PointOfInterest:

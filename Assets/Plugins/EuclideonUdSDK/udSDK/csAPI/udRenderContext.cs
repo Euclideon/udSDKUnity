@@ -38,7 +38,7 @@ namespace udSDK
         public UInt32 y;//view space mouse y
         public UInt32 hit;//true if voxel was hit by this pick
         public UInt32 isHighestLOD;//true if hit was as accurate as possible
-        public UInt32 modelIndex; //index of the model in the array hit by this pick
+        public int modelIndex; //index of the model in the array hit by this pick
         public fixed double pointCenter[3]; //location of the point hit by the pick
         public udVoxelID voxelID; //ID of the hit voxel
     }
@@ -225,6 +225,7 @@ namespace udSDK
             newPick.hit = (int)targetPick.hit;
             newPick.x   = (int)targetPick.x;
             newPick.y   = (int)targetPick.y;
+            newPick.modelIndex = (int)targetPick.modelIndex;
 
             unsafe
             {

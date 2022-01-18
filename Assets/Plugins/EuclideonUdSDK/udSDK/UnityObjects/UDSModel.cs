@@ -11,24 +11,24 @@ using udSDK;
 
 public class UDSModel : MonoBehaviour
 {
-    [System.NonSerialized]
-    public udPointCloud model = new udPointCloud();
-    [System.NonSerialized]
-    public bool isLoaded = false;
-    [System.NonSerialized]
-    public Matrix4x4 modelScale;
+    [System.NonSerialized] public udPointCloud model = new udPointCloud();
+    [System.NonSerialized] public bool isLoaded = false;
+    [System.NonSerialized] public Matrix4x4 modelScale;
 
-    [System.NonSerialized]
-    public Matrix4x4 modelToPivot; //This represents the transformation between the file representation and the coordinate system centred at pivot
+    [System.NonSerialized] public Matrix4x4 modelToPivot; //This represents the transformation between the file representation and the coordinate system centred at pivot
     public udPointCloudHeader header = new udPointCloudHeader();
 
-    [System.NonSerialized]
-    public Matrix4x4 storedMatrix;
-    [System.NonSerialized]
-    public Vector3 fileScale;
-    public Vector3 geolocationOffset = new Vector3(-200000, 0, -5900000); //for bendigo...
+    [System.NonSerialized] public Matrix4x4 storedMatrix;
+    [System.NonSerialized] public Vector3 fileScale;
+    
+    public Vector3 projectPosition;
+    public Vector3 projectRotation;
+    public bool isSelected;
+    private bool wasSelected;
     public string path = "";
-    public bool geolocate = true;
+    public Vector3 geolocationOffset;
+    [HideInInspector] public bool geolocate = false;
+    [HideInInspector] public bool inProject = false;
     
     [HideInInspector]
     public UnityEvent m_OnLoaded;
@@ -63,15 +63,30 @@ public class UDSModel : MonoBehaviour
     {
         if (geolocate)
         {
-            this.transform.localPosition =  UDUtilities.UDtoGL *
+            this.transform.localPosition = UDUtilities.UDtoGL *
                 new Vector3(
                     (float)(header.baseOffset[0] + header.pivot[0] * header.scaledRange),
                     (float)(header.baseOffset[1] + header.pivot[1] * header.scaledRange),
                     (float)(header.baseOffset[2] + header.pivot[2] * header.scaledRange)
                     );
             transform.localPosition += geolocationOffset;
+            transform.localPosition = new Vector3(transform.localPosition.x, 0, transform.localPosition.z); //flooring geolocation.
             geolocate = false;
         }
+
+        if (inProject)
+        {
+            transform.localPosition = projectPosition;
+            transform.localRotation = Quaternion.Euler(projectRotation);
+            if(transform.GetSiblingIndex() == 0)
+            {
+                Camera.main.transform.localPosition = transform.localPosition + ((Vector3.up + Vector3.back) * (float)header.scaledRange/10);
+                Camera.main.transform.localRotation = Quaternion.LookRotation(transform.position - Camera.main.transform.position, Vector3.up);
+            }
+            inProject = false;
+        }
+
+        wasSelected = isSelected;
     }
 
     public Matrix4x4 getStoredMatrix() {

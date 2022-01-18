@@ -51,7 +51,6 @@ namespace udSDK
         udProjectLoadSource_Memory, //!< The project source exists in memory; udProject_CreateInMemory, udProject_LoadFromMemory or udProject_SaveToMemory
         udProjectLoadSource_Server, //!< The project source exists from the server; udProject_CreateInServer, udProject_LoadFromServer or udProject_SaveToServer
         udProjectLoadSource_URI, //!< The project source exists from a file or URL; udProject_CreateInFile, udProject_LoadFromFile or udProject_SaveToFile
-
         udProjectLoadSource_Count //!< Total number of source types. Used internally but can be used as an iterator max when displaying different source types.
     }
     
@@ -202,6 +201,49 @@ namespace udSDK
         ~UDProjectNode()
         {
         }
+
+        public double GetMetadataDouble(string metadataKey)
+        {
+            double writeTo = 0;
+            udProjectNode_GetMetadataDouble(ref nodeData, metadataKey, ref writeTo, (double) 0);
+            return writeTo;
+        }
+
+        public int GetMetadataInt(string metadataKey)
+        {
+            int writeTo = 0;
+            udProjectNode_GetMetadataInt(ref nodeData, metadataKey, ref writeTo, (int)0);
+            return writeTo;
+        }
+
+        public string GetMetadataString(string metadataKey)
+        {
+            string writeTo = "";
+            udProjectNode_GetMetadataString(ref nodeData, metadataKey, ref writeTo, "");
+            return writeTo;
+        }
+
+        public UInt32 GetMetadataUint(string metadataKey)
+        {
+            UInt32 writeTo = 0;
+            udProjectNode_GetMetadataUint(ref nodeData, metadataKey, ref writeTo, (UInt32) 0);
+            return writeTo;
+        }
+
+        public Int64 GetMetadataInt64(string metadataKey)
+        {
+            Int64 writeTo = 0;
+            udProjectNode_GetMetadataInt64(ref nodeData, metadataKey, ref writeTo, (Int64)0);
+            return writeTo;
+        }
+
+        public bool GetMetadataBool(string metadataKey)
+        {
+            bool writeTo = false;
+            udProjectNode_GetMetadataBool(ref nodeData, metadataKey, ref writeTo, false);
+            return writeTo;
+        }
+
 
         //Create a node in a project
         [DllImport(UDSDKLibrary.name)]
