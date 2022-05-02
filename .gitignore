@@ -5,3 +5,11 @@ Temp/*
 /Assets/VDK/*.so
 .vs/*
 build/*
+.vscode
+/*.csproj
+/Logs/*.log
+ProjectSettings
+UserSettings
+/Packages/packages-lock.json
+/udSDK.lib
+/*.sln
