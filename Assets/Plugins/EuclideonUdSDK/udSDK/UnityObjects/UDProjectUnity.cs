@@ -24,7 +24,7 @@ public class UDProjectUnity : MonoBehaviour
     public string path;
     public bool isLoaded = false;
     private string geoJSON;
-    UDProject proj;
+    UDScene proj;
 
     // this retains an offset, to keep everything close to world origin
     private double[] positionOffset = new double[3];
@@ -67,7 +67,7 @@ public class UDProjectUnity : MonoBehaviour
     void LoadFromFile(string path)
     {
         geoJSON = System.IO.File.ReadAllText(path);
-        proj = new UDProject(geoJSON);
+        proj = new UDScene(geoJSON);
         this.path = path;
         print("loaded node!");
     }

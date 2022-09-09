@@ -37,6 +37,7 @@ public class udUserInput : EditorWindow
     {
         usernameEntry = EditorPrefs.GetString(GlobalUDContext.SavedUsernameKey);
         passwordEntry = EditorPrefs.GetString(GlobalUDContext.SavedPasswordKey);
+        serverEntry = EditorPrefs.GetString(GlobalUDContext.SavedServerKey);
 
         CommitUserInfo();
     }
@@ -49,6 +50,7 @@ public class udUserInput : EditorWindow
     // Strings used to store the entered info
     private string usernameEntry;
     private string passwordEntry;
+    private string serverEntry;
     //private bool saveToDisk = false;
 
     private void OnGUI()
@@ -72,7 +74,9 @@ public class udUserInput : EditorWindow
         usernameEntry = EditorGUILayout.TextField(usernameEntry);
         EditorGUILayout.LabelField("Password:");
         passwordEntry = EditorGUILayout.PasswordField(passwordEntry);
-
+        EditorGUILayout.LabelField("Server:");
+        serverEntry = EditorGUILayout.TextField(serverEntry);
+        
         bool pressed = GUILayout.Button("Confirm");
 
         EditorGUILayout.LabelField("*WARNING* these details are saved to your computer in plaintext");
@@ -102,6 +106,7 @@ public class udUserInput : EditorWindow
     {
         EditorPrefs.SetString(GlobalUDContext.SavedUsernameKey, usernameEntry);
         EditorPrefs.SetString(GlobalUDContext.SavedPasswordKey, passwordEntry);
+        EditorPrefs.SetString(GlobalUDContext.SavedServerKey, serverEntry);
     }
 
     // Totally wipe user information from the system. Called from ONGUI when button is pressed
@@ -109,14 +114,17 @@ public class udUserInput : EditorWindow
     {
         usernameEntry = "";
         passwordEntry = "";
+        serverEntry = GlobalUDContext.vaultServer;
 
         // Clear editor prefs 
         EditorPrefs.SetString(GlobalUDContext.SavedUsernameKey, "");
         EditorPrefs.SetString(GlobalUDContext.SavedPasswordKey, "");
+        EditorPrefs.SetString(GlobalUDContext.SavedServerKey, GlobalUDContext.vaultServer);
 
         // Player prefs isn't saved, but on the off chance it was during development make sure to clear it
         PlayerPrefs.SetString(GlobalUDContext.SavedUsernameKey, "");
         PlayerPrefs.SetString(GlobalUDContext.SavedPasswordKey, ""); 
+        PlayerPrefs.SetString(GlobalUDContext.SavedServerKey, GlobalUDContext.vaultServer);
     }
 }
 #endif

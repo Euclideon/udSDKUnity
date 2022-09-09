@@ -10,10 +10,10 @@ using UnityEngine.Networking;
 
 public class udProjectNodeUnity : MonoBehaviour
 {
-  public udProjectNodeType itemType;
+  public udSceneNodeType itemType;
   public string itemTypeString;
-  public UDProjectNode projectNode;
-  public udProjectGeometryType geometryType;
+  public UDSceneNode projectNode;
+  public udSceneGeometryType geometryType;
   public string URI;
   GameObject firstChild;
   GameObject nextSibling;
@@ -90,7 +90,7 @@ public class udProjectNodeUnity : MonoBehaviour
   public void LoadTree(IntPtr pNode)
   {
     project = GetComponentInParent<UDProjectUnity>(); 
-    projectNode = new UDProjectNode(pNode);
+    projectNode = new UDSceneNode(pNode);
 
     if (projectNode.nodeData.pName != IntPtr.Zero)
       gameObject.name = Marshal.PtrToStringAnsi(projectNode.nodeData.pName);
@@ -117,7 +117,7 @@ public class udProjectNodeUnity : MonoBehaviour
 
     switch (itemType)
     {
-      case udProjectNodeType.udPNT_Custom://!<Need to check the itemtypeStr string manually.
+      case udSceneNodeType.udPNT_Custom://!<Need to check the itemtypeStr string manually.
         itemTypeString = new string(projectNode.nodeData.itemtypeStr);
         switch (itemTypeString) 
         {
@@ -139,14 +139,14 @@ public class udProjectNodeUnity : MonoBehaviour
         }
         break;
 
-      case udProjectNodeType.udPNT_PointCloud://!<A Euclideon Unlimited Detail Point Cloud file (“UDS”)
+      case udSceneNodeType.udPNT_PointCloud://!<A Euclideon Unlimited Detail Point Cloud file (“UDS”)
         UDSModel model = gameObject.AddComponent<UDSModel>();
         gameObject.tag = "UDSModel";
         model.path = this.URI;
         break;
 
-      case udProjectNodeType.udPNT_PointOfInterest:
-        if (geometryType != udProjectGeometryType.udPGT_LineString)
+      case udSceneNodeType.udPNT_PointOfInterest:
+        if (geometryType != udSceneGeometryType.udPGT_LineString)
         {
           double[] pointPosition = GetReorderedPosition(positions, 0);
           pointPosition = project.CheckPosition(pointPosition); 
@@ -155,13 +155,13 @@ public class udProjectNodeUnity : MonoBehaviour
         } 
         break;
       
-      case udProjectNodeType.udPNT_Folder: //!<A folder of other nodes (“Folder”)
+      case udSceneNodeType.udPNT_Folder: //!<A folder of other nodes (“Folder”)
         break;
       
-      case udProjectNodeType.udPNT_GTFS: //!< A General Transit Feed Specification object ("GTFS")
+      case udSceneNodeType.udPNT_GTFS: //!< A General Transit Feed Specification object ("GTFS")
         break;
       
-      case udProjectNodeType.udPNT_Media: //!<An Image, Movie, Audio file or other media object (“Media”)
+      case udSceneNodeType.udPNT_Media: //!<An Image, Movie, Audio file or other media object (“Media”)
         // only supporting images presently
         var icon = new GameObject(); 
         var sprite = icon.AddComponent<SpriteRenderer>();
@@ -189,24 +189,24 @@ public class udProjectNodeUnity : MonoBehaviour
         StartCoroutine(LoadMediaImage(sprite));
         break;
       
-      case udProjectNodeType.udPNT_Viewpoint:
+      case udSceneNodeType.udPNT_Viewpoint:
         break;
       
-      case udProjectNodeType.udPNT_VisualisationSettings: //!<Visualisation settings (itensity, map height etc) (“VizSet”)
+      case udSceneNodeType.udPNT_VisualisationSettings: //!<Visualisation settings (itensity, map height etc) (“VizSet”)
         break;
     }
 
     switch (geometryType)
     {
-      case(udProjectGeometryType.udPGT_None): //!<There is no geometry associated with this node.
+      case(udSceneGeometryType.udPGT_None): //!<There is no geometry associated with this node.
         break;
 
-      case(udProjectGeometryType.udPGT_Point): //!<pCoordinates is a single 3D position
+      case(udSceneGeometryType.udPGT_Point): //!<pCoordinates is a single 3D position
         // we check the position here, so that it sets any required offset values
         project.CheckPosition(GetReorderedPosition(positions, 0)); 
         break;
 
-      case(udProjectGeometryType.udPGT_MultiPoint): //!<Array of udPGT_Point, pCoordinates is an array of 3D positions.
+      case(udSceneGeometryType.udPGT_MultiPoint): //!<Array of udPGT_Point, pCoordinates is an array of 3D positions.
         if (!(projectNode.nodeData.geomCount==0)) 
         {
           //create a child object for each geometry object
@@ -220,7 +220,7 @@ public class udProjectNodeUnity : MonoBehaviour
         }
         break;
 
-      case(udProjectGeometryType.udPGT_LineString): //!<pCoordinates is an array of 3D positions forming an open line
+      case(udSceneGeometryType.udPGT_LineString): //!<pCoordinates is an array of 3D positions forming an open line
         LineRenderer lr = gameObject.AddComponent<LineRenderer>();
 
         var shader = Shader.Find("udSDK/Demo/DepthOffsetSprite");
@@ -251,16 +251,16 @@ public class udProjectNodeUnity : MonoBehaviour
         lr.startWidth = lr.endWidth = project.appearance.lineSize;
         break;
 
-      case(udProjectGeometryType.udPGT_MultiLineString): //!<Array of udPGT_LineString; pCoordinates is NULL and children will be present.
+      case(udSceneGeometryType.udPGT_MultiLineString): //!<Array of udPGT_LineString; pCoordinates is NULL and children will be present.
         break;
 
-      case(udProjectGeometryType.udPGT_Polygon): //!<pCoordinates will be a closed linear ring (the outside), there MAY be children that are interior as pChildren udPGT_MultiLineString items, these should be counted as islands of the external ring.
+      case(udSceneGeometryType.udPGT_Polygon): //!<pCoordinates will be a closed linear ring (the outside), there MAY be children that are interior as pChildren udPGT_MultiLineString items, these should be counted as islands of the external ring.
         break;
 
-      case(udProjectGeometryType.udPGT_MultiPolygon): //!<pCoordinates is null, children will be udPGT_Polygon (which still may have internal islands)
+      case(udSceneGeometryType.udPGT_MultiPolygon): //!<pCoordinates is null, children will be udPGT_Polygon (which still may have internal islands)
         break;
 
-      case(udProjectGeometryType.udPGT_GeometryCollection): //!<Array of geometries; pCoordinates is NULL and children may be present of any type.
+      case(udSceneGeometryType.udPGT_GeometryCollection): //!<Array of geometries; pCoordinates is NULL and children may be present of any type.
         break;
     }
 

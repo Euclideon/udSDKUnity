@@ -26,7 +26,7 @@ public class udPickToDepth : MonoBehaviour
     {
         if (setNext)
         {
-            udPick pick = camOptions.lastPick; 
+            UDPick pick = camOptions.lastPick; 
             depthEffect.SetFocusDistance(Vector3.Distance(pick.pointCenter, cam.transform.position));
             setNext = false; 
         }

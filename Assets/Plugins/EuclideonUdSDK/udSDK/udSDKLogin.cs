@@ -9,23 +9,25 @@ namespace udSDK
     public static class GlobalUDContext
     {
         public static bool isCreated = false;
-        public static udContext uContext = new udContext();
-        public static udRenderContext renderer = new udRenderContext();
+        public static UDContext uContext = new UDContext();
+        public static UDRenderContext renderer = new UDRenderContext();
         public static UDSessionThreadManager sessionKeeper = new UDSessionThreadManager();
-        public static string vaultServer = "https://udstream.euclideon.com";
-
-        public static string vaultUsername = ""; // Add credentials here for build
         
-        public static string vaultPassword = ""; // Add credentials here for build
+        // Add credentials below for build
+        public static string vaultServer = "https://udstream.euclideon.com";
+        public static string vaultUsername = "";
+        public static string vaultPassword = "";
+        public static bool ignoreCertificate = false;
 
-        // These strings exist to ensure during development no typo or error is ever set regarding the saving/loading/reading of 
-        // .. usernames and passwords.
+        // These strings exist to ensure during development no typo or error is ever set
+        // regarding the saving/loading/reading of usernames and passwords.
+        public static string SavedServerKey = "Server";
         public static string SavedUsernameKey = "Username";
         public static string SavedPasswordKey = "Password";
-        
+
         // For validating the version 
         public static UDVersion sdkVersion; // the version of the sdk currently linked to the project
-        public static UDVersion wrapperVersion = new UDVersion(2, 1, 0); // the latest version of the sdk supported by the sdk
+        public static UDVersion wrapperVersion = new UDVersion(2, 3, 1); // the latest version of the sdk supported by the sdk
 
         public static void Login()
         {
@@ -34,53 +36,95 @@ namespace udSDK
             vaultPassword = GlobalUDContext.SavedPasswordKey;
 
             // No longer using player prefs as they save to disk persistantly
-          #if UNITY_EDITOR
-
+#if UNITY_EDITOR
+            vaultServer = EditorPrefs.GetString(SavedServerKey);
             vaultUsername = EditorPrefs.GetString(SavedUsernameKey);
             vaultPassword = EditorPrefs.GetString(SavedPasswordKey);
-          #endif
+#endif
           
             Debug.Log("udSDK Trying to Login: " + vaultUsername);
             if (!GlobalUDContext.isCreated)
             {
+              if (ignoreCertificate)
+              {
                 if (Application.platform == RuntimePlatform.Android)
-                    uContext.IgnoreCertificateVerification(true);
-                try
-                {
-                    Debug.Log("Attempting to resume Euclideon udSDK session");
-                    uContext.Try_Resume(vaultServer, "Unity", vaultUsername, false);
-                    //uContext.RequestLicense(LicenseType.Render);
-                    isCreated = true;
-                    Debug.Log("Resume Succeeded");
-                }
-                catch (System.Exception e)
-                {
-                    Debug.Log(e.ToString() + "Logging in to Euclideon udSDK server");
-                  try
-                  {
-                    GlobalUDContext.uContext.Connect(vaultServer, "Unity", vaultUsername, vaultPassword);
-                    GlobalUDContext.isCreated = true;
-                    Debug.Log("udSDK Logged in!");
-                  }
-                  catch(System.Exception f) {
-                    Debug.Log("Login Failed: " + f.ToString());
-                    return;
-                  }
-                    //uContext.RequestLicense(LicenseType.Render);
-                }
-                GlobalUDContext.CheckSDKVersion();
+                  AttemptLogin(LoginMethod.IgnoreCertificate);
+                else 
+                  AttemptLogin(LoginMethod.Domain);
+              }
+              else
+              {
+                AttemptLogin(LoginMethod.Legacy);
+              }
+
+              UDSessionInfo info = GlobalUDContext.uContext.GetSessionInfo();
+              Debug.Log("UDSessionInfo.isDomain = " + info.isDomain);
+              CheckSDKVersion();
             }
             else
             {
               Debug.Log("udSDK Skipping Login: already logged in");
             }
 
-            GlobalUDContext.renderer.Create(uContext);
+            renderer.Create(uContext);
+        }
+
+        public enum LoginMethod
+        {
+          Standard, 
+          Legacy, 
+          Domain, 
+          Key, 
+          IgnoreCertificate
+        }
+
+        public static void AttemptLogin(LoginMethod loginMethod)
+        {
+          try
+          {
+            switch (loginMethod)
+            {
+              // Note: standard and legacy the same for now
+              case (LoginMethod.Standard):
+                Debug.Log("Attempting to resume Euclideon udSDK session...");
+                GlobalUDContext.uContext.Connect(vaultServer, "Unity", vaultUsername, vaultPassword);
+                GlobalUDContext.isCreated = true;
+                Debug.Log("Resume Succeeded");
+                break;
+              
+              case (LoginMethod.Legacy):
+                Debug.Log("Attempting to resume Euclideon udSDK session...");
+                GlobalUDContext.uContext.Connect(vaultServer, "Unity", vaultUsername, vaultPassword);
+                GlobalUDContext.isCreated = true;
+                Debug.Log("Resume Succeeded");
+                break;
+              
+              case (LoginMethod.Domain):
+                Debug.Log("Attempting domain login...");
+                GlobalUDContext.uContext.ConnectFromDomain(vaultServer, "globalpool");
+                GlobalUDContext.isCreated = true;
+                Debug.Log("Login Succeeded");
+                break;
+              
+              case (LoginMethod.IgnoreCertificate):
+                Debug.Log("Attempting login ignoring certificate...");
+                GlobalUDContext.uContext.IgnoreCertificateVerification(true);
+                GlobalUDContext.uContext.ConnectFromDomain(vaultServer, "globalpool");
+                GlobalUDContext.isCreated = true;
+                Debug.Log("Login Succeeded");
+                break;
+            }
+          }
+          catch (System.Exception e)
+          {
+            Debug.Log("Login Failed: " + e.ToString());
+            return;
+          }
         }
         
         public static void CheckSDKVersion()
         {
-          if(sdkVersion == null)
+          if(GlobalUDContext.sdkVersion == null)
             GlobalUDContext.sdkVersion = new UDVersion(); 
 
           if (GlobalUDContext.sdkVersion.Equals(wrapperVersion))

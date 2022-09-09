@@ -1,17 +1,26 @@
 using System;
 using System.Runtime.InteropServices;
-using UnityEngine;
+
+//! The **udRenderContext** object provides an interface to render Euclideon Unlimited Detail models.
+//! It provides the ability to render by colour, intensity or classification; additionally allowing the user to query a specific pixel for information about the pointcloud data.
 
 namespace udSDK
 {
+    /// <summary>
+    /// These are the various point modes available in udSDK
+    /// </summary>
     public enum udRenderContextPointMode
     {
-        udRCPM_Rectangles,
-        udRCPM_Cubes,
-        udRCPM_Points,
-        udRCPM_Count
+        udRCPM_Rectangles, //!< This is the default, renders the voxels expanded as screen space rectangles
+        udRCPM_Cubes, //!< Renders the voxels as cubes
+        udRCPM_Points, //!< Renders voxels as a single point (Note: does not accurately reflect the 'size' of voxels)
+        
+        udRCPM_Count //!< Total number of point modes. Used internally but can be used as an iterator max when displaying different point modes.
     }
 
+    /// <summary>
+    /// These are the various render flags available in udSDK
+    /// </summary>
     public enum udRenderContextFlags
     {
         udRCF_None = 0, //!< Render the points using the default configuration.
@@ -28,215 +37,87 @@ namespace udSDK
         udRCF_DisableOrthographic = 1 << 7, //!< Disables the renderer entering high-performance orthographic mode
     }
 
-    /*Contains information returned by the picking system
-     */
+    /// <summary>
+    /// Stores both the input and output of the udSDK picking system
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    unsafe public struct udRenderPicking
+    public struct udRenderPicking
     {
-        public UInt32 x;//view space mouse x
-        public UInt32 y;//view space mouse y
-        public UInt32 hit;//true if voxel was hit by this pick
-        public UInt32 isHighestLOD;//true if hit was as accurate as possible
-        public UInt32 modelIndex; //index of the model in the array hit by this pick
-        public fixed double pointCenter[3]; //location of the point hit by the pick
-        public udVoxelID voxelID; //ID of the hit voxel
+        public UInt32 x; //!< Mouse X position in udRenderTarget space
+        public UInt32 y; //!< Mouse Y position in udRenderTarget space
+        
+        public UInt32 hit; //!< Not 0 if a voxel was hit by this pick
+        public UInt32 isHighestLOD; //!< Not 0 if this voxel that was hit is as precise as possible
+        // todo is this the correct size for "unsized int"
+        public UInt16 modelIndex; //!< Index of the model in the ppModels list
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
+        public double[] pointCenter; //!< The center of the hit voxel in world space
+        public udVoxelID voxelID; //!< The ID of the voxel that was hit by the pick; this ID is only valid for a very short period of time- Do any additional work using this ID this frame.
     }
-
-    /*Unity serializable equivalent of udRenderPicking 
-    */
-    public struct udPick 
-    {
-        public int x; // view space mouse x
-        public int y; // view space mouse y
-        public int hit; // true if voxel was hit by this pick
-        public int isHighestLOD; // true if his was as accurate as possible
-        public int modelIndex; // the index of the model in the array hit by this pick
-        public UnityEngine.Vector3 pointCenter; // the position of the point hit by the pick 
-        public udVoxelID voxelID; // ID of the hit voxel 
-    }
-
+    
+    /// <summary>
+    /// Stores the render settings used per render
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct udRenderSettings
     {
-        public udRenderContextFlags flags; // optional flags providing information on how to perform the render
-        public IntPtr pPick;
-        public udRenderContextPointMode pointMode;
-        public IntPtr pFilter; // pointer to a udQueryFilter
-    }
+        public udRenderContextFlags flags; //!< Optional flags providing information about how to perform this render
+        public IntPtr pPick; //!< Optional This provides information about the voxel under the mouse
+        public udRenderContextPointMode pointMode; //!< The point mode for this render
+        public IntPtr pFilter; //!< Optional This filter is applied to all models in the scene
 
+        public UInt32 pointCount; //!< Optional (GPU Renderer) A hint to the renderer at the upper limit of voxels that are to be rendered.
+        public float pointThreshold; //!< Optional (GPU Renderer) A hint of the minimum size (in screen space) of a voxel that the renderer will produce.
+    }
+    
+    /// <summary>
+    /// Stores the instance settings of a model to be rendered
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct udRenderInstance
     {
-        public IntPtr pointCloud;
+        public IntPtr pointCloud; //!< This is the point cloud to display
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-        public double[] worldMatrix;
+        public double[] matrix; //!< The world space matrix for this point cloud instance (this does not to be the default matrix)
+        //!< @note The default matrix for a model can be accessed from the associated udPointCloudHeader
 
-        public IntPtr filter;
-        public IntPtr voxelShader;
-        public IntPtr voxelUserData;
+        public IntPtr pFilter; //!< Filter to override for this model, this one will be used instead of the global one applied in udRenderSettings
+        
+        public IntPtr pVoxelShader; //!< When the renderer goes to select a colour, it calls this function instead
+        public IntPtr pVoxelUserData; //!< If pVoxelShader is set, this parameter is passed to that function
+
+        public double opacity; //!< If this is a value between 0 and 1 this model will be rendered blended with the rest of the scene. If the alpha from pVoxelShader is 0, the alpha provided will be written to the colourBuffer otherwise it will be calculated using this opacity value
+        public UInt32 skipRender; //!< If set not 0 the model will not be rendered
     }
+    
 
-    public class udRenderContext
+    public static partial class udRenderContext_f
     {
-        public IntPtr pRenderer = IntPtr.Zero;
+        /// <summary>
+        /// Create an instance of `udRenderContext` for rendering.
+        /// </summary>
+        /// <param name="pContext">The context to be used to create the render context.</param>
+        /// <param name="ppRenderer">The pointer pointer of the udRenderContext. This will allocate an instance of udRenderContext into `ppRenderer`.</param>
+        [DllImport(UDSDKLibrary.name, EntryPoint = "udRenderContext_Create")]
+        public static extern udError Create(IntPtr pContext, ref IntPtr ppRenderer);
 
-        private udContext context;
+        /// <summary>
+        /// Destroy the instance of the renderer.
+        /// </summary>
+        /// <param name="ppRenderer">The pointer pointer of the udRenderContext. This will deallocate the instance of udRenderContext.</param>
+        [DllImport(UDSDKLibrary.name, EntryPoint = "udRenderContext_Destroy")]
+        public static extern udError Destroy(ref IntPtr ppRenderer);
 
-        ~udRenderContext()
-        {
-            Destroy();
-        }
-
-        public void Create(udContext context)
-        {
-            //ensure we destroy the existing context if we are creating a new one:
-            if (pRenderer != IntPtr.Zero)
-                Destroy();
-
-            if (context.pContext == IntPtr.Zero)
-                throw new Exception("context not instantiatiated");
-
-            udError error = udRenderContext_Create(context.pContext, ref pRenderer);
-            if (error != udSDK.udError.udE_Success)
-                throw new Exception("udRenderContext.Create failed: " + error.ToString());
-
-            this.context = context;
-        }
-
-        public void Destroy()
-        {
-            if (pRenderer == IntPtr.Zero)
-            {
-                return;
-            }
-            udError error = udRenderContext_Destroy(ref pRenderer);
-            if (error != udSDK.udError.udE_Success)
-                throw new Exception("udRenderContext.Destroy failed: " + error.ToString());
-
-            pRenderer = IntPtr.Zero;
-        }
-
-        public void Render(udRenderTarget renderView, udRenderInstance[] pModels, int modelCount, RenderOptions options = null )
-        {
-            if (modelCount == 0)
-                return;
-
-            if (options == null)
-                options = new RenderOptions();
-
-            if (renderView == null)
-                throw new Exception("renderView is null");
-
-            if (renderView.pRenderView == IntPtr.Zero)
-                throw new Exception("RenderView not initialised");
-
-            if (pRenderer == IntPtr.Zero)
-                throw new Exception("renderContext not initialised");
-
-            udError error = udRenderContext_Render(pRenderer, renderView.pRenderView, pModels, modelCount, options.options);
-
-            if (error != udSDK.udError.udE_Success)
-            {
-                Debug.Log("udRenderContext.Render failed: " + error.ToString());
-            }
-            options.pickRendered = true;
-        }
-
-        [DllImport(UDSDKLibrary.name)]
-        private static extern udError udRenderContext_Create(IntPtr pContext, ref IntPtr ppRenderer);
-
-        [DllImport(UDSDKLibrary.name)]
-        private static extern udError udRenderContext_Destroy(ref IntPtr ppRenderer);
-
-        [DllImport(UDSDKLibrary.name)]
-        private static extern udError udRenderContext_Render(IntPtr pRenderer, IntPtr pRenderView, udRenderInstance[] pModels, int modelCount, [In, Out] udRenderSettings options);
+        /// <summary>
+        /// Render the models from the perspective of `pRenderView`.
+        /// </summary>
+        /// <param name="pRenderer">The renderer to render the scene.</param>
+        /// <param name="pRenderView">The view to render from with the render buffers associated with it being filled out.</param>
+        /// <param name="pModels">The array of models to use in render.</param>
+        /// <param name="modelCount">The amount of models in pModels.</param>
+        /// <param name="options">Additional render options.</param>
+        [DllImport(UDSDKLibrary.name, EntryPoint = "udRenderContext_Render")]
+        public static extern udError Render(IntPtr pRenderer, IntPtr pRenderView, udRenderInstance[] pModels, int modelCount, [In, Out] udRenderSettings options);
     }
-
-    public class RenderOptions
-    {
-        // this is an interface to the udRenderSettings struct
-        // it provides a safe udPick option for accessing the pick results inside unity component scripts 
-
-        public udRenderSettings options;
-        public bool pickSet = false;
-        public bool pickRendered = false;
-
-        public udRenderSettings Options {
-            get
-            {
-                return options;
-            }
-        }
-
-        public RenderOptions(udRenderContextPointMode pointMode, udRenderContextFlags flags)
-        {
-            options.pointMode = pointMode;
-
-            //this will need to change once support for multiple picks is introduced
-            options.pPick = Marshal.AllocHGlobal(Marshal.SizeOf<udRenderPicking>());            
-
-            options.flags = flags;
-        }
-
-        public RenderOptions() : this(udRenderContextPointMode.udRCPM_Rectangles, udRenderContextFlags.udRCF_None)
-        {
-        }
-
-        ~RenderOptions()
-        { 
-            Marshal.DestroyStructure<udRenderPicking>(options.pPick);
-            Marshal.FreeHGlobal(options.pPick);
-        }
-
-        public void setPick(uint x, uint y)
-        {
-            udRenderPicking pick = new udRenderPicking();
-            pick.x = x;
-            pick.y = y;
-
-            Marshal.StructureToPtr(pick, options.pPick, false);
-
-            pickRendered = false;
-            pickSet = true;
-        }
-
-        public udPick getPick()
-        {
-            UnityEngine.Debug.Log("Getting pick");
-
-            if(!pickSet)
-                return new udPick();
-
-            udRenderPicking targetPick = this.Pick;
-            udPick newPick = new udPick();
-            newPick.hit = (int)targetPick.hit;
-            newPick.x   = (int)targetPick.x;
-            newPick.y   = (int)targetPick.y;
-
-            unsafe
-            {
-                newPick.pointCenter = new UnityEngine.Vector3((float)targetPick.pointCenter[0], (float)targetPick.pointCenter[1], (float)targetPick.pointCenter[2]);
-            }
-            
-            newPick.isHighestLOD = (int)targetPick.isHighestLOD;
-
-            newPick.voxelID = targetPick.voxelID;
-
-            return newPick; 
-        }
-
-        public udRenderPicking Pick
-        {
-            get
-            {
-                if (!pickSet)
-                    return new udRenderPicking();
-
-                if (!pickRendered)
-                    throw new Exception("Render must be called before pick can be read");
-
-                return (udRenderPicking)Marshal.PtrToStructure(options.pPick, typeof(udRenderPicking)); 
-            }
-        }
-    }
+    
 }
