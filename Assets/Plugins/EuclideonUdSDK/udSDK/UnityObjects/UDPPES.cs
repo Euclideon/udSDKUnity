@@ -24,7 +24,7 @@ public sealed class UDPPER : PostProcessEffectRenderer<UDPPES>
     private float[] depthBuffer;
     private Texture2D depthTexture;
 
-    private udRenderTarget vRenderView;
+    private UDRenderTarget vRenderView;
     public override void Init()
     {
         try
@@ -32,7 +32,7 @@ public sealed class UDPPER : PostProcessEffectRenderer<UDPPES>
             GlobalUDContext.Login();
             InitialiseBuffers(width, height);
             InitialiseTextures();
-            vRenderView = new udRenderTarget();
+            vRenderView = new UDRenderTarget();
             vRenderView.Create(GlobalUDContext.uContext, GlobalUDContext.renderer, (uint)width, (uint)height);
             vRenderView.SetTargets(ref colourBuffer, 0, ref depthBuffer);
         }
@@ -76,7 +76,7 @@ public sealed class UDPPER : PostProcessEffectRenderer<UDPPES>
             return;
 
         UDCameraOptions optionsContainer = cam.GetComponent<UDCameraOptions>();
-        RenderOptions options;
+        UDRenderSettings options;
         float resolutionScaling;
         if (optionsContainer != null)
         {
@@ -86,7 +86,7 @@ public sealed class UDPPER : PostProcessEffectRenderer<UDPPES>
         else
         {
             optionsContainer = null;
-            options = new RenderOptions();
+            options = new UDRenderSettings();
             resolutionScaling = 1;
         }
 
@@ -97,8 +97,8 @@ public sealed class UDPPER : PostProcessEffectRenderer<UDPPES>
         udRenderInstance[] modelArray = UDUtilities.getUDSInstances();
         if (modelArray.Length > 0)
         {
-            vRenderView.SetMatrix(udSDK.udRenderTargetMatrix.View, UDUtilities.GetUDMatrix(cam.worldToCameraMatrix));
-            vRenderView.SetMatrix(udSDK.udRenderTargetMatrix.Projection, UDUtilities.GetUDMatrix(cam.projectionMatrix));
+            vRenderView.SetMatrix(udSDK.udRenderTargetMatrix.udRTM_View, UDUtilities.GetUDMatrix(cam.worldToCameraMatrix));
+            vRenderView.SetMatrix(udSDK.udRenderTargetMatrix.udRTM_Projection, UDUtilities.GetUDMatrix(cam.projectionMatrix));
 
             //interface to input render options: this allows setting of render flags, picking and filtering from unity objects attached to the camera
 

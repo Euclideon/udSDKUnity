@@ -12,7 +12,7 @@ using udSDK;
 public class UDSModel : MonoBehaviour
 {
     [System.NonSerialized]
-    public udPointCloud udModel = new udPointCloud();
+    public UDPointCloud udModel = new UDPointCloud();
     [System.NonSerialized]
     public bool isLoaded = false;
     [System.NonSerialized]

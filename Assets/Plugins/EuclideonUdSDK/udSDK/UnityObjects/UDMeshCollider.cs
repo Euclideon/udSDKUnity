@@ -19,8 +19,8 @@ public class UDMeshCollider : MonoBehaviour
     [Tooltip("Position of the virtual watcher camera relative to the target")]
     public Vector3 watcherPosition = new Vector3(0, 25, 0);
     //UDS Renderer components:
-    private udRenderContext vRenderer;
-    private udRenderTarget renderView;
+    private UDRenderContext vRenderer;
+    private UDRenderTarget renderView;
     //Properties of the plane:
     [Tooltip("Width of the collision plane in metres")]
     public float width = 10; //width of the plane in metres
@@ -249,7 +249,7 @@ public class UDMeshCollider : MonoBehaviour
      */
     void SetRenderView()
     {
-        renderView = new udRenderTarget();
+        renderView = new UDRenderTarget();
         if (!GlobalUDContext.isCreated)
             GlobalUDContext.Login();
 
@@ -307,10 +307,10 @@ public class UDMeshCollider : MonoBehaviour
         udRenderInstance[] modelArray = UDUtilities.getUDSInstances();
         Matrix4x4 watcherTrans = transform.localToWorldMatrix;
         double[] frontPlaneView = UDUtilities.GetUDMatrix(watcherTrans);
-        renderView.SetMatrix(udSDK.udRenderTargetMatrix.Camera, frontPlaneView);
+        renderView.SetMatrix(udSDK.udRenderTargetMatrix.udRTM_Camera, frontPlaneView);
         Matrix4x4 projection = Matrix4x4.Ortho(-width / 2, width / 2, height / 2, -height / 2, zNear, zFar);
-        renderView.SetMatrix(udSDK.udRenderTargetMatrix.Projection, UDUtilities.GetUDMatrix(projection));
-        RenderOptions options = new RenderOptions();
+        renderView.SetMatrix(udSDK.udRenderTargetMatrix.udRTM_Projection, UDUtilities.GetUDMatrix(projection));
+        UDRenderSettings options = new UDRenderSettings();
         
         //we need the highest LOD if we are not updating the mesh every frame
         if(blockOnStream)

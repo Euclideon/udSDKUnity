@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace udSDK
 {
+    /// <summary>
+    /// These are the various error codes returned by udSDK functions
+    /// </summary>
     public enum udError
     {
         udE_Success, //!< Indicates the operation was successful
@@ -82,7 +85,18 @@ namespace udSDK
 
         udE_RateLimited, //!< This functionality is currently being rate limited or has exhausted a shared resource. Trying again later may be successful
         udE_PremiumOnly, //!< The requested operation failed because the current session is not for a premium user
+        udE_InProgress, //!< The requested operation is currently in progress
 
         udE_Count //!< Internally used to verify return values
     };
+    
+    public static class udError_f
+    {
+        /// <summary>
+        /// Gets the udError enum value as a string value.
+        /// </summary>
+        /// <param name="errorCode">The error code</param>
+        [DllImport(UDSDKLibrary.name, EntryPoint = "udError_GetErrorString")]
+        public static extern string GetErrorString(udError errorCode);
+    }
 }

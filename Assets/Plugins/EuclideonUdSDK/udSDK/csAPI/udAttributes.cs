@@ -1,9 +1,13 @@
 using System;
 using System.Runtime.InteropServices;
-using UnityEngine;
+
+//! udAttributes.h provides an interface to attribute streams of Unlimited Detail models.
 
 namespace udSDK
 {
+    /// <summary>
+    /// A list of standard UDS attributes 
+    /// </summary>
     public enum udStdAttribute
     {
         udSA_GPSTime, //!< udATI_float64 
@@ -32,6 +36,9 @@ namespace udSDK
         udSA_First = 0, //!< Generally used to initialise an attribute value for use in loops
     };
 
+    /// <summary>
+    /// The standard UDS attributes provided as a bitfield. Note udStdAttributeContent enums are guaranteed to be 1 << associated udStdAttribute value 
+    /// </summary>
     public enum udStdAttributeContent
     {
         udSAC_None = (0),
@@ -65,6 +72,9 @@ namespace udSDK
         // udSAC_16BitAttributes = udSAC_Intensity + udSAC_NIR + udSAC_ScanAngle + udSAC_PointSourceID,
     };
 
+    /// <summary>
+    /// These are the various options for how an attribute is calculated when merging voxels while generating LODs
+    /// </summary>
     public enum udAttributeBlendType
     {
         udABT_Mean, //!< This blend type merges nearby voxels together and finds the mean value for the attribute on those nodes
@@ -74,6 +84,9 @@ namespace udSDK
         udABT_Count //!< Total number of blend types. Used internally but can be used as an iterator max when checking attribute blend modes.
     };
 
+    /// <summary>
+    /// These are the types that could be contained in attributes 
+    /// </summary>
     public enum udAttributeTypeInfo
     {
         udATI_Invalid = 0,
@@ -102,6 +115,9 @@ namespace udSDK
         udATI_vec3f32 = 12 | 0x300 | udATI_Signed | udATI_Float
     };
 
+    /// <summary>
+    /// Describes the contents of an attribute stream including its size, type and how it gets blended in LOD layers 
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct udAttributeDescriptor
     {
@@ -109,43 +125,76 @@ namespace udSDK
         public udAttributeBlendType blendType; //!< Which blend type this attribute is using
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 64)]
         public char[] name; //!< Name of the attibute
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+        public char[] prefix; //!< Value prefix for display
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+        public char[] suffix; //!< Value suffix for display
     };
 
+    /// <summary>
+    /// Provides a set a attributes and includes an optimized lookup for standard types 
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct udAttributeSet
     {
-        public udStdAttributeContent standardContent; //!< Which standard attributes are available (used to optimize lookups internally), they still appear in the descriptors
+        public udStdAttributeContent content; //!< Which standard attributes are available (used to optimize lookups internally), they still appear in the descriptors
         public uint count; //!< How many udAttributeDescriptor objects are used in pDescriptors
         public uint allocated; //!< How many udAttributeDescriptor objects are allocated to be used in pDescriptors
         public IntPtr pDescriptors; //!< this contains the actual information on the attributes
     };
 
-    public class AttributeSet {
-        private udAttributeSet set;
+    public static class udAttributeSet_f
+    {
+        /// <summary>
+        /// Creates a udAttributeSet
+        /// </summary>
+        /// <param name="pAttributeSet">The attribute set to allocate into</param>
+        /// <param name="content">The standard attributes that will be created, provided as bitfields</param>
+        /// <param name="additionalCustomAttributes">The count of additional attributes to generate, these will be added to the attribute set blank after the standard attributes</param>
+        [DllImport(UDSDKLibrary.name, EntryPoint = "udAttributeSet_Create")]
 
-        int GetStandardOffset(udStdAttribute attribute) 
-        {
-            IntPtr pOffset = new IntPtr();
-            udAttributeSet_GetOffsetOfStandardAttribute(ref set, attribute, pOffset);
-            unsafe { 
-                return *((int*)pOffset.ToPointer());
-            }
-        }
-
-        int GetNamedOffset(string name) 
-        {
-            IntPtr pOffset = new IntPtr();
-            udAttributeSet_GetOffsetOfNamedAttribute(ref set, name, pOffset);
-            unsafe 
-            { 
-                return *((int*)pOffset.ToPointer());
-            }
-        }
-
-        [DllImport(UDSDKLibrary.name)]
-        private static extern udError udAttributeSet_GetOffsetOfStandardAttribute(ref udAttributeSet pAttributeSet, udStdAttribute attribute, IntPtr pOffset);
+        public static extern udError Create(ref udAttributeSet pAttributeSet, udStdAttributeContent content, UInt32 additionalCustomAttributes);
         
-        [DllImport(UDSDKLibrary.name)]
-        private static extern udError udAttributeSet_GetOffsetOfNamedAttribute(ref udAttributeSet pAttributeSet, string pName, IntPtr pOffset);
+        /// <summary>
+        ///  Free the memory created by a call to udAttributeSet_Create
+        /// </summary>
+        /// <param name="pAttributeSet">The attribute set to free the resources of</param>
+        [DllImport(UDSDKLibrary.name, EntryPoint = "udAttributeSet_Destroy")]
+        public static extern udError Destroy(ref udAttributeSet pAttributeSet);
+        
+        /// <summary>
+        /// Gets the offset for a standard attribute so that further querying of that attribute can be performed
+        /// </summary>
+        /// <param name="pAttributeSet">The attribute set to get the offset for</param>
+        /// <param name="attribute">The enum value of the attribute</param>
+        /// <param name="pOffset"></param>
+        [DllImport(UDSDKLibrary.name, EntryPoint = "udAttributeSet_GetOffsetOfStandardAttribute")]
+        public static extern udError GetOffsetOfStandardAttribute(ref udAttributeSet pAttributeSet, udStdAttribute attribute, IntPtr pOffset);
+        
+        /// <summary>
+        /// Gets the offset for a named attribute so that further querying of that attribute can be performed
+        /// </summary>
+        /// <param name="pAttributeSet">The attribute set to get the offset for</param>
+        /// <param name="pName">The name of the attribute</param>
+        /// <param name="pOffset">This pointer will be written to with the value of the offset if it is found</param>
+        [DllImport(UDSDKLibrary.name, EntryPoint = "udAttributeSet_GetOffsetOfNamedAttribute")]
+        public static extern udError GetOffsetOfNamedAttribute(ref udAttributeSet pAttributeSet, string pName, IntPtr pOffset);
+        
+        /// <summary>
+        /// Gets the descriptor of a named attribute stored in a udAttributeSet
+        /// </summary>
+        /// <param name="pAttributeSet">The attribute set to get the descriptor from</param>
+        /// <param name="pName">The name of the attribute</param>
+        /// <param name="pDescriptor">This pointer to be written to with the value of the descriptor if it is found</param>
+        [DllImport(UDSDKLibrary.name, EntryPoint = "udAttributeSet_GetDescriptorOfNamedAttribute")]
+        public static extern udError GetDescriptorOfNamedAttribute(udAttributeSet pAttributeSet, string pName, ref udAttributeDescriptor pDescriptor);
+        
+        /// <summary>
+        /// Gets the descriptor of a standard attribute 
+        /// </summary>
+        /// <param name="attribute">The standard attribute to return the descriptor of</param>
+        /// <param name="pDescriptor">This pointer to be written to with the value of the descriptor if it is found</param>
+        [DllImport(UDSDKLibrary.name, EntryPoint = "udAttribute_GetDescriptorOfStandardAttribute")]
+        public static extern udError GetDescriptorOfStandardAttribute(udStdAttribute attribute, ref udAttributeDescriptor pDescriptor);
     }
 }

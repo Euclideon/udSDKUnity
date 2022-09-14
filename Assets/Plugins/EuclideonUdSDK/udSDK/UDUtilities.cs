@@ -73,7 +73,7 @@ namespace udSDK
                     modelArray[count].pointCloud = model.udModel.pModel;
                     Transform localTransform = objects[i].transform;
 
-                    modelArray[count].worldMatrix = UDUtilities.GetUDMatrix(
+                    modelArray[count].matrix = UDUtilities.GetUDMatrix(
                             Matrix4x4.TRS(model.transform.position, model.transform.rotation, model.transform.localScale) *
                             model.modelToPivot
                         );
