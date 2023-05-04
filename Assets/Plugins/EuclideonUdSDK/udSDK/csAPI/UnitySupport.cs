@@ -72,25 +72,18 @@ namespace udSDK
           break;
         case udError.udE_ServerError:
           throw new Exception("Could not connect to server.");
-          break;
         case udError.udE_AuthError:
           throw new Exception("Username or Password incorrect.");
-          break;
         case udError.udE_OutOfSync:
           throw new Exception("Your clock doesn't match the remote server clock.");
-          break;
         case udError.udE_DecryptionKeyRequired:
           throw new Exception("A decryption key is required, or not matching");
-          break;
         case udError.udE_DecryptionKeyMismatch:
           throw new Exception("A decryption key is required, or not matching");
-          break;
         case udError.udE_SignatureMismatch:
           throw new Exception("Server not accepting digital signature.");
-          break;
         default:
           throw new Exception("Unknown error occurred: " + error + ", please try again later.");
-          break;
       }
     }
 

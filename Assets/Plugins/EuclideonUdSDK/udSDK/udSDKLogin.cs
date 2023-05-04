@@ -117,7 +117,7 @@ namespace udSDK
           }
           catch (System.Exception e)
           {
-            Debug.Log("Login Failed: " + e.ToString());
+            Debug.LogError("Login Failed: " + e.ToString());
             return;
           }
         }
