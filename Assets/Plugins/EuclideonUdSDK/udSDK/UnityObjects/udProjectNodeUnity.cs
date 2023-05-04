@@ -46,14 +46,14 @@ public class udProjectNodeUnity : MonoBehaviour
     if (!URI.StartsWith("http") && !URI.StartsWith("www"))
       URI = "file://" + Application.dataPath + "/" + URI;  
 
-    // warning : this syntax changes somewhat in later versions of Unity 
+    // warning : this syntax changes somewhat throughout versions of Unity 
     using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(URI))
     {
       yield return uwr.SendWebRequest();
-
-      if (uwr.isNetworkError || uwr.isHttpError)
+      
+      if (uwr.result != UnityWebRequest.Result.Success)
       {
-        Debug.Log(uwr.error);
+        Debug.LogWarning(uwr.error);
       }
       else
       {

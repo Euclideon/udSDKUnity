@@ -61,8 +61,13 @@ public sealed class UDPPER : PostProcessEffectRenderer<UDPPES>
     void RebuildBuffers(int newWidth, int newHeight)
     {
         InitialiseBuffers(newWidth, newHeight);
+#if UNITY_2021_3_OR_NEWER
+        colourTexture.Reinitialize(width, height, TextureFormat.BGRA32, false);
+        depthTexture.Reinitialize(width, height, TextureFormat.RFloat, false);
+#else 
         colourTexture.Resize(width, height, TextureFormat.BGRA32, false);
         depthTexture.Resize(width, height, TextureFormat.RFloat, false);
+#endif
         vRenderView.Destroy();
         vRenderView.Create(GlobalUDContext.uContext, GlobalUDContext.renderer, (uint)width, (uint)height);
         vRenderView.SetTargets(ref colourBuffer, 0, ref depthBuffer);
